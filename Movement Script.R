@@ -28,8 +28,9 @@ ndvi_raster=stack("NDVI_2013.gri")
 e=extent(ndvi_raster)
 ndvi_composite=raster("NDVI_2013_composite.gri") #formed by taking mean of all these
 ndvi_composite=crop(ndvi_composite,e)
+getwd()
+setwd("~/move-model/move-model/Numerical_Results")
 
-setwd("~/Movement Model/Numerical_Results")
 
 species <- setClass("species", slots=c(x="numeric", y="numeric", opt="numeric",mass="numeric",
                                        wing="numeric"))
@@ -342,7 +343,7 @@ aggregate_N=apply(N_pop_results, c(2,3), mean,na.rm=T)
 aggregate_S=apply(S_pop_results, c(2,3), mean,na.rm=T)
 
 
-setwd("~/Movement Model/Plots")
+setwd("~/move-model/move-model/Plots")
 
 
 NEW_NOAM=crop(NOAM,extent(ndvi_composite))
