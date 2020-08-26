@@ -28,7 +28,6 @@ ndvi_raster=stack("NDVI_2013.gri")
 e=extent(ndvi_raster)
 ndvi_composite=raster("NDVI_2013_composite.gri") #formed by taking mean of all these
 ndvi_composite=crop(ndvi_composite,e)
-getwd()
 setwd("~/move-model/Numerical_Results")
 
 
@@ -260,7 +259,7 @@ generations=function(n_generations=3, replicates=200,N_pop_days=18,S_pop_days=18
       WIWA_pop_results[i,,]=my_matrix
     }
     if (i%%5 == 0) {
-      print(paste0("Number of birds processed: ",i))
+      print(paste0("Number of birds processed per population this gen.: ",i))
     }
   }
     
