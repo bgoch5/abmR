@@ -1,3 +1,4 @@
+qt(.975,8)
 # Last Updated August 22, 2020
 # Environmental Data
 #https://www.ncdc.noaa.gov/cdr/terrestrial/normalized-difference-vegetation-index
@@ -30,6 +31,8 @@ ndvi_composite=raster("NDVI_2013_composite.gri") #formed by taking mean of all t
 ndvi_composite=crop(ndvi_composite,e)
 setwd("~/move-model/Numerical_Results")
 
+
+test=ndvi_raster-.1
 
 species <- setClass("species", slots=c(x="numeric", y="numeric", opt="numeric",mass="numeric",
                                        wing="numeric"))
