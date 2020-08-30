@@ -8,23 +8,23 @@
 #' @import rgdal
 #'
 #' @param sp A species object
-#' @param env Raster, should represent NDVI or your environmental variable of interest
+#' @param my_env Raster, should represent NDVI or your environmental variable of interest
 #' @param n Integer, how many days (timesteps), would you like to model
-#' @param theta_x Numeric, destination x coordinate (longitude)
-#' @param alpha_x Numeric, movement motivation in x direction
-#' @param theta_y Numeric, destination y coordinate (latitude)
-#' @param alpha_y Numeric, movement motivation in y direction
+#' @param dest_x Numeric, destination x coordinate (longitude)
+#' @param dest_y Numeric, destination y coordinate (latitude)
+#' @param mot_x Numeric, movement motivation in x direction
+#' @param mot_y Numeric, movement motivation in y direction
 #' @param sp_poly Come back to this
 #' @param current_generation Fed into function by function `generations`
-#'
+#' @param search_radius Radius of semicircle to South of current location to search for next timestep (in km)
 #'
 #' @return A nx2 dataset containing longitude and latitude points for all n timesteps
 #' @examples
 #' Come back to this
 #' @export
 
-move <- function (sp, env, n, sigma, theta_x, alpha_x, theta_y, alpha_y,sp_poly,current_gen) {
-  my_env=env-sp@opt
+moveSIM <- function (sp, env, n, sigma, dest_x, dest_y, mot_x, mot_y,sp_poly,current_gen,
+                     search_radius=375) {
   track <- data.frame()
   track[1,1] <- sp@x  # 1st row 1st col is input x coord
   track[1,2] <- sp@y  # 1st row 2nd col is input y coord
@@ -33,8 +33,8 @@ move <- function (sp, env, n, sigma, theta_x, alpha_x, theta_y, alpha_y,sp_poly,
   # they move. Thus we added these parameters to species class and had them affect motivation
   # (preliminary).
   # Idea: Bigger birds can fly further/faster
-  alpha_x_new=alpha_x+(sp@mass-7.5)*.01+(sp@wing-15.5)*.01
-  alpha_y_new=alpha_y+(sp@mass-7.5)*.01+(sp@wing-15.5)*.01
+  mot_x_new=mot_x+(sp@mass-7.5)*.01+(sp@wing-15.5)*.01
+  mot_y_new=mot_y+(sp@mass-7.5)*.01+(sp@wing-15.5)*.01
   failures=0
   in_box=FALSE
 
@@ -55,22 +55,22 @@ move <- function (sp, env, n, sigma, theta_x, alpha_x, theta_y, alpha_y,sp_poly,
     lon_candidate<--9999
     lat_candidate<--9999
 
-    # Birds search area is a semicircle of radius 375 km (bird can't move North)
+    # Birds search area is a semicircle of radius (bird can't move North)
 
-    test=circle.polygon(track[step-1,1], track[step-1,2], 375,
+    test=circle.polygon(track[step-1,1], track[step-1,2], search_radius,
                         units = "km")
     test=data.frame(test)
     test=subset(test,test[,2]<=track[step-1,2])
     p = Polygon(test)
     ps = Polygons(list(p),1)
     sps = SpatialPolygons(list(ps),proj4string=crs(NOAM))
-    if(!is.null(intersect(my_rast,sps))){
+    my_bool=tryCatch(!is.null(intersect(my_rast,sps)), error=function(e) return(FALSE))
+    if(my_bool){
       my_rast=crop(my_rast,extent(sps))
       my_rast<-mask(my_rast,sps,inverse=FALSE)
     }
     pt=SpatialPoints(cbind(-99.11,19.15))
     proj4string(pt)=proj4string(NOAM)
-
 
     # We are simulating birds that were captured at a study site in Mexico (-99.11, 19.15).
     # We didn't want to force birds there from the start, but if this study site falls
@@ -99,8 +99,8 @@ move <- function (sp, env, n, sigma, theta_x, alpha_x, theta_y, alpha_y,sp_poly,
     target_y=best_coordinates[2]
     i=1
     while (is.na(extract(env[[step]], matrix(c(lon_candidate,lat_candidate),1,2)))) {
-      lon_candidate <- track[step-1,1]+ (sigma * rnorm(1)) + (alpha_x_new * (target_x - track[step-1,1]))
-      lat_candidate <- track[step-1,2]+ (sigma * rnorm(1)) + (alpha_y_new * (target_y - track[step-1,2]))
+      lon_candidate <- track[step-1,1]+ (sigma * rnorm(1)) + (mot_x_new * (target_x - track[step-1,1]))
+      lat_candidate <- track[step-1,2]+ (sigma * rnorm(1)) + (mot_y_new * (target_y - track[step-1,2]))
       i=i+1
       # How to select candidate destination, this is as you originally had it.
       if(i>20){ # Avoid infite loop
