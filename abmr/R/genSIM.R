@@ -3,26 +3,30 @@
 #' @import raster
 #' @import sp
 #' @import rgdal
+#' @import swfscMisc
 #'
 #' @param n_generations Integer, desired number of generations to run
 #' @param replicates Integer, desired number of replicates per generation
 #' @param days Integer, How many days (timesteps), would you like to model?
 #' @param ndvi_rast COME BACK
-#' @param my_sigma Numeric, randomness parameter
-#' @param modeled_species Object of class "species"
-#' @param my_NOAM COME BACK
-#' @param mot_y Numeric, movement motivation in y direction
-#' @param sp_poly Come back to this
-#' @param current_generation Fed into function by function `generations`
 #' @param search_radius Radius of semicircle to South of current location to search for next timestep (in km)
+#' @param my_sigma Numeric, randomness parameter
+#' @param dest_x Numeric, destination x coordinate (longitude)
+#' @param dest_y Numeric, destination y coordinate (latitude)
+#' @param mot_x Numeric, movement motivation in x direction
+#' @param mot_y Numeric, movement motivation in y direction
+#' @param modeled_species Object of class "species"
+#' @param my_shapefile COME BACK
+#' @param mot_y Numeric, movement motivation in y direction
+#'
 #'
 #' @return A matrix
 #' @examples
 #' Come back to this
 #' @export
 
-generations=function(n_generations=3, replicates=200,days=27,ndvi_rast=ndvi_raster, my_sigma,
-                     modeled_species,my_NOAM=NOAM)
+genSIM=function(n_generations=3, replicates=200,days=27,ndvi_rast=ndvi_raster, search_radius=375,
+                my_sigma, dest_x, dest_y, mot_x, mot_y, modeled_species, my_shapefile=NOAM)
 
 {
   my_env=ndvi_rast-modeled_species@opt
@@ -36,12 +40,14 @@ generations=function(n_generations=3, replicates=200,days=27,ndvi_rast=ndvi_rast
     print(paste0("Starting Generation ", j))
 
     if(j==1){
-      sp=my_NOAM
+      sp_poly=my_shapefile
     }
 
     for(i in 1:replicates){
 
-      Species=data.matrix(moveSIM(modeled_species,my_env,days,my_sigma, -99.11,19.15,1,1,sp_poly,j),375)
+      Species=data.matrix(moveSIM(sp=modeled_species,env=my_env,n=days,sigma=my_sigma,
+      dest_x=dest_x,dest_y=dest_y,mot_x=mot_x,mot_y=mot_y,
+      sp_poly=sp_poly,current_gen=j,search_radius=search_radius))
 
       if (length(Species)==days*2){
         results[i,,]=Species

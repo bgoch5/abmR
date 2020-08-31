@@ -8,14 +8,15 @@
 #' @import rgdal
 #'
 #' @param sp A species object
-#' @param my_env Raster, should represent NDVI or your environmental variable of interest
+#' @param env Raster, should represent NDVI or your environmental variable of interest
 #' @param n Integer, how many days (timesteps), would you like to model
+#' @param sigma Numeric, amount of random error
 #' @param dest_x Numeric, destination x coordinate (longitude)
 #' @param dest_y Numeric, destination y coordinate (latitude)
 #' @param mot_x Numeric, movement motivation in x direction
 #' @param mot_y Numeric, movement motivation in y direction
 #' @param sp_poly Come back to this
-#' @param current_generation Fed into function by function `generations`
+#' @param current_gen Fed into function by function genSIM
 #' @param search_radius Radius of semicircle to South of current location to search for next timestep (in km)
 #'
 #' @return A nx2 dataset containing longitude and latitude points for all n timesteps
@@ -24,7 +25,7 @@
 #' @export
 
 moveSIM <- function (sp, env, n, sigma, dest_x, dest_y, mot_x, mot_y,sp_poly,current_gen,
-                     search_radius=375) {
+                     search_radius) {
   track <- data.frame()
   track[1,1] <- sp@x  # 1st row 1st col is input x coord
   track[1,2] <- sp@y  # 1st row 2nd col is input y coord

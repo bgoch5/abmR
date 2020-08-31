@@ -15,13 +15,17 @@ moveSIM(
   mot_y,
   sp_poly,
   current_gen,
-  search_radius = 375
+  search_radius
 )
 }
 \arguments{
 \item{sp}{A species object}
 
+\item{env}{Raster, should represent NDVI or your environmental variable of interest}
+
 \item{n}{Integer, how many days (timesteps), would you like to model}
+
+\item{sigma}{Numeric, amount of random error}
 
 \item{dest_x}{Numeric, destination x coordinate (longitude)}
 
@@ -33,11 +37,9 @@ moveSIM(
 
 \item{sp_poly}{Come back to this}
 
+\item{current_gen}{Fed into function by function genSIM}
+
 \item{search_radius}{Radius of semicircle to South of current location to search for next timestep (in km)}
-
-\item{my_env}{Raster, should represent NDVI or your environmental variable of interest}
-
-\item{current_generation}{Fed into function by function `generations`}
 }
 \value{
 A nx2 dataset containing longitude and latitude points for all n timesteps
