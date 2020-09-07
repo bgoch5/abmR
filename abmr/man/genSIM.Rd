@@ -8,7 +8,7 @@ genSIM(
   n_generations = 3,
   replicates = 200,
   days = 27,
-  ndvi_rast = ndvi_raster,
+  env_rast = ndvi_raster,
   search_radius = 375,
   my_sigma,
   dest_x,
@@ -16,7 +16,8 @@ genSIM(
   mot_x,
   mot_y,
   modeled_species,
-  my_shapefile = NOAM
+  my_shapefile = NOAM,
+  progress_save = FALSE
 )
 }
 \arguments{
@@ -26,7 +27,7 @@ genSIM(
 
 \item{days}{Integer, How many days (timesteps), would you like to model?}
 
-\item{ndvi_rast}{COME BACK}
+\item{env_rast}{COME BACK}
 
 \item{search_radius}{Radius of semicircle to South of current location to search for next timestep (in km)}
 
@@ -43,13 +44,25 @@ genSIM(
 \item{modeled_species}{Object of class "species"}
 
 \item{my_shapefile}{COME BACK}
+
+\item{progress_save}{logical, Whether or not to save results after each gen;
+default=FALSE; makes sense to use if you have a huge run and you want
+to be sure that intermediate results are saved}
 }
 \value{
-A matrix
+species_full: A days*replicates*n_generations X 5 dataframe containing the columns
+lon, lat, day, gen, and bird_id (e.g. 1_2 means second bird of first gen.)
+last_gen: species_full subsetted to last gen.
+shapefiles: A list of shapefiles produced, one for each generation
 }
 \description{
 Runs model for multiple replicates over multiple generations
 }
 \examples{
-Come back to this
+my_results=genSIM(n_generations=2,replicates=3,my_sigma=.7,env_rast=ndvi_raster,
+modeled_species=N_pop,dest_x=-90,dest_y=34,my_shapefile=NOAM,
+mot_x=.9,mot_y=.8,days=27)
+my_results$last_gen
+my_results$species_full
+my_results$shapefiles
 }

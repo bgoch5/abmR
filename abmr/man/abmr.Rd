@@ -9,4 +9,8 @@ A work-in-progress package for running agent based models in R.
 }
 \author{
 Benjamin Gochanour \email{ben.gochanour@ou.edu}
+
+Javi Fernandez-Lopez
+
+Andrea Contina
 }

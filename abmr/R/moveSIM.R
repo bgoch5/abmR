@@ -21,7 +21,6 @@
 #'
 #' @return A nx2 dataset containing longitude and latitude points for all n timesteps
 #' @examples
-#' Come back to this
 #' @export
 
 moveSIM <- function (sp, env, n, sigma, dest_x, dest_y, mot_x, mot_y,sp_poly,current_gen,

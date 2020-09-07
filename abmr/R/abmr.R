@@ -5,6 +5,8 @@
 #' @docType package
 #'
 #' @author Benjamin Gochanour \email{ben.gochanour@ou.edu}
+#' @author Javi Fernandez-Lopez
+#' @author Andrea Contina
 #'
 #' @name abmr
 NULL

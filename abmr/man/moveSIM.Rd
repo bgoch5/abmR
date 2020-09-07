@@ -48,6 +48,3 @@ A nx2 dataset containing longitude and latitude points for all n timesteps
 Runs agent based modeling for one replicate of a single species. Used by function `generations`
 to run more replicates of more species.
 }
-\examples{
-Come back to this
-}
