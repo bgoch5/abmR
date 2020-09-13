@@ -9,21 +9,24 @@
 #'
 #' @param sp A species object
 #' @param env Raster, should represent NDVI or your environmental variable of interest
-#' @param n Integer, how many days (timesteps), would you like to model
+#' @param days Integer, how many days (timesteps), would you like to model
 #' @param sigma Numeric, amount of random error
 #' @param dest_x Numeric, destination x coordinate (longitude)
 #' @param dest_y Numeric, destination y coordinate (latitude)
 #' @param mot_x Numeric, movement motivation in x direction
 #' @param mot_y Numeric, movement motivation in y direction
 #' @param sp_poly Come back to this
-#' @param current_gen Fed into function by function genSIM
+#' @param current_gen Fed into function by function genSIM; if using this function
+#' alone use 1
 #' @param search_radius Radius of semicircle to South of current location to search for next timestep (in km)
 #'
 #' @return A nx2 dataset containing longitude and latitude points for all n timesteps
 #' @examples
+#' my_results = moveSIM(sp = wiwa.pop, env = ndvi_raster, n = 27, sigma = 0.6,
+#' dest_x = -100, dest_y = 25, mot_x = 0.9, mot_y = 0.9, search_radius = 200, current_gen = 1)
 #' @export
 
-moveSIM <- function (sp, env, n, sigma, dest_x, dest_y, mot_x, mot_y,sp_poly,current_gen,
+moveSIM <- function (sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,sp_poly,current_gen,
                      search_radius) {
   track <- data.frame()
   track[1,1] <- sp@x  # 1st row 1st col is input x coord
@@ -38,7 +41,7 @@ moveSIM <- function (sp, env, n, sigma, dest_x, dest_y, mot_x, mot_y,sp_poly,cur
   failures=0
   in_box=FALSE
 
-  for (step in 2:n) { # These are days
+  for (step in 2:days) { # These are days
     if(current_gen>1){ # If you are in generation 2 or following, restrict movement based on
       # last generations "confidence interval" (see below)
 
@@ -89,8 +92,8 @@ moveSIM <- function (sp, env, n, sigma, dest_x, dest_y, mot_x, mot_y,sp_poly,cur
       cell_num=sample(cell_num,1) # There may be ties so we need to sample 1
 
       if (is.na(cell_num)){ #Ignore--edge case error handling
-        track[step:n,1]=NA
-        track[step:n,2]=NA
+        track[step:days,1]=NA
+        track[step:days,2]=NA
         break
       }
       best_coordinates=xyFromCell(my_rast,cell_num)
@@ -103,9 +106,9 @@ moveSIM <- function (sp, env, n, sigma, dest_x, dest_y, mot_x, mot_y,sp_poly,cur
       lat_candidate <- track[step-1,2]+ (sigma * rnorm(1)) + (mot_y_new * (target_y - track[step-1,2]))
       i=i+1
       # How to select candidate destination, this is as you originally had it.
-      if(i>20){ # Avoid infite loop
-        track[step:n,1]=NA
-        track[step:n,2]=NA
+      if(i>20){ # Avoid infinite loop
+        track[step:days,1]=NA
+        track[step:days,2]=NA
         break
       }
     }
@@ -115,8 +118,8 @@ moveSIM <- function (sp, env, n, sigma, dest_x, dest_y, mot_x, mot_y,sp_poly,cur
 
     if(is.na(over(pt,NOAM,fn=NULL)$OBJECTID)){ #Birds can't stop over ocean (they must be over
       # North America)
-      track[step:n,1]=NA
-      track[step:n,2]=NA
+      track[step:days,1]=NA
+      track[step:days,2]=NA
       break
     }
 
@@ -141,8 +144,8 @@ moveSIM <- function (sp, env, n, sigma, dest_x, dest_y, mot_x, mot_y,sp_poly,cur
                 options[abs(na.omit(options$V2)) == min(abs(na.omit(options$V2))), 1 ])
 
     if (is.null(option)){ # Ignore--edge case error handling
-      track[step:n,1]=NA
-      track[step:n,2]=NA
+      track[step:days,1]=NA
+      track[step:days,2]=NA
       break
     }
     new_cell <- sample(option,1)
@@ -166,8 +169,8 @@ moveSIM <- function (sp, env, n, sigma, dest_x, dest_y, mot_x, mot_y,sp_poly,cur
 
     if(failures>4){
       print('Bird died')
-      track[step:n,1]=NA #Bird died, rest of points are N/A
-      track[step:n,2]=NA
+      track[step:days,1]=NA #Bird died, rest of points are N/A
+      track[step:days,2]=NA
       break
     }
   }

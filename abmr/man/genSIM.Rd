@@ -27,7 +27,7 @@ genSIM(
 
 \item{days}{Integer, How many days (timesteps), would you like to model?}
 
-\item{env_rast}{COME BACK}
+\item{env_rast}{Rasterstack or Rasterbrick with number of layers equal to n_days}
 
 \item{search_radius}{Radius of semicircle to South of current location to search for next timestep (in km)}
 
@@ -50,18 +50,20 @@ default=FALSE; makes sense to use if you have a huge run and you want
 to be sure that intermediate results are saved}
 }
 \value{
-species_full: A days*replicates*n_generations X 5 dataframe containing the columns
+1. species_full: A (days x replicates X n_generations) X 5 dataframe containing the columns
 lon, lat, day, gen, and bird_id (e.g. 1_2 means second bird of first gen.)
-last_gen: species_full subsetted to last gen.
-shapefiles: A list of shapefiles produced, one for each generation
+
+2. last_gen: species_full subsetted to last gen.
+
+3. shapefiles: A list of shapefiles produced, one for each generation
 }
 \description{
 Runs model for multiple replicates over multiple generations
 }
 \examples{
-my_results=genSIM(n_generations=2,replicates=3,my_sigma=.7,env_rast=ndvi_raster,
-modeled_species=N_pop,dest_x=-90,dest_y=34,my_shapefile=NOAM,
-mot_x=.9,mot_y=.8,days=27)
+my_results=genSIM(n_generations = 2,replicates = 3,my_sigma = 0.7,env_rast = ndvi_raster,
+modeled_species = N_pop, dest_x = -100,dest_y = 25,my_shapefile = NOAM,
+mot_x = 0.9,mot_y = 0.8,days = 27)
 my_results$last_gen
 my_results$species_full
 my_results$shapefiles

@@ -1,0 +1,25 @@
+[general]
+creator=R package 'raster'
+created=2020-09-13 15:27:37
+[georeference]
+nrows=1600
+ncols=2400
+xmin=-160.000005426101
+ymin=10.000003221135
+xmax=-40.0000013565252
+ymax=89.9999984726372
+projection=+proj=longlat +ellps=WGS84 +towgs84=0,0,0,0,0,0,0 +no_defs
+[data]
+datatype=FLT4S
+byteorder=little
+nbands=5
+bandorder=BIL
+minvalue=-0.100000001490116:-0.100000001490116:-0.100000001490116:-0.100000001490116:-0.100000001490116
+maxvalue=0.858500003814697:0.854700028896332:0.859000027179718:0.852199971675873:0.86080002784729
+nodatavalue=-3.4e+38
+[legend]
+legendtype=
+values=
+color=
+[description]
+layername=NOAA.Climate.Data.Record.of.Normalized.Difference.Vegetation.Index.1:NOAA.Climate.Data.Record.of.Normalized.Difference.Vegetation.Index.2:NOAA.Climate.Data.Record.of.Normalized.Difference.Vegetation.Index.3:NOAA.Climate.Data.Record.of.Normalized.Difference.Vegetation.Index.4:NOAA.Climate.Data.Record.of.Normalized.Difference.Vegetation.Index.5

@@ -7,7 +7,7 @@
 moveSIM(
   sp,
   env,
-  n,
+  days,
   sigma,
   dest_x,
   dest_y,
@@ -23,7 +23,7 @@ moveSIM(
 
 \item{env}{Raster, should represent NDVI or your environmental variable of interest}
 
-\item{n}{Integer, how many days (timesteps), would you like to model}
+\item{days}{Integer, how many days (timesteps), would you like to model}
 
 \item{sigma}{Numeric, amount of random error}
 
@@ -37,7 +37,8 @@ moveSIM(
 
 \item{sp_poly}{Come back to this}
 
-\item{current_gen}{Fed into function by function genSIM}
+\item{current_gen}{Fed into function by function genSIM; if using this function
+alone use 1}
 
 \item{search_radius}{Radius of semicircle to South of current location to search for next timestep (in km)}
 }
@@ -47,4 +48,8 @@ A nx2 dataset containing longitude and latitude points for all n timesteps
 \description{
 Runs agent based modeling for one replicate of a single species. Used by function `generations`
 to run more replicates of more species.
+}
+\examples{
+my_results = moveSIM(sp = wiwa.pop, env = ndvi_raster, n = 27, sigma = 0.6,
+dest_x = -100, dest_y = 25, mot_x = 0.9, mot_y = 0.9, search_radius = 200, current_gen = 1)
 }
