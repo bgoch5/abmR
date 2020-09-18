@@ -2,30 +2,33 @@
 % Please edit documentation in R/moveSIM.R
 \name{moveSIM}
 \alias{moveSIM}
-\title{Run model for one replicate}
+\title{Runs model for multiple replicates over multiple generations}
 \usage{
 moveSIM(
-  sp,
-  env,
-  days,
-  sigma,
+  replicates = 200,
+  days = 27,
+  env_rast = ndvi_raster,
+  search_radius = 375,
+  my_sigma,
   dest_x,
   dest_y,
   mot_x,
   mot_y,
-  sp_poly,
-  current_gen,
-  search_radius
+  modeled_species,
+  my_shapefile = NOAM,
+  optimum
 )
 }
 \arguments{
-\item{sp}{A species object}
+\item{replicates}{Integer, desired number of replicates per generation}
 
-\item{env}{Raster, should represent NDVI or your environmental variable of interest}
+\item{days}{Integer, How many days (timesteps), would you like to model?}
 
-\item{days}{Integer, how many days (timesteps), would you like to model}
+\item{env_rast}{Rasterstack or Rasterbrick with number of layers equal to n_days}
 
-\item{sigma}{Numeric, amount of random error}
+\item{search_radius}{Radius of semicircle to South of current location to search for next timestep (in km)}
+
+\item{my_sigma}{Numeric, randomness parameter}
 
 \item{dest_x}{Numeric, destination x coordinate (longitude)}
 
@@ -35,21 +38,26 @@ moveSIM(
 
 \item{mot_y}{Numeric, movement motivation in y direction}
 
-\item{sp_poly}{Come back to this}
+\item{modeled_species}{Object of class "species"}
 
-\item{current_gen}{Fed into function by function genSIM; if using this function
-alone use 1}
-
-\item{search_radius}{Radius of semicircle to South of current location to search for next timestep (in km)}
+\item{my_shapefile}{COME BACK}
 }
 \value{
-A nx2 dataset containing longitude and latitude points for all n timesteps
+1. species_full: A (days x replicates X n_generations) X 5 dataframe containing the columns
+lon, lat, day, gen, and bird_id (e.g. 1_2 means second bird of first gen.)
+
+2. last_gen: species_full subsetted to last gen.
+
+3. shapefiles: A list of shapefiles produced, one for each generation
 }
 \description{
-Runs agent based modeling for one replicate of a single species. Used by function `generations`
-to run more replicates of more species.
+Runs model for multiple replicates over multiple generations
 }
 \examples{
-my_results = moveSIM(sp = wiwa.pop, env = ndvi_raster, n = 27, sigma = 0.6,
-dest_x = -100, dest_y = 25, mot_x = 0.9, mot_y = 0.9, search_radius = 200, current_gen = 1)
+my_results=genSIM(n_generations = 2,replicates = 3,my_sigma = 0.7,env_rast = ndvi_raster,
+modeled_species = N_pop, dest_x = -100,dest_y = 25,my_shapefile = NOAM,
+mot_x = 0.9,mot_y = 0.8,days = 27)
+my_results$last_gen
+my_results$species_full
+my_results$shapefiles
 }

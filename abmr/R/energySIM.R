@@ -1,5 +1,4 @@
-#' Runs energy dynamic-based
-#' model for multiple replicates over multiple generations
+#' Runs model for multiple replicates over multiple generations
 #'
 #' @import raster
 #' @import sp
@@ -38,75 +37,52 @@
 #' my_results$shapefiles
 #' @export
 
-energySIM=function(n_generations=3, replicates=200,days=27,env_rast=ndvi_raster, search_radius=375,
+energySIM=function(replicates=200,days=27,env_rast=ndvi_raster, search_radius=375,
                 my_sigma, dest_x, dest_y, mot_x, mot_y, modeled_species, my_shapefile=NOAM,
-                progress_save=FALSE)
+                my_optimum_lo,my_optimum_hi,my_init_energy)
 
 {
-  my_env=env_rast-modeled_species@opt
-  my_list=list()
-  my_shapefiles=list()
-
-  results=array(rep(0,replicates*days*2),c(replicates,days,2))
-  long=data.frame(lon=numeric(),lat=numeric(),day=numeric(),gen=numeric(),
-                  bird_id=character())
-
-  for (j in 1:n_generations)
-  {
-    print(paste0("Starting Generation ", j))
-
-    if(j==1){
-      sp_poly=my_shapefile
-    }
-
-    for(i in 1:replicates){
-
-      Species=moveSIM(sp=modeled_species,env=my_env,n=days,sigma=my_sigma,
-                      dest_x=dest_x,dest_y=dest_y,mot_x=mot_x,mot_y=mot_y,
-                      sp_poly=sp_poly,current_gen=j,search_radius=search_radius)
-      names(Species)=c("lon","lat")
+  optimum=(my_optimum_hi+my_optimum_lo)/2
+  my_env=env_rast-optimum
+  long=data.frame(lon=numeric(),lat=numeric(),energy=numeric(),
+                  day=numeric(),agent_id=character())
+  for(i in 1:replicates){
+      Species=energySIM_helper(sp = modeled_species,
+                                           env_orig = env_rast,
+                                           env_subtract=my_env,
+                                           days = days,
+                                           sigma = my_sigma,
+                                           dest_x = dest_x,
+                                           dest_y = dest_y,
+                                           mot_x = mot_x,
+                                           mot_y = mot_y,
+                                           sp_poly = my_shapefile,
+                                           search_radius = search_radius,
+                                           optimum_lo = my_optimum_lo,
+                                           optimum_hi = my_optimum_hi,
+                                           init_energy=my_init_energy)
+      names(Species)=c("lon","lat","energy")
       Species$day=1:nrow(Species)
-      Species$gen=j
-      Species$bird_id=paste(as.character(j),as.character(i),sep="_")
+      Species$agent_id=paste("Agent",as.character(i),sep="_")
 
       if (nrow(Species)==days){
         long=rbind(long,Species)
-        results[i,,]=data.matrix(Species[,c("lon","lat")])
       }
-      else{
-        my_matrix=matrix(rep(NA,days*2),nrow=days,ncol=2,byrow=TRUE)
-        results[i,,]=my_matrix
-      }
-
       if (i%%5 == 0) {
-        print(paste0("Number of birds processed this gen.: ",i))
+        print(paste0("Number of agents processed this gen.: ",i))
       }
+  }
+  long[,"distance"]=NA
+  for (i in 2:nrow(long)){
+    if(i%%days!=0){
+    long$distance[i]<-distHaversine(long[(i-1),1:2], long[i,1:2])/1000
     }
-
-    #my_list[[j]]=results
-
-    aggregate_species=apply(results, c(2,3), mean,na.rm=T)
-    SD_species=apply(results, c(2,3), sd,na.rm=T)
-    lower_bound=aggregate_species-1.64*SD_species  #95 was too wide try 90%
-    upper_bound=aggregate_species+1.64*SD_species
-
-    my_df=rbind(lower_bound,upper_bound)
-    my_df=na.omit(my_df)
-    ch <- chull(my_df)
-    coords <- my_df[c(ch, ch[1]), ]
-
-    sp_poly <- SpatialPolygons(list(Polygons(list(Polygon(coords)), ID=1)))
-
-    my_shapefiles[[j]]=sp_poly
-
-    my_last_gen=long[long$gen==n_generations,]
-    rownames(my_last_gen)=NULL
-
-    if(progress_save){
-      prelim_results=list(species_full=long,shapefiles=my_shapefiles)
-      save(prelim_results,file=paste0("PrelimResults_Gen",j,"_",Sys.Date(),".RData"))
-    }}
-  results_to_return=list(last_gen=my_last_gen,
-                         species_full=long,shapefiles=my_shapefiles)
-  return(results_to_return)
+  }
+  long[,"delta_energy"]=NA
+  for (i in 2:nrow(long)){
+    if(i%%days!=0){
+      long$delta_energy[i]<-long[i,3]-long[(i-1),3]
+    }
+  }
+  return(long)
 }

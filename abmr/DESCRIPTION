@@ -9,7 +9,8 @@ License: MIT
 Imports: raster,
          sp,
          rgdal,
-         swfscMisc
+         swfscMisc,
+         geosphere
 Suggests: jpeg
 Encoding: UTF-8
 LazyData: true

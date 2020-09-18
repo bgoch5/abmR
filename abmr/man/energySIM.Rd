@@ -2,11 +2,9 @@
 % Please edit documentation in R/energySIM.R
 \name{energySIM}
 \alias{energySIM}
-\title{Runs energy dynamic-based
-model for multiple replicates over multiple generations}
+\title{Runs model for multiple replicates over multiple generations}
 \usage{
 energySIM(
-  n_generations = 3,
   replicates = 200,
   days = 27,
   env_rast = ndvi_raster,
@@ -18,12 +16,12 @@ energySIM(
   mot_y,
   modeled_species,
   my_shapefile = NOAM,
-  progress_save = FALSE
+  my_optimum_lo,
+  my_optimum_hi,
+  my_init_energy
 )
 }
 \arguments{
-\item{n_generations}{Integer, desired number of generations to run}
-
 \item{replicates}{Integer, desired number of replicates per generation}
 
 \item{days}{Integer, How many days (timesteps), would you like to model?}
@@ -46,6 +44,8 @@ energySIM(
 
 \item{my_shapefile}{COME BACK}
 
+\item{n_generations}{Integer, desired number of generations to run}
+
 \item{progress_save}{logical, Whether or not to save results after each gen;
 default=FALSE; makes sense to use if you have a huge run and you want
 to be sure that intermediate results are saved}
@@ -59,8 +59,7 @@ lon, lat, day, gen, and bird_id (e.g. 1_2 means second bird of first gen.)
 3. shapefiles: A list of shapefiles produced, one for each generation
 }
 \description{
-Runs energy dynamic-based
-model for multiple replicates over multiple generations
+Runs model for multiple replicates over multiple generations
 }
 \examples{
 my_results=genSIM(n_generations = 2,replicates = 3,my_sigma = 0.7,env_rast = ndvi_raster,
