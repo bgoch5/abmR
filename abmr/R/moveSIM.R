@@ -57,7 +57,7 @@ moveSIM=function(replicates=200,days=27,env_rast=ndvi_raster, search_radius=375,
       long=rbind(long,Species)
     }
     if (i%%5 == 0) {
-      print(paste0("Number of birds processed this gen.: ",i))
+      print(paste0("Number of agents processed: ",i))
     }
   }
 

@@ -69,18 +69,18 @@ energySIM=function(replicates=200,days=27,env_rast=ndvi_raster, search_radius=37
         long=rbind(long,Species)
       }
       if (i%%5 == 0) {
-        print(paste0("Number of agents processed this gen.: ",i))
+        print(paste0("Number of agents processed: ",i))
       }
   }
   long[,"distance"]=NA
   for (i in 2:nrow(long)){
-    if(i%%days!=0){
+    if(long$day[i]!=1){
     long$distance[i]<-distHaversine(long[(i-1),1:2], long[i,1:2])/1000
     }
   }
   long[,"delta_energy"]=NA
   for (i in 2:nrow(long)){
-    if(i%%days!=0){
+    if(long$day[i]!=1){
       long$delta_energy[i]<-long[i,3]-long[(i-1),3]
     }
   }
