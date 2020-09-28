@@ -65,7 +65,7 @@ with `moveVIZ()`. Relies on underlying function `moveSIM_helper`, which is not t
 alone.
 }
 \examples{
-moveSIM(replicates=10,days=27,env_rast=ndvi_raster, search_radius=375,
-sigma=0.4, dest_x=-100, dest_y=25, mot_x=1, mot_y=1,modeled_species=N_pop,
-my_shapefile=NOAM,optimum=0.5)
+testing=moveSIM(replicates=1,days=27,env_rast=ndvi_raster, search_radius=375,
+sigma=.4, dest_x=-100, dest_y=25, mot_x=1, mot_y=1,modeled_species=N_pop,
+my_shapefile=NOAM,optimum=.5,direction="S",write_results=TRUE,single_rast=FALSE)
 }

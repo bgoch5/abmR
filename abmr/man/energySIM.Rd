@@ -73,7 +73,8 @@ with `energyVIZ()`. Relies on underlying function `energySIM_helper`, which is
 not to be used alone.
 }
 \examples{
-energySIM(replicates=10,days=27,env_rast=ndvi_raster, search_radius=375,
-sigma=0.4, dest_x=-100, dest_y=25, mot_x=1, mot_y=1, modeled_species=N_pop,
- my_shapefile=NOAM, optimum_lo=0.5,optimum_hi=0.6,init_energy=100)
+testing=energySIM(replicates=1,days=27,env_rast=ndvi_raster, search_radius=375,
+sigma=.4, dest_x=-100, dest_y=25, mot_x=1, mot_y=1,
+modeled_species=N_pop, my_shapefile=NOAM, optimum_lo=.4,optimum_hi=.6,
+init_energy=100,direction="S",write_results=TRUE,single_rast=FALSE)
 }
