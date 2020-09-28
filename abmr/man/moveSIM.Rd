@@ -2,21 +2,24 @@
 % Please edit documentation in R/moveSIM.R
 \name{moveSIM}
 \alias{moveSIM}
-\title{Runs model for multiple replicates over multiple generations}
+\title{Runs basic Brownian/Ornstein–Uhlenbeck agent-based model for multiple replicates.}
 \usage{
 moveSIM(
   replicates = 200,
   days = 27,
   env_rast = ndvi_raster,
   search_radius = 375,
-  my_sigma,
+  sigma,
   dest_x,
   dest_y,
   mot_x,
   mot_y,
   modeled_species,
   my_shapefile = NOAM,
-  optimum
+  optimum,
+  direction = "S",
+  write_results = FALSE,
+  single_rast = FALSE
 )
 }
 \arguments{
@@ -28,7 +31,7 @@ moveSIM(
 
 \item{search_radius}{Radius of semicircle to South of current location to search for next timestep (in km)}
 
-\item{my_sigma}{Numeric, randomness parameter}
+\item{sigma}{Numeric, randomness parameter}
 
 \item{dest_x}{Numeric, destination x coordinate (longitude)}
 
@@ -41,23 +44,28 @@ moveSIM(
 \item{modeled_species}{Object of class "species"}
 
 \item{my_shapefile}{COME BACK}
+
+\item{optimum}{Numeric, optimal environmental value}
+
+\item{direction}{Character, mig direction, one of "N","S","E","W"}
+
+\item{write_results}{Logical, save results to csv?}
+
+\item{single_rast}{Logical, are you using a one-layer raster for all timesteps?}
 }
 \value{
-1. species_full: A (days x replicates X n_generations) X 5 dataframe containing the columns
-lon, lat, day, gen, and bird_id (e.g. 1_2 means second bird of first gen.)
-
-2. last_gen: species_full subsetted to last gen.
-
-3. shapefiles: A list of shapefiles produced, one for each generation
+A (days X replicates) X 5 dataframe containing data on latitude, longitude,
+day, agent ID, and distance traveled between each timestep (in km).
 }
 \description{
-Runs model for multiple replicates over multiple generations
+Here, agent mortality occurs when agent fails to achieve suitable raster values
+at least 5 days (timesteps) in a row. Agent energy stores are not dynamic, so movement
+speed isn't directly affected by quality of raster cells achieved. Results may be analyzed
+with `moveVIZ()`. Relies on underlying function `moveSIM_helper`, which is not to be used
+alone.
 }
 \examples{
-my_results=genSIM(n_generations = 2,replicates = 3,my_sigma = 0.7,env_rast = ndvi_raster,
-modeled_species = N_pop, dest_x = -100,dest_y = 25,my_shapefile = NOAM,
-mot_x = 0.9,mot_y = 0.8,days = 27)
-my_results$last_gen
-my_results$species_full
-my_results$shapefiles
+moveSIM(replicates=10,days=27,env_rast=ndvi_raster, search_radius=375,
+sigma=0.4, dest_x=-100, dest_y=25, mot_x=1, mot_y=1,modeled_species=N_pop,
+my_shapefile=NOAM,optimum=0.5)
 }

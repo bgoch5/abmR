@@ -26,7 +26,7 @@
 #' @export
 
 moveSIM_helper <- function (sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,sp_poly,
-                     search_radius,optimum) {
+                     search_radius,optimum,direction,single_rast) {
   track <- data.frame()
   track[1,1] <- sp@x  # 1st row 1st col is input x coord
   track[1,2] <- sp@y  # 1st row 2nd col is input y coord
@@ -42,7 +42,14 @@ moveSIM_helper <- function (sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,s
 
 
   for (step in 2:days) { # These are days
+    if(single_rast){
+    my_rast=env[[1]]
+    curr_env=env[[1]]
+    }
+    else{
     my_rast=env[[step]]
+    curr_env=env[[step]]
+    }
 
     lon_candidate<--9999
     lat_candidate<--9999
@@ -52,7 +59,14 @@ moveSIM_helper <- function (sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,s
     test=circle.polygon(track[step-1,1], track[step-1,2], search_radius,
                         units = "km")
     test=data.frame(test)
-    test=subset(test,test[,2]<=track[step-1,2])
+    if(direction=="S")
+    {test=subset(test,test[,2]<=track[step-1,2])}
+    else if (direction=="N")
+    {test=subset(test,test[,2]>=track[step-1,2])}
+    else if (direction=="E")
+    {test=subset(test,test[,1]>=track[step-1,1])}
+    else if (direction=="W")
+    {test=subset(test,test[,1]<=track[step-1,1])}
     p = Polygon(test)
     ps = Polygons(list(p),1)
     sps = SpatialPolygons(list(ps),proj4string=crs(NOAM))
@@ -90,7 +104,7 @@ moveSIM_helper <- function (sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,s
     target_x=best_coordinates[1]
     target_y=best_coordinates[2]
     i=1
-    while (is.na(extract(env[[step]], matrix(c(lon_candidate,lat_candidate),1,2)))) {
+    while (is.na(extract(curr_env, matrix(c(lon_candidate,lat_candidate),1,2)))) {
       lon_candidate <- track[step-1,1]+ (sigma * rnorm(1)) + (mot_x_new * (target_x - track[step-1,1]))
       lat_candidate <- track[step-1,2]+ (sigma * rnorm(1)) + (mot_y_new * (target_y - track[step-1,2]))
       i=i+1
@@ -116,15 +130,15 @@ moveSIM_helper <- function (sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,s
     # ended up (small scale searching behavior, whereas earlier is larger scale from evolutinary
     # memory.)
 
-    neig <- adjacent(env[[step]],
-                     cellFromXY(env[[step]], matrix(c(lon_candidate, #put step in brackets here
+    neig <- adjacent(curr_env,
+                     cellFromXY(curr_env, matrix(c(lon_candidate, #put step in brackets here
                                                       lat_candidate), 1,2)),
                      directions=8, pairs=FALSE )
     # Get cell numbers for adjacent cells
     options <- data.frame() # Create blank dataframe
     for (i in 1:length(neig)){
       options[i,1]<-neig[i]   # ith row first column is each neighboring cell
-      options[i,2]<- env[[step]][neig[i]]
+      options[i,2]<- curr_env[neig[i]]
     }
 
     option <- c(options[abs(na.omit(options$V2)) == min(abs(na.omit(options$V2))), 1 ],
@@ -136,12 +150,12 @@ moveSIM_helper <- function (sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,s
       break
     }
     new_cell <- sample(option,1)
-    new_coords <- xyFromCell(env[[step]],new_cell) #put step in brackets here
+    new_coords <- xyFromCell(curr_env,new_cell) #put step in brackets here
     track[step,1] <- new_coords[1]
     track[step,2] <- new_coords[2]
 
 
-    if(is.na(env[[step]][new_cell])){
+    if(is.na(curr_env[new_cell])){
       failures=failures
     }
 
@@ -149,7 +163,7 @@ moveSIM_helper <- function (sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,s
     # by its landing point, is more than 50% off from its optimal, that counts as a "failure"
     # for that day. 5 or more consecutive failures leads to death.
 
-    else if(abs(env[[step]][new_cell])>.50*optimum){
+    else if(abs(curr_env[new_cell])>.50*optimum){
       failures=failures+1
     }
     else{

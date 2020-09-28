@@ -1,0 +1,55 @@
+---
+title: "abmR: An R Package for Agent-based Model Analysis of Large-scale Movements Across Taxa"
+author: "Benjamin Gochanour, Javi Fernandez Lopez, Andrea Contina"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# I. Getting Started
+
+## Installation
+
+To use `abmr`, you must first install it from Github using `devtools` 
+and load the library:
+```{r}
+#devtools: install_github("bgoch5/move-model",subdir="abmr")
+library(abmr,quietly=TRUE,warn.conflicts=FALSE)
+```
+While this package is still in development, it will be updated frequently, so please
+be sure to update it frequently.
+
+## Requirements for Environmental Data Rasters and Species objects
+
+The modeling functions discussed below require several input objects to work, which
+we will discuss here.
+
+# II. Running Agent-based models
+
+## `moveSIM`
+
+## `energySIM`
+
+# III. Visualizing Results
+
+The output from 'moveSIM` and `energySIM` are simple dataframes, so one may easily
+visualize their results using custom codes. However, we have provided the following functions that include a set of default plots that you may find useful.
+
+## `moveVIZ`
+
+## `energyVIZ`
+
+# IV. Getting Help
+
+Need help? Have suggestions to make `abmr` better? If so, please open an issue or
+pull request on Github (https://github.com/bgoch5/move-model/tree/master/abmr), or drop me an email at ben.gochanour\@ou.edu.

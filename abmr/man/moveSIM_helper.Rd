@@ -15,7 +15,9 @@ moveSIM_helper(
   mot_y,
   sp_poly,
   search_radius,
-  optimum
+  optimum,
+  direction,
+  single_rast
 )
 }
 \arguments{

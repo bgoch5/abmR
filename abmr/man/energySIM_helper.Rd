@@ -18,7 +18,9 @@ energySIM_helper(
   search_radius,
   optimum_lo,
   optimum_hi,
-  init_energy
+  init_energy,
+  direction,
+  single_rast
 )
 }
 \arguments{
