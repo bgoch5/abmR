@@ -67,7 +67,7 @@ energy from last timestep.
 }
 \description{
 Here, agent mortality occurs when agent reaches energy = 0 (out of 100). Agent energy
-stores are not dynamic, and effect search area as a multiplier, so movement speed
+stores are dynamic, and affect search area as a multiplier, so movement speed
 is directly affected by the quality of raster cells achieved. Results may be analyzed
 with `energyVIZ()`. Relies on underlying function `energySIM_helper`, which is
 not to be used alone.
