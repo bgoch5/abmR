@@ -120,9 +120,12 @@ energySIM_helper <- function (sp, env_orig,env_subtract, days, sigma, dest_x, de
     target_x=best_coordinates[1]
     target_y=best_coordinates[2]
     i=1
-    while(is.na(extract(curr_env_subtract, matrix(c(lon_candidate,lat_candidate),1,2)))) {
+    while(is.na(extract(curr_env_subtract, matrix(c(lon_candidate,lat_candidate),1,2)))|
+          is.na(over(pt,NOAM,fn=NULL)$OBJECTID)) {
       lon_candidate <- track[step-1,1]+ (sigma * rnorm(1)) + (mot_x_new * (target_x - track[step-1,1]))
       lat_candidate <- track[step-1,2]+ (sigma * rnorm(1)) + (mot_y_new * (target_y - track[step-1,2]))
+      pt=SpatialPoints(cbind(lon_candidate,lat_candidate))
+      proj4string(pt)=proj4string(NOAM)
       i=i+1
       # How to select candidate destination, this is as you originally had it.
       if(i>35){ # Avoid infinite loop

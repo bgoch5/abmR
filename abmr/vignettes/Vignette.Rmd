@@ -27,7 +27,7 @@ and load the library:
 library(abmr,quietly=TRUE,warn.conflicts=FALSE)
 ```
 While this package is still in development, it will be updated frequently, so please
-be sure to update it frequently.
+be sure to re-install frequently.
 
 ## Requirements for Environmental Data Rasters and Species objects
 

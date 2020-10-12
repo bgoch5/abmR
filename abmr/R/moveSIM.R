@@ -59,6 +59,7 @@ moveSIM=function(replicates=200,days=27,env_rast=ndvi_raster, search_radius=375,
   sp_poly=my_shapefile
 
   for(i in 1:replicates){
+    print("Agent #")
     Species=moveSIM_helper(sp=modeled_species,env=my_env,days=days,sigma=sigma,
                     dest_x=dest_x,dest_y=dest_y,mot_x=mot_x,mot_y=mot_y,
                     sp_poly=sp_poly,search_radius=search_radius,optimum=optimum,
@@ -86,6 +87,15 @@ moveSIM=function(replicates=200,days=27,env_rast=ndvi_raster, search_radius=375,
   file_name <- paste("moveSIM_results_",currentDate,".csv",sep="")
   write.csv(long,file_name)
   }
-  return(long)
-}
 
+  missing_pct=sum(is.na(long$lon))/nrow(long)*100
+
+  params=data.frame(replicates=replicates,days=days,
+                    env_raster=deparse(substitute(env_raster)),
+                    search_radius=search_radius,sigma=sigma,dest_x=dest_x,
+                    dest_y=dest_y,mot_x=mot_x,mot_y=mot_y,
+                    modeled_species=deparse(substitute(modeled_species)),
+                    optimum=optimum,direction=direction,write_results=write_results,
+                    single_rast=single_rast,missing_pct=missing_pct)
+  return(list(results=long,run_params=params))
+}

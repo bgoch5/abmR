@@ -113,5 +113,18 @@ energySIM=function(replicates=200,days=27,env_rast=ndvi_raster, search_radius=37
     file_name <- paste("energySIM_results_",currentDate,".csv",sep="")
     write.csv(long,file_name)
   }
-  return(long)
+
+  missing_pct=sum(is.na(long$lon))/nrow(long)*100
+  mortality_pct=length(which(long$energy==0))/replicates*100
+
+  params=data.frame(replicates=replicates,days=days,
+                    env_raster=deparse(substitute(env_raster)),
+                    search_radius=search_radius,sigma=sigma,dest_x=dest_x,
+                    dest_y=dest_y,mot_x=mot_x,mot_y=mot_y,
+                    modeled_species=deparse(substitute(modeled_species)),
+                    optimum_lo=optimum_lo,optimum_hi=optimum_hi,
+                    direction=direction,write_results=write_results,
+                    single_rast=single_rast,missing_pct=missing_pct,
+                    mortality_pct=mortality_pct)
+  return(list(results=long,run_params=params))
 }

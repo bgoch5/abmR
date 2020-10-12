@@ -71,11 +71,12 @@ moveSIM_helper <- function (sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,s
     ps = Polygons(list(p),1)
     sps = SpatialPolygons(list(ps),proj4string=crs(NOAM))
     my_bool=tryCatch(!is.null(intersect(my_rast,sps)), error=function(e) return(FALSE))
+    #print(my_bool)
     if(my_bool){
       my_rast=crop(my_rast,extent(sps))
       my_rast<-mask(my_rast,sps,inverse=FALSE)
     }
-    pt=SpatialPoints(cbind(-99.11,19.15))
+    pt=SpatialPoints(cbind(dest_x,dest_y))
     proj4string(pt)=proj4string(NOAM)
 
     # We are simulating birds that were captured at a study site in Mexico (-99.11, 19.15).
@@ -92,13 +93,14 @@ moveSIM_helper <- function (sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,s
       # If it doesn't fall within, then just take environmental cell
       # within search area that has minimal distance from optimal value
       cell_num=which.min(abs(my_rast))
-      cell_num=sample(cell_num,1) # There may be ties so we need to sample 1
-
-      if (is.na(cell_num)){ #Ignore--edge case error handling
+      if (length(which.min(abs(my_rast)))==0){ #Ignore--edge case error handling
+        print("Edge Case 1")
         track[step:days,1]=NA
         track[step:days,2]=NA
         break
       }
+      cell_num=sample(cell_num,1) # There may be ties so we need to sample 1
+
       best_coordinates=xyFromCell(my_rast,cell_num)
     }
     target_x=best_coordinates[1]
@@ -109,10 +111,16 @@ moveSIM_helper <- function (sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,s
       lat_candidate <- track[step-1,2]+ (sigma * rnorm(1)) + (mot_y_new * (target_y - track[step-1,2]))
       i=i+1
       # How to select candidate destination, this is as you originally had it.
-      if(i>35){ # Avoid infinite loop
+      if(i>90){ # Avoid infinite loop
+        #print("Edge Case 2")
+        #print("Best Coords")
+        #print(best_coordinates)
+        #print("Last coords")
+        #print(track[step-1,1:2])
+
         track[step:days,1]=NA
         track[step:days,2]=NA
-        break
+        return(track)
       }
     }
 
@@ -121,9 +129,12 @@ moveSIM_helper <- function (sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,s
 
     if(is.na(over(pt,NOAM,fn=NULL)$OBJECTID)){ #Birds can't stop over ocean (they must be over
       # North America)
+      #print("EDGE Case 3")
+      #print(pt)
       track[step:days,1]=NA
       track[step:days,2]=NA
-      break
+      return(track)
+      #break
     }
     # Second searching step: now that we've added a destination for this step (and added some)
     # randomness, we want to simulate bird finding best location in close proximity to where it
