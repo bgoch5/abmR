@@ -59,7 +59,6 @@ moveSIM=function(replicates=200,days=27,env_rast=ndvi_raster, search_radius=375,
   sp_poly=my_shapefile
 
   for(i in 1:replicates){
-    print("Agent #")
     Species=moveSIM_helper(sp=modeled_species,env=my_env,days=days,sigma=sigma,
                     dest_x=dest_x,dest_y=dest_y,mot_x=mot_x,mot_y=mot_y,
                     sp_poly=sp_poly,search_radius=search_radius,optimum=optimum,
@@ -83,7 +82,7 @@ moveSIM=function(replicates=200,days=27,env_rast=ndvi_raster, search_radius=375,
     }
   }
   if (write_results){
-  currentDate=format(Sys.time(), "%d-%b-%Y %H.%M")
+  currentDate=format(Sys.time(), "%d-%b-%Y %H.%M.%S")
   file_name <- paste("moveSIM_results_",currentDate,".csv",sep="")
   write.csv(long,file_name)
   }

@@ -107,14 +107,13 @@ energySIM_helper <- function (sp, env_orig,env_subtract, days, sigma, dest_x, de
       # If it doesn't fall within, then just take environmental cell
       # within search area that has minimal distance from optimal value
       cell_num=which.min(abs(my_rast))
-      cell_num=sample(cell_num,1) # There may be ties so we need to sample 1
-
-      if (is.na(cell_num)){ #Ignore--edge case error handling
-        print("Edge case 1")
+      if (length(which.min(abs(my_rast)))==0){ #Ignore--edge case error handling
+        print("Edge Case 1")
         track[step:days,1]=NA
         track[step:days,2]=NA
         break
       }
+      cell_num=sample(cell_num,1) # There may be ties so we need to sample 1
       best_coordinates=xyFromCell(my_rast,cell_num)
     }
     target_x=best_coordinates[1]

@@ -109,7 +109,7 @@ energySIM=function(replicates=200,days=27,env_rast=ndvi_raster, search_radius=37
     }
   }
   if (write_results){
-    currentDate=format(Sys.time(), "%d-%b-%Y %H.%M")
+    currentDate=format(Sys.time(), "%d-%b-%Y %H.%M.%S")
     file_name <- paste("energySIM_results_",currentDate,".csv",sep="")
     write.csv(long,file_name)
   }
