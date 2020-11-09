@@ -1,0 +1,6 @@
+table_10.12=matrix(c(1,2,2,0),byrow=T,ncol=2,nrow=2)
+table_10.12
+chisq.test(table_10.12,correct=FALSE)
+?chisq.test
+fisher.test(table_10.12,alternative = "two.sided")
+

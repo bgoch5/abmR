@@ -1,4 +1,5 @@
-# Movement Model
+# abmr
 
-Please update the Input_Data folder on your local machine by pasting in the file "NDVI_2013.gri" that I emailed. This is too large for Github, so please don't include it
-in any commits.
+An in-development package for agent-based modeling in R. To install, use the following `devtools` command:
+
+devtools:install_github("bgoch5/move-model",subdir="abmr")

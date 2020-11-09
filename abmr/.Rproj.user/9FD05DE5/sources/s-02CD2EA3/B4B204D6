@@ -1,0 +1,25 @@
+{
+    "id": "B4B204D6",
+    "path": "~/GitHub/move-model/abmr/R/moveSIM_helper.R",
+    "project_path": "R/moveSIM_helper.R",
+    "type": "r_source",
+    "hash": "466440253",
+    "contents": "",
+    "dirty": false,
+    "created": 1604328205666.0,
+    "source_on_save": false,
+    "relative_order": 6,
+    "properties": {
+        "cursorPosition": "49,3",
+        "scrollLine": "28",
+        "source_window_id": ""
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1604885234,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1604885234237,
+    "read_only": false,
+    "read_only_alternatives": []
+}

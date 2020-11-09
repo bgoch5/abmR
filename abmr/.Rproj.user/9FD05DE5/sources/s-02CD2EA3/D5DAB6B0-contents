@@ -1,0 +1,91 @@
+################################
+#  PLOTTING BASICS for testing
+#-------------------------------
+library(abmr)
+library(raster)
+library(rasterVis)
+library(rgdal)
+library(ggplot2)
+install.packages("rnaturalearth")
+library(rnaturalearth)
+install.packages("rnaturalearthdata")
+library(rnaturalearthdata)
+setwd("D:/ABM_ISOTOPE_2020/TEST_2")
+NOAM=readOGR(layer="NOAM",dsn=".")
+ndvi_raster=stack("NDVI_2013.grd")
+e=extent(ndvi_raster)
+ndvi_composite=raster("NDVI_2013_composite.grd") #formed by taking mean of all these
+ndvi_composite=crop(ndvi_composite,e)
+plot(ndvi_composite)
+getwd()
+# this part might need modification becuase I am using it also to get the ideal trajectory
+# on a dashed line.
+#----------------------------
+necountries
+world <- ne_countries(scale = "medium", returnclass = "sf")
+start.p <- cbind(-112.24, 52.24)
+start.p.df <- as.data.frame(start.p)
+colnames(start.p.df)[1:2] = c("Lon", "Lat")
+run = "ideal"
+start.p.df <- cbind(start.p.df, run)
+#----------------------------
+#end.p <- cbind(-100, 25)
+end.p <- cbind(-120, 35)
+end.p.df <- as.data.frame(end.p)
+colnames(end.p.df)[1:2] = c("Lon", "Lat")
+run = "ideal"
+end.p.df <- cbind(end.p.df, run)
+#-----------------------------------
+ideal.df <- rbind(start.p.df, end.p.df)
+#-----------------------------------
+species <- setClass("species", slots=c(x="numeric", y="numeric",mass="numeric",wing="numeric"))
+ocwa.pop <- species(x=-112.24, y =52.24, mass=15, wing=19)
+t.move=moveSIM(replicates=10,days=27,env_rast=ndvi_raster, search_radius=350,
+               sigma=0.1, dest_x=-120, dest_y=35, mot_x=0.9, mot_y=0.9,
+               modeled_species=ocwa.pop, my_shapefile=NOAM, optimum = 0.7,
+               direction="S",write_results=TRUE,single_rast=FALSE)
+t.move.res <- t.move$results
+#jpeg(file = "D:/ABM_ISOTOPE_2020/TEST_2/ocwaSIM_100_s01m09d27R1600.jpeg",  width = 8, height = 10, units = 'in', res =400)
+ggplot(data = world) +
+  geom_sf() +
+  coord_sf(xlim = c(-127, -78), ylim = c(10, 55), expand = FALSE) +
+  geom_path(data = t.move.res,
+            aes(x=lon, y=lat),
+            color = "red", size = 0.6, alpha = 0.4, lineend = "round") +
+  geom_path(data = ideal.df,
+            aes(x=Lon, y=Lat),
+            color = "black", size = 1.2, alpha = 1, linetype = 2) +
+  ggtitle("ocwaSIM10")
+#dev.off()
+
+#----------------------------------------------
+species <- setClass("species", slots=c(x="numeric", y="numeric", opt="numeric",mass="numeric",wing="numeric"))
+ocwa.pop <- species(x=-112.24, y =52.24, mass=15, wing=19)
+t.energy=energySIM(replicates=10,days=27,env_rast=ndvi_raster, search_radius=350,
+                   sigma=0.1, dest_x=-120, dest_y=35, mot_x=0.9, mot_y=0.9,
+                   modeled_species=ocwa.pop, my_shapefile=NOAM, optimum_lo=0.6,optimum_hi=0.7,
+                   init_energy=10,direction="S",write_results=TRUE,single_rast=FALSE)
+t.energy.res <- t.energy$results
+#jpeg(file = "D:/ABM_ISOTOPE_2020/TEST_2/ocwaSIM_100_s01m09d27R1600.jpeg",  width = 8, height = 10, units = 'in', res =400)
+ggplot(data = world) +
+  geom_sf() +
+  coord_sf(xlim = c(-127, -78), ylim = c(10, 55), expand = FALSE) +
+  geom_path(data = t.energy.res,
+            aes(x=lon, y=lat),
+            color = "red", size = 0.6, alpha = 0.4, lineend = "round") +
+  geom_path(data = ideal.df,
+            aes(x=Lon, y=Lat),
+            color = "black", size = 1.2, alpha = 1, linetype = 2) +
+  ggtitle("ocwaSIM10s01")
+#dev.off()
+# TABLE ------------------
+# this is sleek...
+install.packages("table1")
+library(table1)
+?table1
+
+t.energy.res=testing$results
+table1::table1(~distance | delta_energy, data = t.energy.res)
+table1::table1(~energy + day + distance | delta_energy, data = t.energy.res)
+table1::table1(~energy + delta_energy, data = t.energy.res)
+tableRES <- table1::table1(~energy + delta_energy, data = t.energy.res)

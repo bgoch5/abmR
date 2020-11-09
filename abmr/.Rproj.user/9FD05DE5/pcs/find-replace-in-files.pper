@@ -1,0 +1,13 @@
+{
+    "dialog-state": {
+        "query": "abmrr",
+        "path": "~/GitHub/move-model/abmr",
+        "regex": false,
+        "caseSensitive": false,
+        "filePatterns": [],
+        "excludeFilePatterns": [],
+        "resultsCount": 0,
+        "errorCount": 0,
+        "replaceErrors": ""
+    }
+}
