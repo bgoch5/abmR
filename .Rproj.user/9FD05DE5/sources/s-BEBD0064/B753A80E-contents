@@ -1,0 +1,256 @@
+library(abmr)
+species
+
+library(devtools)
+install_github("bgoch5/abmr")
+species <- setClass("species", slots=c(x="numeric", y="numeric",mass="numeric",
+                                       wing="numeric"))
+ocwa.pop <- species(x=-112.24, y =52.24, mass=15, wing=19)
+
+####### Draft Idea #############
+
+species <- setClass("species", slots=c(x="numeric", y="numeric",
+p1="numeric", p1mean="numeric", p1sd="numeric",p1sign="character",
+p2="numeric", p2mean="numeric", p2sd="numeric",p2sign="character"))
+
+mot_x_new=(mot_x+(sp@p1-sp@p1mean)/sp@p1sd*.1*ifelse(sp@p1sign == "Pos", 1, -1)
++(sp@p2-sp@p2mean)/sp@p2sd*.1*ifelse(sp@p2sign == "Pos", 1, -1))
+
+mot_y_new=(mot_y+(sp@p1-sp@p1mean)/sp@p1sd*.1*ifelse(sp@p1sign == "Pos", 1, -1)
++(sp@p2-sp@p2mean)/sp@p2sd*.1*ifelse(sp@p2sign == "Pos", 1, -1))
+
+
+# Just draft a typical case of this
+
+
+# I removed the opt parameter
+?species
+library(abmr)
+data(NOAM)
+data(NOAM)
+data("ndvi_raster")
+testrun2 <- energySIM_helper(sp = N_pop,
+                      ndvi_raster,
+                      ndvi_raster,
+                      days = 27,
+                      sigma = 0.6,
+                      dest_x = -100,
+                      dest_y = 25,
+                      mot_x = 0.9,
+                      mot_y = 0.9,
+                      sp_poly = NOAM,
+                      search_radius = 200,
+                      optimum_lo=.5,
+                      optimum_hi=1,
+                      init_energy=100,single_rast=FALSE,)
+
+
+library(raster)
+ndvi_raster=stack("C:\\Users\\BGOCHANOUR\\Documents\\GitHub\\move-model\\Input_Data\\NDVI_2013.gri")
+
+test=ndvi_raster[[3]]
+my_extent=extent(-124.6,-80,29,50)
+test=crop(test,my_extent)
+my_df=as.data.frame(test,xy=TRUE)
+my_df=my_df[is.na(my_df$NOAA.Climate.Data.Record.of.Normalized.Difference.Vegetation.Index.3),]
+library(dplyr)
+my_df=sample_n(my_df,35000)
+plot(my_df$x,my_df$y)
+plot(NOAM,add=TRUE,border="red")
+plot(NOAM[35,])
+NOAM
+
+
+NOAM$NAME
+plot(NOAM)
+ndvi_raster
+data(NOAM)
+plot(ndvi_raster)
+plot(NOAM)
+data(N_pop)
+library(abmr)
+
+
+
+
+testing=energySIM(replicates=4,days=27,env_rast=ndvi_raster, search_radius=375,
+                  sigma=.4, dest_x=-100, dest_y=25, mot_x=1, mot_y=1,
+                  modeled_species=my_species, my_shapefile=NOAM,
+                  optimum_lo=.4,optimum_hi=.6,init_energy=100,
+                  direction="S",write_results=TRUE,single_rast=FALSE)
+
+
+
+energyVIZ(testing,title="Visualizing EnergySIM results",type="plot")
+
+testing$run_params
+length(which(testing$results$energy==0))
+data(NOAM)
+
+species <- setClass("species", slots=c(x="numeric", y="numeric",
+p1="numeric", p1mean="numeric", p1sd="numeric",p1sign="character",
+p2="numeric", p2mean="numeric", p2sd="numeric",p2sign="character"))
+
+my_species=species(x=-100,y=26,p1=15,p1mean=10,p1sd=2,p1sign="Pos",
+                   p2=7,p2mean=6,p2sd=1,p2sign="Pos")
+
+testing2=moveSIM(replicates=1,days=27,env_rast=ndvi_raster, search_radius=375,
+  sigma=.4, dest_x=-100, dest_y=25, mot_x=1, mot_y=1,modeled_species=my_species,
+  my_shapefile=NOAM,optimum=.5,direction="S",write_results=TRUE,single_rast=FALSE)
+
+testing2
+sp=species(x=-100,y=26,p1=15,p1mean=10,p1sd=2,p1sign="Pos",
+                   p2=8, p2mean=6,p2sd=1,p2sign="Neg")
+mot_x=1
+mot_x_new=(mot_x+(sp@p1-sp@p1mean)/sp@p1sd*.1*ifelse(sp@p1sign == "Pos", 1, -1)
+           +(sp@p2-sp@p2mean)/sp@p2sd*.1*ifelse(sp@p2sign == "Pos", 1, -1))
+
+mot_x_new
+
+testing2
+
+testing2
+is.na(extract(ndvi_raster[[3]], matrix(c(-170,30),1,2)))
+
+# -93.28,29.96 is giving edge case 3, investigate
+extract(ndvi_raster[[6]], matrix(c(-93.28611,29.96359),1,2))
+# cell does have value
+pt=SpatialPoints(cbind(-93.28611,29.96359))
+proj4string(pt)=proj4string(NOAM)
+is.na(over(pt,NOAM,fn=NULL)$OBJECTID)
+# But this is true
+plot(pt)
+
+plot(NOAM[35,],ymin=28)
+ndvi_raster[[3]]
+testing2
+
+file_name <- paste("moveSIM_results_",currentDate,".csv",sep="")
+
+currentDate=format(Sys.time(), "%d-%b-%Y %H.%M.%S")
+test=Sys.time()
+test
+Sys.time()
+currentDate
+file_name <- paste("moveSIM_results_",currentDate,".csv",sep="")
+file_name
+write.csv(testing,file_name)
+strptime(currentDate)
+
+testing2
+testing2
+
+test=moveSIM_helper(N_pop,ndvi_raster,27,1,-100,25,1,1,NOAM,375,single_rast=FALSE,
+                    direction="S")
+
+?moveSIM
+
+?moveSIM
+?moveSIM
+
+plot(testing$lon,testing$lat,col=as.factor(testing$bird_id))
+plot(NOAM,add=TRUE)
+testing
+testing
+
+plot(testrun2)
+lines(testrun2)
+testrun2
+
+testrun2
+
+install.packages("geosphere")
+library(geosphere)
+
+testing[,"distance"]=NA
+for (i in 2:nrow(testing)){
+testing$distance[i]<-distHaversine(testing[(i-1),1:2], testing[i,1:2])/1000
+}
+
+plot(testing$day,testing$energy)
+lm(energy~day,data=testing)
+
+plot(testing$day,testing$distance)
+lm(distance~day,data=testing)
+
+testing
+
+testing
+?distHaversine
+
+my_rast=ndvi_raster[[6]]
+test=circle.polygon(-88.575,40.725,375,
+                    units = "km")
+# SHOULD END UP HERE -79.825 30.425
+test=data.frame(test)
+test
+test=subset(test,test[,2]<=40.725)
+p = Polygon(test)
+ps = Polygons(list(p),1)
+sps = SpatialPolygons(list(ps),proj4string=crs(NOAM))
+class(sps)
+plot(my_rast)
+plot(sps,add=TRUE)
+data(NOAM)
+my_bool=tryCatch(!is.null(intersect(my_rast,sps)), error=function(e) return(FALSE))
+my_bool
+my_bool
+plot(sps)
+plot(my_rast,add=TRUE)
+intersect(my_rast,sps)
+if(my_bool){
+  print(my_bool)
+  my_rast=crop(my_rast,extent(sps))
+  my_rast<-mask(my_rast,sps,inverse=FALSE)
+}
+
+testing=abs(my_rast-.5)
+plot(testing)
+which.min(testing)
+xyFromCell(my_rast,15289)
+# SHOULD END UP HERE -79.825 30.425
+plot(NOAM,add=TRUE)
+plot(-115.775,33.125,add=TRUE)
+my_rast[17972]
+getValues(my_rast,)
+
+c=c()
+which.min(c)
+
+
+
+
+library(ggplot2)
+library(rnaturalearth)
+library(rnaturalearthdata)
+
+data=testing
+world <- ne_countries(scale = "medium", returnclass = "sf")
+start.p <- cbind(data$results[1,1], data$results[1,2])
+# Generalize this soon
+start.p.df <- as.data.frame(start.p)
+colnames(start.p.df)[1:2] = c("Lon", "Lat")
+run = "ideal"
+start.p.df <- cbind(start.p.df, run)
+end.p <- cbind(data$run_params["dest_x"],data$run_params["dest_y"])
+end.p.df <- as.data.frame(end.p)
+colnames(end.p.df)[1:2] = c("Lon", "Lat")
+end.p.df <- cbind(end.p.df, run)
+ideal.df <- rbind(start.p.df, end.p.df)
+t.energy.res <- data$results
+ggplot(data = world) +
+  geom_sf() +
+  coord_sf(xlim = c(-127, -78), ylim = c(10, 55), expand = FALSE) +
+  geom_path(data = t.energy.res,
+            aes(x=lon, y=lat),
+            color = "red", size = 0.6, alpha = 0.4, lineend = "round") +
+  geom_path(data = ideal.df,
+            aes(x=Lon, y=Lat),
+            color = "black", size = 1.2, alpha = 1, linetype = 2) +
+  ggtitle("mytitle")
+
+library(rgdal)
+NOAM=readOGR(dsn="C:\\Users\\BGOCHANOUR\\Documents\\GitHub\\move-model
+             \\Input_Data",layer="NOAM")
+
+
