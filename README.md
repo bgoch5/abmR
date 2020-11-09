@@ -1,4 +1,4 @@
-abmR: An R Package for Agent-based Model Analysis of Large-scale Movements Across Taxa {.title .toc-ignore}
+abmR: An R Package for Agent-based Model Analysis of Large-scale Movements Across Taxa
 ======================================================================================
 
 #### Benjamin Gochanour, Javi Fernandez Lopez, Andrea Contina
