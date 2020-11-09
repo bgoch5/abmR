@@ -45,8 +45,16 @@ energySIM_helper <- function (sp, env_orig,env_subtract, days, sigma, dest_x, de
   # they move. Thus we added these parameters to species class and had them affect motivation
   # (preliminary).
   # Idea: Bigger birds can fly further/faster
-  mot_x_new=mot_x+(sp@mass-7.5)*.01+(sp@wing-15.5)*.01
-  mot_y_new=mot_y+(sp@mass-7.5)*.01+(sp@wing-15.5)*.01
+  mot_x_new=(mot_x+(sp@p1-sp@p1mean)/sp@p1sd*.1*ifelse(sp@p1sign == "Pos", 1, -1)
+             +(sp@p2-sp@p2mean)/sp@p2sd*.1*ifelse(sp@p2sign == "Pos", 1, -1))
+
+  mot_y_new=(mot_y+(sp@p1-sp@p1mean)/sp@p1sd*.1*ifelse(sp@p1sign == "Pos", 1, -1)
+             +(sp@p2-sp@p2mean)/sp@p2sd*.1*ifelse(sp@p2sign == "Pos", 1, -1))
+
+  if(mot_x_new<0){
+    mot_x_new=.001
+    mot_y_new=.001
+  }
 
   in_box=FALSE
 

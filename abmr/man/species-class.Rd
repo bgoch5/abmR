@@ -15,8 +15,26 @@ A class for the input species
 
 \item{\code{y}}{Species origin latitude value (degrees)}
 
-\item{\code{mass}}{Species mass}
+\item{\code{p1}}{Observed value for morphological parameter 1 (numeric)}
 
-\item{\code{wing}}{Species wing}
+\item{\code{p1mean}}{Population mean for morphological parameter 1 (numeric)}
+
+\item{\code{p1sd}}{Population standard deviation for morphological parameter 1 (numeric)}
+
+\item{\code{p1sign}}{Do higher values of p1 lead to faster or slower movement?
+Specify "Pos" if faster and "Neg" if slower.}
+
+\item{\code{p2}}{Observed value for morphological parameter 2 (numeric)}
+
+\item{\code{p2mean}}{Population mean for morphological parameter 2 (numeric)}
+
+\item{\code{p2sd}}{Population standard deviation for morphological parameter 2 (numeric)}
+
+\item{\code{p2sign}}{Do higher values of p2 lead to faster or slower movement?
+Specify "Pos" if faster and "Neg" if slower.}
 }}
 
+\examples{
+my_species=species(x=-100,y=26,p1=15,p1mean=10,p1sd=2,p1sign="Pos",
+p2=7,p2mean=6,p2sd=1,p2sign="Pos")
+}
