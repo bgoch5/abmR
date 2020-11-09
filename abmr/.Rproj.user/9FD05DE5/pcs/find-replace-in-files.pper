@@ -1,6 +1,6 @@
 {
     "dialog-state": {
-        "query": "abmrr",
+        "query": "abmr",
         "path": "~/GitHub/move-model/abmr",
         "regex": false,
         "caseSensitive": false,
