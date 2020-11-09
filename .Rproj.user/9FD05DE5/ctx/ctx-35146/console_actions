@@ -1,0 +1,32 @@
+{
+    "type": [
+        2,
+        2,
+        3,
+        3,
+        2,
+        0,
+        1,
+        3,
+        3,
+        3,
+        3,
+        3,
+        2
+    ],
+    "data": [
+        "\nR version 4.0.2 (2020-06-22) -- \"Taking Off Again\"\nCopyright (C) 2020 The R Foundation for Statistical Computing\nPlatform: x86_64-w64-mingw32/x64 (64-bit)\n\nR is free software and comes with ABSOLUTELY NO WARRANTY.\nYou are welcome to redistribute it under certain conditions.\nType 'license()' or 'licence()' for distribution details.\n\n  Natural language support but running in an English locale\n\nR is a collaborative project with many contributors.\nType 'contributors()' for more information and\n'citation()' on how to cite R or R packages in publications.\n\n",
+        "Type 'demo()' for some demos, 'help()' for on-line help, or\n'help.start()' for an HTML browser interface to help.\nType 'q()' to quit R.\n\n[Workspace loaded from ~/GitHub/move-model/.RData]\n\n",
+        "Loading required package: raster\n",
+        "Loading required package: sp\n",
+        "\nRestarting R session...\n\n",
+        "> ",
+        "library(abmr)",
+        "\nAttaching package: ‘abmr’\n\n",
+        "The following object is masked _by_ ‘.GlobalEnv’:\n\n    ndvi_raster\n\n",
+        "Warning messages:\n",
+        "1: replacing previous import ‘raster::distance’ by ‘swfscMisc::distance’ when loading ‘abmr’ \n",
+        "2: replacing previous import ‘geosphere::bearing’ by ‘swfscMisc::bearing’ when loading ‘abmr’ \n",
+        "\nRestarting R session...\n\n"
+    ]
+}

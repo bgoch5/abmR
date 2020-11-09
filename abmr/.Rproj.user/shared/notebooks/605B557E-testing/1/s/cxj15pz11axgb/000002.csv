@@ -1,4 +1,0 @@
-"0","data(mtcars)"
-"0","library(lemon)"
-"0","knit_print.data.frame <- lemon_print"
-"0","head(mtcars)"
