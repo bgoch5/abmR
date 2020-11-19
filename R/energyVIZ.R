@@ -41,9 +41,14 @@ colnames(end.p.df)[1:2] = c("Lon", "Lat")
 end.p.df <- cbind(end.p.df, run)
 ideal.df <- rbind(start.p.df, end.p.df)
 t.energy.res <- data$results
+
+my_xlim = c((min(t.energy.res$lon,na.rm=T)-6), (max(t.energy.res$lon,na.rm=T)+6))
+my_ylim = c((min(t.energy.res$lat,na.rm=T)-6), (max(t.energy.res$lat,na.rm=T)+6))
 myplot=ggplot(data = world) +
   geom_sf() +
-  coord_sf(xlim = c(-127, -78), ylim = c(10, 55), expand = FALSE) +
+  coord_sf(xlim =my_xlim,
+           ylim = my_ylim, 
+           expand = FALSE) +
   geom_path(data = t.energy.res,
             aes(x=lon, y=lat),
             color = "red", size = 0.6, alpha = 0.4, lineend = "round") +

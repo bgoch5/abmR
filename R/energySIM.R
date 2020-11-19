@@ -47,23 +47,38 @@ energySIM=function(replicates=200,days=27,env_rast=ndvi_raster, search_radius=37
                 write_results=FALSE,single_rast=FALSE)
 
 {
+  sp=modeled_species
   if(optimum_hi<optimum_lo){
   print("my_opt_hi smaller than my_opt_lo--please check your work")
+  stop()
   }
 
   if(init_energy<0 | init_energy>100)
-  {print("Initial Energy should be such that 0<init_energy<=100")}
+  {print("Initial Energy should be such that 0<init_energy<=100")
+    stop()}
 
   if(nlayers(env_rast)==1 & single_rast==FALSE)
   {print("Single layer environmental raster with single_rast=FALSE specified.
          Please check your raster or change tosingle_rast=TRUE. Exiting
          function")
-    return()}
+    stop()}
 
   if(nlayers(env_rast)!=1 & single_rast==TRUE)
   {print("Multiple layer environmental raster with single_rast=TRUE specified.
     Using only first layer of raster")
   }
+  
+  if (sp@p1>sp@p1mean+3.5*sp@p1sd | sp@p1<sp@p1mean-3.5*sp@p1sd)
+  {cat("Error: Specified value for p1 is greater than 3.5 SDs away from the
+         specified mean, which is extremely unlikely. Consider adjusting p1, p1mean,
+         or p1SD. Function terminated.")
+    stop()}
+  
+  if (sp@p2>sp@p2mean+3.5*sp@p2sd | sp@p2<sp@p2mean-3.5*sp@p2sd)
+  {cat("Error: Specified value for p2 is greater than 3.5 SDs away from the
+         specified mean, which is extremely unlikely. Consider adjusting p2, p2mean,
+         or p2SD. Function terminated.")
+    stop()}
   optimum=(optimum_hi+optimum_lo)/2
   my_env=env_rast-optimum
   long=data.frame(lon=numeric(),lat=numeric(),energy=numeric(),
