@@ -1,22 +1,47 @@
-#' A class for the input species
-#'
+#' A class for the input species. 
+#' 
+#' The units for the morphological parameters are irrelevant as long as
+#' they are consistent within p1 and within p2. Information for each
+#' parameter will be standardized (observed-mean/sd), and will affect
+#' the speed of migration in the direction specified.
+#' 
 #' @slot x Species origin longitude value (degrees)
 #' @slot y Species origin latitude value (degrees)
 #' @slot p1 Observed value for morphological parameter 1 (numeric)
 #' @slot p1mean Population mean for morphological parameter 1 (numeric)
 #' @slot p1sd Population standard deviation for morphological parameter 1 (numeric)
-#' @slot p1sign Do higher values of p1 lead to faster or slower movement?
-#' Specify "Pos" if faster and "Neg" if slower.
+#' @slot p1sign Do higher values of p1 lead to faster or slower movement? Specify "Pos" if faster and "Neg" if slower.
 #' @slot p2 Observed value for morphological parameter 2 (numeric)
 #' @slot p2mean Population mean for morphological parameter 2 (numeric)
 #' @slot p2sd Population standard deviation for morphological parameter 2 (numeric)
-#' @slot p2sign Do higher values of p2 lead to faster or slower movement?
-#' Specify "Pos" if faster and "Neg" if slower.
+#' @slot p2sign Do higher values of p2 lead to faster or slower movement? Specify "Pos" if faster and "Neg" if slower.
+#' 
 #' @examples
+#' First, define the species class
+#' 
+#' species <- setClass("species", slots=c(x="numeric", y="numeric",
+#' p1="numeric", p1mean="numeric", p1sd="numeric",p1sign="character",
+#' p2="numeric", p2mean="numeric", p2sd="numeric",p2sign="character"))
+#' 
+#' Then, create your species object. 
+#' 
+#' Here, for example we have a bird with destination (-100,26)
+#' with observed wing chord length of 15 mm, while the population
+#' mean for this measure is 10 mm with a SD of 
+#' 2 mm (these birds are bigger than average). We declare p1sign="Pos"
+#' because we believe longer wingchord length leads to faster flight.
+#' Here, p2 represents mass, and we want to model heavier than average birds.
+#' We believe that heavier birds will fly faster so specify p2sign="Pos".
+#' If we believed that heavier birds will fly slower, we would 
+#' specify p2sign="Neg" to indicate the inverse relationship.
+#' 
 #' my_species=species(x=-100,y=26,p1=15,p1mean=10,p1sd=2,p1sign="Pos",
 #' p2=7,p2mean=6,p2sd=1,p2sign="Pos")
+#' @export
 
 species <- setClass("species", slots=c(x="numeric", y="numeric",
                                        p1="numeric", p1mean="numeric", p1sd="numeric",p1sign="character",
                                        p2="numeric", p2mean="numeric", p2sd="numeric",p2sign="character"))
+
+
 
