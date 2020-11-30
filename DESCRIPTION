@@ -10,7 +10,9 @@ Imports: raster,
          sp,
          rgdal,
          swfscMisc,
-         geosphere
+         geosphere,
+         rnaturalearth,
+         rnaturalearthdata
 Suggests: jpeg, knitr
 VignetteBuilder: knitr
 Encoding: UTF-8

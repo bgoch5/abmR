@@ -4,7 +4,15 @@
 \alias{energyVIZ}
 \title{Creates a plot of energySIM() results}
 \usage{
-energyVIZ(data, title = "Visualizing EnergySIM results", type = "plot")
+energyVIZ(
+  data,
+  title = "Visualizing EnergySIM results",
+  type = "plot",
+  aspect_ratio = 4/3,
+  label = FALSE,
+  xlim = NULL,
+  ylim = NULL
+)
 }
 \arguments{
 \item{data}{Data to be plotted, this object should be the output from
@@ -12,7 +20,15 @@ energySIM().}
 
 \item{title}{Title for the plot that is output.}
 
-\item{type}{Plot, gradient, or table?}
+\item{type}{String from "plot", "gradient", or "table"?}
+
+\item{aspect_ratio}{Aspect ratio, defaults to 4/3}
+
+\item{label}{Logical, label the origin and specified final destination?}
+
+\item{xlim}{Optionally specify desired x limits as a numeric vector: c(low,hi)}
+
+\item{ylim}{Optionally specify desired y limits as a numeric vector: c(low,hi)}
 }
 \value{
 A plot showing model output compared to a dashed line that represents straight line
@@ -22,5 +38,10 @@ movement from the starting point to the final destination.
 Compares results with straight line path (null model)
 }
 \examples{
-
+testing=energySIM(replicates=2,days=27,env_rast=ndvi_raster, search_radius=375,
+sigma=.4, dest_x=-100, dest_y=20, mot_x=1, mot_y=1, 
+modeled_species=my_species, my_shapefile=NOAM, optimum_lo=.4,optimum_hi=.6,init_energy=100,
+direction="S",write_results=TRUE,single_rast=FALSE)
+energyVIZ(testing,title="Visualizing EnergySIM results",type="plot", aspect_ratio=5/3,
+label=TRUE)
 }
