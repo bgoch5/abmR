@@ -4,11 +4,15 @@ title: 'abmR: An R Package for Agent-based Model Analysis of Large-scale Movemen
 author: "Benjamin Gochanour, Javi Fernandez Lopez, Andrea Contina"
 date: "`r Sys.Date()`"
 output:
-  html_document:
-    toc: true
-    toc_float: true
-    theme: journal
-    keep_rd: true
+    md_document:
+      variant: markdown_github
+ # html_document:
+    #toc: yes
+    #toc_float: yes
+  #  theme: journal
+  #  keep_rd: yes
+  #pdf_document:
+   # toc: yes
 warnings: no
 ---
 
@@ -31,14 +35,13 @@ library(knitr)
 To use `abmR`, you must first install it from Github using `devtools` 
 and load the library:
 ```{r}
-#devtools: install_github("bgoch5/move-model",subdir="abmr")
+#devtools: install_github("bgoch5/abmr")
 library(abmr,quietly=TRUE,warn.conflicts=FALSE)
 ```
 While this package is still in development, it will be updated frequently, so please
 be sure to re-install frequently.
 
-For `abmR` to work, you will need updated versions of the following packages: `geosphere`,
-`ggplot2`, `raster`, `rgdal`, `rnaturalearth`, `rnaturalearthdata`, `sp`, `swfscMisc`, `table1`.
+For `abmR` to work, you will need updated versions of the packages `geosphere`, `ggplot2`, `raster`, `rgdal`, `rnaturalearth`, `rnaturalearthdata`, `sp`, `swfscMisc`, and `table1`.
 
 ## Requirements for Environmental Data Rasters and Species objects
 
@@ -47,29 +50,44 @@ we will discuss here.
 
 a) A shapefile that represents the boundaries for your movements.
 
+Here, we use North America, but whatever region you are interested in modeling
+movement over.
 ```{r}
 library(rgdal) #For reading in shapefile
+setwd("C:\\Users\\BGOCHANOUR\\Documents\\GitHub\\move-model")
 NOAM=readOGR(layer="NOAM",dsn=".")
 plot(NOAM,xlim=c(-130,-60),ylim=c(18,75))
 ```
 
-b) A environmental NDVI raster stack. We are currently working on how to attach an example raster to the package, but you can read yours in like this. Here, we plot just
-the first four layers.
+b) A environmental raster stack
 
-
+We are currently working on how to attach an example raster to the package, but you can read yours in like this. Here, we use NDVI, but
+you may use a raster stack for any environmental variable of interest. Here, we plot
+the first four layers of our stack.
 
 ```{r}
 library(raster)
-ndvi_raster=stack("C:\\Users\\BGOCHANOUR\\Documents\\GitHub\\move-model\\Input_Data\\NDVI_2013.gri")
+ndvi_raster=stack("C:\\Users\\BGOCHANOUR\\Documents\\GitHub\\move-model\\NDVI_2013.gri")
 plot(ndvi_raster[[1:4]])
 ```
 
 c) A species object to describe the species that you will model.
 
+This object contains information on origin longitude (x) and latitude (y) as well
+as two morphological parameters, `p1` and `p2`. Use ?species for more details.
 ```{r}
-species <- setClass("species", slots=c(x="numeric", y="numeric",mass="numeric",
-                                       wing="numeric"))
-ocwa.pop <- species(x=-112.24, y =52.24, mass=15, wing=19)
+# Define the species class
+species <- setClass("species", slots=c(x="numeric", y="numeric",
+p1="numeric", p1mean="numeric", p1sd="numeric",p1sign="character",
+p2="numeric", p2mean="numeric", p2sd="numeric",p2sign="character"))
+
+# Define your species object. Imagine p1 is wing chord and p2 is mass.
+# We are simulating larger than average birds which increases movement speed.
+# For more details, use ?species
+
+my_species=species(x=-90,y=45,p1=15,p1mean=10,p1sd=2,p1sign="Pos",
+                   p2=10,p2mean=8,p2sd=1,p2sign="Pos")
+
 ```
 
 
@@ -80,14 +98,16 @@ include_graphics("OCWA.jpg")
 
 # II. Running Agent-based models
 
+`abmR` has two functions for modeling animal migration: `moveSIM` and `energySIM`.
 Both `moveSIM` and `energySIM` will output two things: (1) a dataframe of results and
-(2) a summary table of input parameters
+(2) a summary table of input parameters. For more details on how each function works,
+please see the documentation by using ?moveSIM or ?energySIM.
 
 ## `moveSIM`
 
 ```{r render=lemon_print}
 moveSIM_results=moveSIM(replicates=1,days=27,env_rast=ndvi_raster, search_radius=375,
-  sigma=.4, dest_x=-100, dest_y=25, mot_x=1, mot_y=1,modeled_species=ocwa.pop,
+  sigma=.4, dest_x=-100, dest_y=25, mot_x=1, mot_y=1,modeled_species=my_species,
   my_shapefile=NOAM,optimum=.5,direction="S",write_results=TRUE,single_rast=FALSE)
 head(moveSIM_results$results,30)
 moveSIM_results$run_params
@@ -99,7 +119,7 @@ moveSIM_results$run_params
 ```{r render=lemon_print}
 energySIM_results=energySIM(replicates=1,days=27,env_rast=ndvi_raster, search_radius=375,
                   sigma=.4, dest_x=-100, dest_y=25, mot_x=1, mot_y=1,
-                  modeled_species=ocwa.pop, my_shapefile=NOAM,
+                  modeled_species=my_species, my_shapefile=NOAM,
                   optimum_lo=.4,optimum_hi=.6,init_energy=100,
                   direction="S",write_results=TRUE,single_rast=FALSE)
 head(energySIM_results$results,30)
@@ -145,4 +165,4 @@ energyVIZ(energySIM_results,title="EnergySIM results",type="table")
 # IV. Getting Help
 
 Need help? Have suggestions to make `abmR` better? If so, please open an issue or
-pull request on Github (https://github.com/bgoch5/move-model/tree/master/abmr), or drop me an email at ben.gochanour\@ou.edu.
+pull request on Github (https://github.com/bgoch5/abmr), or drop me an email at ben.gochanour\@ou.edu.
