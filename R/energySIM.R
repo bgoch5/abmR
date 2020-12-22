@@ -68,17 +68,20 @@ energySIM=function(replicates=200,days=27,env_rast=ndvi_raster, search_radius=37
     Using only first layer of raster")
   }
   
-  if (sp@p1>sp@p1mean+3.5*sp@p1sd | sp@p1<sp@p1mean-3.5*sp@p1sd)
-  {cat("Error: Specified value for p1 is greater than 3.5 SDs away from the
-         specified mean, which is extremely unlikely. Consider adjusting p1, p1mean,
-         or p1SD. Function terminated.")
+  if(length(sp@morphpar1)==1 & length(sp@morphpar2)==1){
+  
+  if (sp@morphpar1>sp@morphpar1mean+3.5*sp@morphpar1sd | sp@morphpar1<sp@morphpar1mean-3.5*sp@morphpar1sd)
+  {cat("Error: Specified value for morphpar1 is greater than 3.5 SDs away from the
+         specified mean, which is extremely unlikely. Consider adjusting morphpar1, morphpar1mean,
+         or morphpar1SD. Function terminated.")
     stop()}
   
-  if (sp@p2>sp@p2mean+3.5*sp@p2sd | sp@p2<sp@p2mean-3.5*sp@p2sd)
-  {cat("Error: Specified value for p2 is greater than 3.5 SDs away from the
-         specified mean, which is extremely unlikely. Consider adjusting p2, p2mean,
-         or p2SD. Function terminated.")
+  if (sp@morphpar2>sp@morphpar2mean+3.5*sp@morphpar2sd | sp@morphpar2<sp@morphpar2mean-3.5*sp@morphpar2sd)
+  {cat("Error: Specified value for morphpar2 is greater than 3.5 SDs away from the
+         specified mean, which is extremely unlikely. Consider adjusting morphpar2, morphpar2mean,
+         or morphpar2SD. Function terminated.")
     stop()}
+  }
   optimum=(optimum_hi+optimum_lo)/2
   my_env=env_rast-optimum
   long=data.frame(lon=numeric(),lat=numeric(),energy=numeric(),

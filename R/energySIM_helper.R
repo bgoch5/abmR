@@ -46,12 +46,17 @@ energySIM_helper <- function (sp, env_orig,env_subtract, days, sigma, dest_x, de
   # (preliminary).
   # Idea: Bigger birds can fly further/faster
   
-  mot_x_new=(mot_x+(sp@p1-sp@p1mean)/sp@p1sd*.1*ifelse(sp@p1sign == "Pos", 1, -1)
-             +(sp@p2-sp@p2mean)/sp@p2sd*.1*ifelse(sp@p2sign == "Pos", 1, -1))
+  if(length(sp@morphpar1==1) & length(sp@morphpar2==1)){
+  mot_x_new=(mot_x+(sp@morphpar1-sp@morphpar1mean)/sp@morphpar1sd*.1*ifelse(sp@morphpar1sign == "Pos", 1, -1)
+             +(sp@morphpar2-sp@morphpar2mean)/sp@morphpar2sd*.1*ifelse(sp@morphpar2sign == "Pos", 1, -1))
 
-  mot_y_new=(mot_y+(sp@p1-sp@p1mean)/sp@p1sd*.1*ifelse(sp@p1sign == "Pos", 1, -1)
-             +(sp@p2-sp@p2mean)/sp@p2sd*.1*ifelse(sp@p2sign == "Pos", 1, -1))
-
+  mot_y_new=(mot_y+(sp@morphpar1-sp@morphpar1mean)/sp@morphpar1sd*.1*ifelse(sp@morphpar1sign == "Pos", 1, -1)
+             +(sp@morphpar2-sp@morphpar2mean)/sp@morphpar2sd*.1*ifelse(sp@morphpar2sign == "Pos", 1, -1))
+  }
+  else{
+    mot_x_new=mot_x
+    mot_y_new=mot_y
+  }
   if(mot_x_new<0){
     mot_x_new=.001
     mot_y_new=.001

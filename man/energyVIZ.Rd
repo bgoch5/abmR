@@ -38,10 +38,14 @@ movement from the starting point to the final destination.
 Compares results with straight line path (null model)
 }
 \examples{
-testing=energySIM(replicates=2,days=27,env_rast=ndvi_raster, search_radius=375,
+1. Run energySIM()
+
+my_result=energySIM(replicates=2,days=27,env_rast=ndvi_raster, search_radius=375,
 sigma=.4, dest_x=-100, dest_y=20, mot_x=1, mot_y=1, 
 modeled_species=my_species, my_shapefile=NOAM, optimum_lo=.4,optimum_hi=.6,init_energy=100,
 direction="S",write_results=TRUE,single_rast=FALSE)
-energyVIZ(testing,title="Visualizing EnergySIM results",type="plot", aspect_ratio=5/3,
+
+2. Run energyVIZ() on your result
+energyVIZ(my_result,title="Visualizing EnergySIM results",type="plot", aspect_ratio=5/3,
 label=TRUE)
 }

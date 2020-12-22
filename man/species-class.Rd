@@ -7,9 +7,21 @@
 \title{A class for the input species.}
 \description{
 The units for the morphological parameters are irrelevant as long as
-they are consistent within p1 and within p2. Information for each
+they are consistent within `morphpar1` and within `morphpar2`. Information for each
 parameter will be standardized (observed-mean/sd), and will affect
-the speed of migration in the direction specified.
+the speed of migration in the direction specified. Slots x and y are only required
+arguments, morphpar1 through morphpar2 sign are optional--leave blank if you'd
+like to run a simple model that doesn't consider morphology.
+}
+\details{
+In example 1 below, we have a bird with destination (-100,26)
+with observed wing chord length of 15 mm, while the population
+mean for this measure is 10 mm with a SD of  2 mm (these birds are bigger than
+average). We declare `morphpar1sign`=`"Pos"` because we believe longer wingchord
+length leads to faster flight. Here, `morphpar2` represents mass, and we want to model
+heavier than average birds. We believe that heavier birds will fly faster so
+specify `morphpar2sign`=`"Pos"`. If we believed that heavier birds will fly slower,
+we would  specify `morphpar2sign`=`"Neg"` to indicate the inverse relationship.
 }
 \section{Slots}{
 
@@ -18,42 +30,58 @@ the speed of migration in the direction specified.
 
 \item{\code{y}}{Species origin latitude value (degrees)}
 
-\item{\code{p1}}{Observed value for morphological parameter 1 (numeric)}
+\item{\code{morphpar1}}{Observed value for morphological parameter 1 (numeric)}
 
-\item{\code{p1mean}}{Population mean for morphological parameter 1 (numeric)}
+\item{\code{morphpar1mean}}{Population mean for morphological parameter 1 (numeric)}
 
-\item{\code{p1sd}}{Population standard deviation for morphological parameter 1 (numeric)}
+\item{\code{morphpar1sd}}{Population standard deviation for morphological parameter 1 (numeric)}
 
-\item{\code{p1sign}}{Do higher values of p1 lead to faster or slower movement? Specify "Pos" if faster and "Neg" if slower.}
+\item{\code{morphpar1sign}}{Do higher values of morphpar1 lead to faster or slower movement? Specify "Pos" if faster and "Neg" if slower.}
 
-\item{\code{p2}}{Observed value for morphological parameter 2 (numeric)}
+\item{\code{morphpar2}}{Observed value for morphological parameter 2 (numeric)}
 
-\item{\code{p2mean}}{Population mean for morphological parameter 2 (numeric)}
+\item{\code{morphpar2mean}}{Population mean for morphological parameter 2 (numeric)}
 
-\item{\code{p2sd}}{Population standard deviation for morphological parameter 2 (numeric)}
+\item{\code{morphpar2sd}}{Population standard deviation for morphological parameter 2 (numeric)}
 
-\item{\code{p2sign}}{Do higher values of p2 lead to faster or slower movement? Specify "Pos" if faster and "Neg" if slower.}
+\item{\code{morphpar2sign}}{Do higher values of morphpar2 lead to faster or slower movement? Specify "Pos" if faster and "Neg" if slower.}
 }}
 
 \examples{
-First, define the species class
+
+First, define the species class.
 
 species <- setClass("species", slots=c(x="numeric", y="numeric",
-p1="numeric", p1mean="numeric", p1sd="numeric",p1sign="character",
-p2="numeric", p2mean="numeric", p2sd="numeric",p2sign="character"))
+morphpar1="numeric", morphpar1mean="numeric", morphpar1sd="numeric",morphpar1sign="character",
+morphpar2="numeric", morphpar2mean="numeric", morphpar2sd="numeric",morphpar2sign="character"))
 
 Then, create your species object. 
 
-Here, for example we have a bird with destination (-100,26)
-with observed wing chord length of 15 mm, while the population
-mean for this measure is 10 mm with a SD of 
-2 mm (these birds are bigger than average). We declare p1sign="Pos"
-because we believe longer wingchord length leads to faster flight.
-Here, p2 represents mass, and we want to model heavier than average birds.
-We believe that heavier birds will fly faster so specify p2sign="Pos".
-If we believed that heavier birds will fly slower, we would 
-specify p2sign="Neg" to indicate the inverse relationship.
+Example 1
+-Destination (-100,26)
+-Morphpar1=Wing Chord: Observed=15 mm, Pop. Mean=10, Pop. SD=2; Pos effect
+on movement speed
+-Morphpar2=Mass; Observed=15 g, Pop. Mean=6, Pop. SD=2; Pos effect on
+movement speed
 
-my_species=species(x=-100,y=26,p1=15,p1mean=10,p1sd=2,p1sign="Pos",
-p2=7,p2mean=6,p2sd=1,p2sign="Pos")
+my_species=species(x=-100,y=26,morphpar1=15,morphpar1mean=10,morphpar1sd=2,
+morphpar1sign="Pos", morphpar2=7,morphpar2mean=6,morphpar2sd=1,morphpar2sign="Pos")
+
+Example 2
+-Destination (-90,40)
+-Morphpar1=Leg length: Observed=1.1 m, Pop. Mean=1, Pop. SD=.2; Pos effect
+on movement speed
+-Morphpar2=Mass; Observed=50 kg, Pop. Mean=55 kg, Pop. SD=10 kg; Neg effect on
+movement speed
+
+my_species2=species(x=-90,y=40,morphpar1=1.1,morphpar1mean=1,morphpar1sd=0.2,
+morphpar1sign="Pos", morphpar2=50,morphpar2mean=55,morphpar2sd=10
+,morphpar2sign="Neg")
+
+Example 3
+-Destination (-90,40)
+-Not interested in modeling effect of morphology
+
+my_species3=species(x=-90,y=40)
+
 }
