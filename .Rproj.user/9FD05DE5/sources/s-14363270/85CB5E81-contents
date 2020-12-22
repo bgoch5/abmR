@@ -1,0 +1,211 @@
+#-------------------------------------------
+# Links to env. data (raster and data frames) 
+# and links to "movement R packages"
+############################################
+
+
+# https://github.com/RRemelgado/rsMove
+
+# https://cran.r-project.org/web/packages/rsMove/vignettes/resource_suitability.html
+
+# https://gedi.umd.edu/data/products/
+
+# https://www.gis-blog.com/r-raster-data-acquisition/
+
+# https://github.com/ropensci/MODISTools
+
+# https://cran.r-project.org/web/packages/MODISTools/vignettes/modistools-vignette.html
+
+# https://github.com/jmsigner/amt
+
+# http://jxsw.de/getSpatialData/
+
+
+# libraries that you might need
+
+require(rsMove)
+require(raster)
+require(rgdal)
+require(ggplot2)
+require(knitr)
+require(kableExtra)
+require(caret)
+require(lattice)
+require(igraph)
+require(randomForest)
+require(e1071)
+require(randomForest)
+require(rsMove)
+library(MODISTools)
+
+
+
+
+#````````````````````````````````````````````````````````````````````````
+#  AGENT BASED MODEL - STARTUP CODE
+
+#########################################################################
+#........................................................................
+# https://www.r-bloggers.com/simulating-animal-movements-and-habitat-use/
+#........................................................................
+######################################################################### 
+
+#------------------------------------------------------------
+
+# TO DO LIST
+# 
+# Load a set of NDVI raster for North America divided by weeks
+#
+# Set migratory population 1 coordinates: LAT = 63.25  LON = -139.41  (northern migrants)
+#
+# Set migratory population 2 coordinates: LAT = 50.42  LON = -83.52   (southern migrants)
+#
+# Set final destination coordinates for both populations: LAT = 19.15  LON = -99.11
+#
+# A very crude estimate of migration biological parameters for warblers is that they can fly
+# on average 200-300 miles a day and they leave the breeding grounds around late-August
+# and arrive in central Mexico by mid-September, accomplishing migration in about 2-3 weeks.
+# We can start modeling the first runs of the simulations by using these parameters.
+#
+# The end points (lat/lon) of each simulation run can be used as the start points of the next simulation
+# run, so we can observe movement progression north-to-south. It is important to leave some room
+# for random movements to allow the agents to fall into grid cells with nice NDVI or compatible BIOCLIM values
+#
+# eBird data and/or niche modeling outputs can provide evidence for "optimal" habitat values
+# which we will need to know when setting up the "species" arguments (e.g. species(x= 50, y =50, opt= 90))
+# NOTE: you could also edit the "go" function and add more arguments to the species characteristics
+# (e.g. species(x= 50, y =50, opt1= 90, opt2= 0.53, opt3= 42.3)) to model more complex and realistic scenarios
+# where opt1 is NDVI, opt2 is temp, opt3 is precip, etc.
+
+# It might be okay to use 100 as the number of agents (replicates) to test our simulations for the first time.
+# However, this is where we can get fancy and start with 10000 agents, for example, and eliminate those
+# that do not fall into suitable grid cells, so we can model mortality and evolution of different 
+# migration strategies. You will see that, in particular for those birds that migrate from the 
+# Great Lakes area, many agents will end up inside lakes, cities, etc. It won't make any sense
+# biologically to allow those agents to continue migration because they would be dead in the real world
+# so starting with a >100 number of replicates (points on the map) might be a good idea because 
+# that number will be reduced by the time they arrive in Mexico.
+#
+#
+
+
+library(raster)  
+library(dismo)  
+
+
+
+species <- setClass("species", slots=c(x="numeric", y="numeric", opt="numeric"))
+str(species)
+
+
+# Now, we will load the "go" function (I do not have a name for it yet). 
+# It require a species (sp), a raster layer with any environmental variable (env), 
+# number of iterations (n), a Brownian motion parameter (that is, how random is the movement of your species), 
+# a geographical optimum (the wanted destination of your species theta_x and theta_y), 
+# and the attraction strength or "interest" of the species to get this position (alpha_x and alpha_y). 
+# The syntaxis should be something like this:
+
+# path <- go (sp, env, n, sigma, theta_x, alpha_x, theta_y, alpha_y)
+
+go <- function (sp, env, n, sigma, theta_x, alpha_x, theta_y, alpha_y) {  
+  track <- data.frame()  
+  track[1,1] <- sp@x  # 1st row 1st col is input x coord
+  track[1,2] <- sp@y  # 1st row 2nd col is input y coord
+  for (step in 2:n) { # Starts at 2 because there's an n-1  
+    neig <- adjacent(env,   
+                     cellFromXY(env, matrix(c(track[step-1,1],  
+                                              track[step-1,2]), 1,2)),   
+                     directions=8, pairs=FALSE )  
+    # Get cell numbers for adjacent cells
+    options <- data.frame() # Create blank dataframe
+    for (i in 1:length(neig)){  
+      options[i,1]<-neig[i]   # ith row first column is each neighboring cell
+      options[i,2]<- sp@opt - env[neig[i]] # 2nd col is difference of environmental
+      # value and optimal
+    }  
+    option <- c(options[abs(na.omit(options$V2)) == min(abs(na.omit(options$V2))), 1 ],   
+                options[abs(na.omit(options$V2)) == min(abs(na.omit(options$V2))), 1 ])  
+    # Getting cell numbers off those with minimum value
+    new_cell <- sample(option,1)  
+    new_coords <- xyFromCell(env,new_cell)  
+    lon_candidate<--9999  
+    lat_candidate<--9999  
+    
+    while ( is.na(extract(env, matrix(c(lon_candidate,lat_candidate),1,2)))) {  
+      lon_candidate <- new_coords[1]+ (sigma * rnorm(1)) + (alpha_x * ( theta_x - new_coords[1]))  
+      lat_candidate <- new_coords[2]+ (sigma * rnorm(1)) + (alpha_y * ( theta_y - new_coords[2]))  
+    }  
+    track[step,1] <- lon_candidate  
+    track[step,2] <- lat_candidate  
+  }  
+  return(track)  
+}  
+
+# It require a species (sp), a raster layer with any environmental variable (env), 
+# number of iterations (n), a Brownian motion parameter (that is, how random is the movement of your species), 
+# a geographical optimum (the wanted destination of your species theta_x and theta_y), 
+# and the attraction strength or "interest" of the species to get this position (alpha_x and alpha_y). 
+# The syntaxis should be something like this:
+
+# path_simul <- go (sp, env, n, sigma, theta_x, alpha_x, theta_y, alpha_y)
+
+#------------------------------------------------------------
+# n isn't number of replicates it's the same bird progressing though time
+# so n=5 could be 5 days or something
+
+# STAR Blended Vegitation Health noise-removed NDVI data
+testing=raster("VHP.G04.C07.NL.P2003030.SM.SMN.tif")
+e=extent(-160,-40,10,90)
+testing2=crop(testing,e)
+values(testing2)[values(testing2) < 0] = NA
+myrast=testing2
+
+
+# Plot raster
+plot(myrast)
+# Plot initial points and final destinations
+points(-112.24,52.24, cex=1,pch=16,col="black")
+points(-106.61,34.23, pch=16,col="black")
+points(-99.11,19.15, cex=1,pch=16,col="black")
+
+# Something like this would keep them going a reasonable dist per day
+N_pop <- species(x=-112.24, y =52.24, opt= .5)  
+#                               iterations  RAND     lon     iL    lat   iL
+bird_simul_N <- go (N_pop,myrast, 30,   1.5,     -99.11,     0.10,   19.15,  0.10)
+
+points(bird_simul_N, cex=0.6, pch = 16, col="red")  
+
+
+
+S_pop <- species(x=-106.61,y=34.23,opt=.5) # just suppose this population prefers
+# slightly more vegetation based on where it winters
+
+bird_simul_S <- go (S_pop,myrast, 30,   1.5,     -99.11,     0.10,   19.15,  0.10)
+points(bird_simul_S, cex=0.6, pch = 16, col="blue") 
+
+
+################### Working on Multiple Replicates ######################
+start=proc.time()
+testing=array(rep(0,1000*30*2),c(1000,30,2))
+for(i in 1:1000){
+  testing[i,,]=data.matrix(go(S_pop,myrast, 30,1.5,-99.11,0.10,19.15,0.10))
+}
+proc.time()-start
+
+print("Size in MB")
+object.size(testing)/1000000
+
+# Easy way to aggregate across our dataframe
+aggregate=apply(testing, c(2,3), mean)
+
+
+#########################################################
+
+plot(density(extract(myrast, bird_simul_N)),lwd=3, col="red", xlim=c(0,1),   
+    ylim=c(0,max(c(density(extract(myrast, bird_simul_N))$y,  
+                   density(extract(myrast, bird_simul_S))$y))),  
+    main="locations density distribution", xlab="NVDI")  
+lines(density(extract(myrast, bird_simul_S)),lwd=3, col="green")  
+legend("topleft", legend=c("N","S"), col=c("red","green"),  
+       lty=c(1,1), lwd=c(3,3))  
+

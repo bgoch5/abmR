@@ -12,9 +12,7 @@ Imports: raster,
          swfscMisc,
          geosphere,
          rnaturalearth,
-         rnaturalearthdata,
-         purrr,
-         googledrive
+         rnaturalearthdata
 Suggests: jpeg, knitr
 VignetteBuilder: knitr
 Encoding: UTF-8

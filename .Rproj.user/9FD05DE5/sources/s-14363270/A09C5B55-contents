@@ -1,0 +1,333 @@
+#-------------------------------------------
+# Links to env. data (raster and data frames) 
+# and links to "movement R packages"
+############################################
+
+
+# https://github.com/RRemelgado/rsMove
+
+# https://cran.r-project.org/web/packages/rsMove/vignettes/resource_suitability.html
+
+# https://gedi.umd.edu/data/products/
+
+# https://www.gis-blog.com/r-raster-data-acquisition/
+
+# https://github.com/ropensci/MODISTools
+
+# https://cran.r-project.org/web/packages/MODISTools/vignettes/modistools-vignette.html
+
+# https://github.com/jmsigner/amt
+
+# http://jxsw.de/getSpatialData/
+
+
+# libraries that you might need
+
+require(rsMove)
+require(raster)
+require(rgdal)
+require(ggplot2)
+require(knitr)
+require(kableExtra)
+require(caret)
+require(lattice)
+require(igraph)
+require(randomForest)
+require(e1071)
+require(randomForest)
+require(rsMove)
+
+install.packages("MODISTools")
+library(MODISTools)
+mt_products()
+
+
+
+subset <- mt_subset(product = "MYD13Q1",
+                    lat = 40,
+                    lon = -110,
+                    band = "LST_Day_1km",
+                    start = "2004-01-01",
+                    end = "2004-02-01",
+                    km_lr = 1,
+                    km_ab = 1,
+                    internal = TRUE,
+                    progress = FALSE)
+
+#````````````````````````````````````````````````````````````````````````
+#  AGENT BASED MODEL - STARTUP CODE
+
+#########################################################################
+#...https://www.r-bloggers.com/simulating-animal-movements-and-habitat-use/.............................................
+# 
+#........................................................................
+######################################################################### 
+
+#------------------------------------------------------------
+
+# TO DO LIST
+# 
+# Load a set of NDVI raster for North America divided by weeks
+#
+# Set migratory population 1 coordinates: LAT = 63.25  LON = -139.41  (northern migrants)
+#
+# Set migratory population 2 coordinates: LAT = 50.42  LON = -83.52   (southern migrants)
+#
+# Set final destination coordinates for both populations: LAT = 19.15  LON = -99.11
+#
+# A very crude estimate of migration biological parameters for warblers is that they can fly
+# on average 200-300 miles a day and they leave the breeding grounds around late July or mid-August
+# and arrive in central Mexico by mid-September, accomplishing migration in about 2-3 weeks.
+# We can start modeling the first runs of the simulations by using these parameters.
+#
+# The end points (lat/lon) of each simulation run can be used as the start points of the next simulation
+# run, so we can observe movement progression north-to-south. It is important to leave some room
+# for random movements to allow the agents to fall into grid cells with nice NDVI or compatible BIOCLIM values
+#
+# eBird data and/or niche modeling outputs can provide evidence for "optimal" habitat values
+# which we will need to know when setting up the "species" arguments (e.g. species(x= 50, y =50, opt= 90))
+# NOTE: you could also edit the "go" function and add more arguments to the species characteristics
+# (e.g. species(x= 50, y =50, opt1= 90, opt2= 0.53, opt3= 42.3)) to model more complex and realistic scenarios
+# where opt1 is NDVI, opt2 is temp, opt3 is precip, etc.
+
+# It might be okay to use 100 as the number of agents (replicates) to test our simulations for the first time.
+# However, this is where we can get fancy and start with 10000 agents, for example, and eliminate those
+# that do not fall into suitable grid cells, so we can model mortality and evolution of different 
+# migration strategies. You will see that, in particular for those birds that migrate from the 
+# Great Lakes area, many agents will end up inside lakes, cities, etc. It won't make any sense
+# biologically to allow those agents to continue migration because they would be dead in the real world
+# so starting with a >100 number of replicates (points on the map) might be a good idea because 
+# that number will be reduced by the time they arrive in Mexico.
+#
+#
+
+
+plot(testing2)
+ncell(testing2)
+# Lots of it is missing
+
+summary(testing2)
+plot(testing2)
+
+plot(testing2)
+plot(testing)
+library(raster)  
+library(dismo)  
+
+tc <- raster(nrows=100, ncols=100, xmn=0, xmx=100, ymn=0,ymx=100)  
+tc[] <- runif(10000, -80, 180)  
+tc <- focal(tc, w=matrix(1, 5, 5), mean)  
+tc <- focal(tc, w=matrix(1, 5, 5), mean)  
+plot(tc) 
+
+species <- setClass("species", slots=c(x="numeric", y="numeric", opt="numeric"))
+str(species)
+
+Red_deer <- species(x= 50, y =50, opt= 90)  
+Egyptian_mongoose <- species(x= 50, y =50, opt= 30)
+
+# Now, we will load the "go" function (I do not have a name for it yet). 
+# It require a species (sp), a raster layer with any environmental variable (env), 
+# number of iterations (n), a Brownian motion parameter (that is, how random is the movement of your species), 
+# a geographical optimum (the wanted destination of your species theta_x and theta_y), 
+# and the attraction strength or "interest" of the species to get this position (alpha_x and alpha_y). 
+# The syntaxis should be something like this:
+
+# path <- go (sp, env, n, sigma, theta_x, alpha_x, theta_y, alpha_y)
+?cellFromXY
+go <- function (sp, env, n, sigma, theta_x, alpha_x, theta_y, alpha_y) {  
+  track <- data.frame()  
+  track[1,1] <- sp@x  # 1st row 1st col is input x coord
+  track[1,2] <- sp@y  # 1st row 2nd col is input y coord
+  for (step in 2:n) { # Starts at 2 because there's an n-1  
+    neig <- adjacent(env,   
+                     cellFromXY(env, matrix(c(track[step-1,1],  
+                                              track[step-1,2]), 1,2)),   
+                     directions=8, pairs=FALSE )  
+    # Get cell numbers for adjacent cells
+    options <- data.frame() # Create blank dataframe
+    for (i in 1:length(neig)){  
+      options[i,1]<-neig[i]   # ith row first column is each neighboring cell
+      options[i,2]<- sp@opt - env[neig[i]] # 2nd col is difference of environmental
+      # value and optimal
+    }  
+    option <- c(options[abs(na.omit(options$V2)) == min(abs(na.omit(options$V2))), 1 ],   
+                options[abs(na.omit(options$V2)) == min(abs(na.omit(options$V2))), 1 ])  
+    # Getting cell numbers off those with minimum value
+    new_cell <- sample(option,1)  
+    new_coords <- xyFromCell(env,new_cell)  
+    lon_candidate<--9999  
+    lat_candidate<--9999  
+    
+    while (is.na(extract(env, matrix(c(lon_candidate,lat_candidate),1,2)))) {  
+      lon_candidate <- new_coords[1]+ (sigma * rnorm(1)) + (alpha_x * ( theta_x - new_coords[1]))  
+      lat_candidate <- new_coords[2]+ (sigma * rnorm(1)) + (alpha_y * ( theta_y - new_coords[2]))  
+      # alpha is interest and theta is optimal destination
+      # so higher interest and greater distances mean move farther, as motivation gets smaller
+      # move less far
+      # Sigma (randomness parameter) just effects multiplier we use on our rnorm error generator
+      # We just do this until we get an actual environmental value for our lon and lat and not an na
+    }  
+    track[step,1] <- lon_candidate  
+    track[step,2] <- lat_candidate  
+  }  
+  return(track)  
+}  
+
+
+
+# It require a species (sp), a raster layer with any environmental variable (env), 
+# number of iterations (n), a Brownian motion parameter (that is, how random is the movement of your species), 
+# a geographical optimum (the wanted destination of your species theta_x and theta_y), 
+# and the attraction strength or "interest" of the species to get this position (alpha_x and alpha_y). 
+# The syntaxis should be something like this:
+
+# path_simul <- go (sp, env, n, sigma, theta_x, alpha_x, theta_y, alpha_y)
+
+Red_deer <- species(x= 80, y =80, opt= 90)  
+#                                            rep  RAND     lon     iL    lat   iL
+deer_simul <- go (Red_deer,              tc, 5,   3.5,     60,     0.01,   60,  0.01)  
+mongoose_simul <- go (Egyptian_mongoose, tc, 100,   10,    20,     0.3,   90,  0.3)
+plot(tc)  
+#lines(deer_simul, lwd=1.5, col="red")  
+points(deer_simul, cex=0.8, pch = 16, col="red")  
+#lines(mongoose_simul, lwd=1.5, col="blue")  
+#points(mongoose_simul, cex=0.3, pch = 16, col="blue")  
+#legend("topleft", legend=c("d","m"), col=c("red","blue"),  
+#       lty=c(1,1), lwd=c(2,2))
+
+# To test if each species is actually "searching" their environmental optimum, 
+# we can extract the environmental values by step for each species and plot their 
+# density distributions.
+
+plot(density(extract(tc, deer_simul)),lwd=3, col="red", xlim=c(20,80),   
+     ylim=c(0,max(c(density(extract(tc, deer_simul))$y,  
+                    density(extract(tc, mongoose_simul))$y))),  
+     main="locations density distribution", xlab="tree cover")  
+lines(density(extract(tc, mongoose_simul)),lwd=3, col="blue")  
+legend("topleft", legend=c("d","m"), col=c("red","blue"),  
+       lty=c(1,1), lwd=c(3,3))  
+
+plot(tc)
+#  So, we can see that the deer is actually using patches with a higher value 
+# of tree cover than the mongoose. our simulation worked! 
+
+#------------------------------------------------------------
+# n isn't number of replicates it's the same bird progressing though time
+# so n=5 could be 5 days or something
+
+# STAR Blended Vegitation Health noise-removed NDVI data
+testing=raster("VHP.G04.C07.NL.P2003030.SM.SMN.tif")
+e=extent(-160,-40,10,90)
+testing2=crop(testing,e)
+values(testing2)[values(testing2) < 0] = NA
+myrast=testing2
+
+
+# Plot raster
+plot(myrast)
+# Plot initial points and final destinations
+points(-139.41,63.25, cex=1,pch=16,col="blue")
+points(-99.11,19.15, pch=16,col="blue")
+points(-83.52,50.42, cex=1,pch=16,col="blue")
+
+# Something like this would keep them going a reasonable dist per day
+N_pop <- species(x=-139.41, y =63.25, opt= .5)  
+#                               iterations  RAND     lon     iL    lat   iL
+bird_simul_N <- go (N_pop,myrast, 150,   1.5,     -99.11,     0.025,   19.15,  0.025)
+
+points(bird_simul_N, cex=0.6, pch = 16, col="red")  
+
+
+
+S_pop <- species(x=-83.52,y=50.42,opt=.55) # just suppose this population prefers
+# slightly more vegetation based on where it winters
+
+bird_simul_S <- go (S_pop,myrast, 80,   1.5,     -99.11,     0.025,   19.15,  0.025)
+points(bird_simul_S, cex=0.6, pch = 16, col="green") 
+
+
+plot(density(extract(myrast, bird_simul_N)),lwd=3, col="red", xlim=c(0,1),   
+    ylim=c(0,max(c(density(extract(myrast, bird_simul_N))$y,  
+                   density(extract(myrast, bird_simul_S))$y))),  
+    main="locations density distribution", xlab="NVDI")  
+lines(density(extract(myrast, bird_simul_S)),lwd=3, col="green")  
+legend("topleft", legend=c("N","S"), col=c("red","green"),  
+       lty=c(1,1), lwd=c(3,3))  
+
+
+
+
+########## Understanding Code ############################3
+sp=N_pop
+env=testing
+n=10
+sigma=1.5
+alpha_x=.15
+alpha_y=.15
+theta_x=-99.11
+theta_y=19.15
+
+track <- data.frame()  
+track[1,1] <- sp@x  # 1st row 1st col is input x coord
+track[1,2] <- sp@y  # 1st row 2nd col is input y coord
+step=2 # We'll just do this once
+neig <- adjacent(env,   
+                   cellFromXY(env, matrix(c(track[step-1,1],  
+                                            track[step-1,2]), 1,2)),   
+                   directions=8, pairs=FALSE )  
+# Get cell numbers for cells adjacent (8)
+  # Get cell numbers for adjacent cells
+  options <- data.frame() # Create blank dataframe
+  for (i in 1:length(neig)){  
+    options[i,1]<-neig[i]   # ith row first column is each neighboring cell
+    options[i,2]<- sp@opt - env[neig[i]] # 2nd col is difference of environmental
+    # value and optimal
+  }  
+  
+options # For these cell numbers we compute difference between the optimal value and their
+# value
+
+  option <- c(options[abs(na.omit(options$V2)) == min(abs(na.omit(options$V2))), 1 ],   
+              options[abs(na.omit(options$V2)) == min(abs(na.omit(options$V2))), 1 ]) 
+  
+  # This gives us cell number of cell with closest env value to optimal, repeated twice,
+  # why repeated twice
+  
+  new_cell <- sample(option,1) # not sure what sample does since it stays same
+  new_coords <- xyFromCell(env,new_cell) # get coordinates from cell number
+  track
+  new_coords
+  # so the new coords are approximately next to the old coords, very similar
+  lon_candidate<--9999  
+  lat_candidate<--9999 
+  
+  # then we take the new coordinates, add some randomness and add
+  # a  interest * (goal y - suggested new coordinates y)
+  # so if goal y is much smaller we get
+  # interest * big negative number to move lat big in negative direction
+  # So how does optimum value even work given that this seems to be taking over
+  
+  while (is.na(extract(env, matrix(c(lon_candidate,lat_candidate),1,2)))) {  
+    lon_candidate <- new_coords[1]+ (sigma * rnorm(1)) + (alpha_x * ( theta_x - new_coords[1]))  
+    lat_candidate <- new_coords[2]+ (sigma * rnorm(1)) + (alpha_y * ( theta_y - new_coords[2]))
+    print(lon_candidate)
+    print(lat_candidate)
+  }
+    # alpha is interest and theta is optimal destination
+    # so higher interest and greater distances mean move farther, as motivation gets smaller
+    # move less far
+    # Sigma (randomness parameter) just effects multiplier we use on our rnorm error generator
+    # We just do this until we get an actual environmental value for our lon and lat and not an na
+  track[step,1] <- lon_candidate  
+  track[step,2] <- lat_candidate  
+  
+
+
+
+
+
+
+
+
+

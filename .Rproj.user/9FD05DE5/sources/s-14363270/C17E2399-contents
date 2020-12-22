@@ -1,0 +1,41 @@
+library(abmr)
+library(raster)
+library(raster)
+ndvi_raster=stack("C:\\Users\\BGOCHANOUR\\Documents\\GitHub\\move-model\\NDVI_2013.gri")
+
+library(rgdal)
+NOAM=readOGR(dsn="C:\\Users\\BGOCHANOUR\\Documents\\GitHub\\move-model",layer="NOAM")
+
+species <- setClass("species", slots=c(x="numeric", y="numeric", morphpar1="numeric", morphpar1mean="numeric",
+                                       morphpar1sd="numeric",morphpar1sign="character",
+                                       morphpar2="numeric", 
+                                       morphpar2mean="numeric", 
+                                       morphpar2sd="numeric",morphpar2sign="character"))
+
+my_species=species(x=-100,y=26,morphpar1=15,morphpar1mean=10,morphpar1sd=2,
+morphpar1sign="Pos", morphpar2=7,morphpar2mean=6,morphpar2sd=1,morphpar2sign="Pos")
+
+my_species2=species(x=-80,y=40)
+my_species@morphpar1
+length(my_species@morphpar1)
+is.null(my_species2@morphpar1)
+testing=energySIM(replicates=2,days=27,env_rast=ndvi_raster, search_radius=375,
+                  sigma=.4, dest_x=-100, dest_y=20, mot_x=1, mot_y=1,
+                  modeled_species=my_species2, my_shapefile=NOAM,
+                  optimum_lo=.4,optimum_hi=.6,init_energy=100,
+                  direction="S",write_results=TRUE,single_rast=FALSE)
+
+
+energyVIZ(testing,title="Visualizing EnergySIM results",type="plot",aspect_ratio=4/3,
+          label=TRUE)
+
+species
+testing2=moveSIM(replicates=1,days=27,env_rast=ndvi_raster, search_radius=375,
+  sigma=.4, dest_x=-100, dest_y=25, mot_x=1, mot_y=1,modeled_species=my_species2,
+  my_shapefile=NOAM,optimum=.5,direction="S",write_results=TRUE,single_rast=FALSE)
+
+
+my_wd=getwd()
+help(species,help_type="pdf")
+
+ndvi_raster=stack("C:\\Users\\BGOCHANOUR\\Documents\\GitHub\\move-model\\NDVI_2013.gri")

@@ -1,0 +1,24 @@
+{
+    "id": "050AD3EE",
+    "path": "~/GitHub/move-model/R/energySIM_helper.R",
+    "project_path": "R/energySIM_helper.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1607468295374.0,
+    "source_on_save": false,
+    "relative_order": 25,
+    "properties": {
+        "cursorPosition": "56,19",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1608663969,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1608663969351,
+    "read_only": false,
+    "read_only_alternatives": []
+}

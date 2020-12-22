@@ -1,0 +1,7 @@
+library(devtools)
+install_github("bgoch5/abmr")
+library(abmr)
+?species
+
+my_species=species(x=-100,y=26,p1=15,p1mean=10,p1sd=2,p1sign="Pos",
+                   p2=7,p2mean=6,p2sd=1,p2sign="Pos")
