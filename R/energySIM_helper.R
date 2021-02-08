@@ -98,9 +98,12 @@ energySIM_helper <- function (sp, env_orig,env_subtract, days, sigma, dest_x, de
     ps = Polygons(list(p),1)
     sps = SpatialPolygons(list(ps),proj4string=crs(NOAM))
     my_bool=tryCatch(!is.null(intersect(curr_env_subtract,sps)), error=function(e) return(FALSE))
+    print(my_bool)
     if(my_bool){
       curr_env_subtract=crop(curr_env_subtract,extent(sps))
       curr_env_subtract<-mask(curr_env_subtract,sps,inverse=FALSE)
+      curr_env_orig=crop(curr_env_orig,extent(sps))
+      curr_env_orig<-mask(curr_env_orig,sps,inverse=FALSE)
     }
     pt=SpatialPoints(cbind(dest_x,dest_y))
     proj4string(pt)=proj4string(NOAM)
@@ -206,15 +209,12 @@ energySIM_helper <- function (sp, env_orig,env_subtract, days, sigma, dest_x, de
     # -.1 from low
 
     # Have to use raw value for this to work, this raster I'm using is diff which won't work
-
-
     dist_from_opt=curr_env_orig[new_cell]-optimum
     dist_from_opt_hi=curr_env_orig[new_cell]-optimum_hi
     dist_from_opt_lo=curr_env_orig[new_cell]-optimum_lo
     opts=list(dist_from_opt,dist_from_opt_hi,dist_from_opt_lo)
     abs_opts=list(abs(dist_from_opt),abs(dist_from_opt_hi),abs(dist_from_opt_lo))
     my_min=which.min(abs_opts)
-
     #if(length(my_min==0)){
     #my_min=4 #Avoiding problems like below
     #}
