@@ -38,7 +38,7 @@
 #' label=TRUE)
 #' @export
 
-energyVIZ=function(data,title="Visualizing EnergySIM results",type="plot",
+energyVIZ=function(data,title="EnergySIM results",type="plot",
                    aspect_ratio=4/3, label=FALSE,
                    xlim=NULL,ylim=NULL)
 {

@@ -2,13 +2,35 @@
 % Please edit documentation in R/get_ex_data.R
 \name{get_ex_data}
 \alias{get_ex_data}
-\title{Imports example data}
+\title{Imports data that is used in examples in vignette and documentation.}
+\source{
+Vermote, Eric; NOAA CDR Program. (2019): NOAA Climate Data Record (CDR)
+of AVHRR Normalized Difference Vegetation Index (NDVI), Version 5.
+NOAA National Centers for Environmental Information.
+https://doi.org/10.7289/V5ZG6QH9. Accessed 12/26/2020.
+
+"BirdLife International and Handbook of the Birds of the World (2016)
+ Bird species distribution maps of the world".
+ Version 6.0. Available at http://datazone.birdlife.org/species/requestdis.
+}
 \usage{
 get_ex_data()
 }
 \description{
-Imports example data
+Warning, this function will download to your hard drive
+(to a location specified by your current working directory) and read into R the below
+files, totaling approximately 620 MB. Please do not use attempt to use if you have insufficient hard drive space
+or Random Access Memory (RAM). Objects to be downloaded/read in are listed under
+"details".
 }
-\examples{
-get_ex_data()
+\details{
+\itemize{
+ \item{NDVI_2013:}{  A raster stack containing daily NDVI data for North America,
+on a .05 x .05 degree grid. Data runs from 8/26/2013-9/21/2013.}
+ \item{NDVI_2013_composite:}{  Single layer raster formed by taking mean of the above}
+ \item{NDVI_2013_Europe:}{  A raster stack containing daily NDVI data for Europe,
+on a .05 x .05 degree grid. Data runs from 8/26/2013-9/21/2013.}
+ \item{NDVI_2013_Europe_composite:}{  Single layer raster formed by taking mean of the above}
+ \item{NOAM:}{  A shapefile for North America}
+ }
 }

@@ -6,7 +6,7 @@
 \usage{
 energyVIZ(
   data,
-  title = "Visualizing EnergySIM results",
+  title = "EnergySIM results",
   type = "plot",
   aspect_ratio = 4/3,
   label = FALSE,

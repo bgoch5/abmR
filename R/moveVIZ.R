@@ -33,7 +33,7 @@
 #'
 #' @export
 
-moveVIZ=function(data,title="Visualizing MoveSIM results")
+moveVIZ=function(data,title="MoveSIM results")
 {
     world <- ne_countries(scale = "medium", returnclass = "sf")
     start.p <- cbind(data$results[1,1], data$results[1,2])

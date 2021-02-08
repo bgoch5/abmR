@@ -49,7 +49,7 @@ energySIM=function(replicates=200,days=27,env_rast=ndvi_raster, search_radius=37
 {
   sp=modeled_species
   if(optimum_hi<optimum_lo){
-  print("my_opt_hi smaller than my_opt_lo--please check your work")
+  print("opt_hi smaller than opt_lo--please check your work")
   stop()
   }
 
@@ -59,7 +59,7 @@ energySIM=function(replicates=200,days=27,env_rast=ndvi_raster, search_radius=37
 
   if(nlayers(env_rast)==1 & single_rast==FALSE)
   {print("Single layer environmental raster with single_rast=FALSE specified.
-         Please check your raster or change tosingle_rast=TRUE. Exiting
+         Please check your raster or change to single_rast=TRUE. Exiting
          function")
     stop()}
 

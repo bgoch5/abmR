@@ -69,12 +69,10 @@ energySIM_helper <- function (sp, env_orig,env_subtract, days, sigma, dest_x, de
   for (step in 2:days) {
 
     if(single_rast){
-    my_rast=env_orig[[1]]
     curr_env_subtract=env_subtract[[1]]
     curr_env_orig=env_orig[[1]]
     }
     else{
-    my_rast=env_orig[[step]]
     curr_env_subtract=env_subtract[[step]]
     curr_env_orig=env_orig[[step]]
     }
@@ -99,10 +97,10 @@ energySIM_helper <- function (sp, env_orig,env_subtract, days, sigma, dest_x, de
     p = Polygon(test)
     ps = Polygons(list(p),1)
     sps = SpatialPolygons(list(ps),proj4string=crs(NOAM))
-    my_bool=tryCatch(!is.null(intersect(my_rast,sps)), error=function(e) return(FALSE))
+    my_bool=tryCatch(!is.null(intersect(curr_env_subtract,sps)), error=function(e) return(FALSE))
     if(my_bool){
-      my_rast=crop(my_rast,extent(sps))
-      my_rast<-mask(my_rast,sps,inverse=FALSE)
+      curr_env_subtract=crop(curr_env_subtract,extent(sps))
+      curr_env_subtract<-mask(curr_env_subtract,sps,inverse=FALSE)
     }
     pt=SpatialPoints(cbind(dest_x,dest_y))
     proj4string(pt)=proj4string(NOAM)
@@ -120,15 +118,15 @@ energySIM_helper <- function (sp, env_orig,env_subtract, days, sigma, dest_x, de
     else{
       # If it doesn't fall within, then just take environmental cell
       # within search area that has minimal distance from optimal value
-      cell_num=which.min(abs(my_rast))
-      if (length(which.min(abs(my_rast)))==0){ #Ignore--edge case error handling
+      cell_num=which.min(abs(curr_env_subtract)) # had my_rast here, need curr_env_subtract
+      if (length(which.min(abs(curr_env_subtract)))==0){ #Ignore--edge case error handling
         print("Edge Case 1")
         track[step:days,1]=NA
         track[step:days,2]=NA
         break
       }
       cell_num=sample(cell_num,1) # There may be ties so we need to sample 1
-      best_coordinates=xyFromCell(my_rast,cell_num)
+      best_coordinates=xyFromCell(curr_env_subtract,cell_num)
     }
     target_x=best_coordinates[1]
     target_y=best_coordinates[2]

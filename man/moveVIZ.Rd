@@ -4,7 +4,7 @@
 \alias{moveVIZ}
 \title{Creates a plot of energySIM() results}
 \usage{
-moveVIZ(data, title = "Visualizing MoveSIM results")
+moveVIZ(data, title = "MoveSIM results")
 }
 \arguments{
 \item{data}{Data to be plotted, this object should be the output from
