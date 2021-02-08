@@ -98,7 +98,6 @@ energySIM_helper <- function (sp, env_orig,env_subtract, days, sigma, dest_x, de
     ps = Polygons(list(p),1)
     sps = SpatialPolygons(list(ps),proj4string=crs(NOAM))
     my_bool=tryCatch(!is.null(intersect(curr_env_subtract,sps)), error=function(e) return(FALSE))
-    print(my_bool)
     if(my_bool){
       curr_env_subtract=crop(curr_env_subtract,extent(sps))
       curr_env_subtract<-mask(curr_env_subtract,sps,inverse=FALSE)
@@ -184,6 +183,7 @@ energySIM_helper <- function (sp, env_orig,env_subtract, days, sigma, dest_x, de
       track[step:days,2]=NA
       break
     }
+    
 
     new_cell <- sample(option,1)
 
