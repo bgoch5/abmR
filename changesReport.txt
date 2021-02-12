@@ -2,4 +2,4 @@ What is new?
 
 02/12/2021
 
-o This is a simple text file to explain main changes 
+o This is a simple text file to explain main changes
