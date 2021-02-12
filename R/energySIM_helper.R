@@ -20,6 +20,8 @@
 #' @param optimum_lo come back
 #' @param optimum_hi come back
 #' @param init_energy come back
+#' @param direction come back
+#' @param mortality Logical, should low energy levels result in death?
 #' @return A nx3 dataset containing longitude and latitude and energy
 #' points for all n timesteps
 #' @examples
@@ -28,7 +30,7 @@
 #' @export
 
 energySIM_helper <- function (sp, env_orig,env_subtract, days, sigma, dest_x, dest_y, mot_x, mot_y,sp_poly,
-                     search_radius,optimum_lo,optimum_hi,init_energy,direction,single_rast)
+                     search_radius,optimum_lo,optimum_hi,init_energy,direction,single_rast,mortality)
   {
   track <- data.frame()
   track[1,1] <- sp@x  # 1st row 1st col is input x coord
@@ -81,7 +83,14 @@ energySIM_helper <- function (sp, env_orig,env_subtract, days, sigma, dest_x, de
     lat_candidate<--9999
 
     # Birds search area is a semicircle of radius (bird can't move North)
+    if(mortality){
     search_radius_update=search_radius*(energy/100)
+    }
+    
+    else{
+    search_radius_update=search_radius  # Mortality also turns off search radius multiplier
+    }
+    
     test=circle.polygon(track[step-1,1], track[step-1,2], search_radius_update,
                         units = "km")
     test=data.frame(test)
@@ -104,17 +113,31 @@ energySIM_helper <- function (sp, env_orig,env_subtract, days, sigma, dest_x, de
       curr_env_orig=crop(curr_env_orig,extent(sps))
       curr_env_orig<-mask(curr_env_orig,sps,inverse=FALSE)
     }
+    if(dest_x!=999 & dest_y!=999){
     pt=SpatialPoints(cbind(dest_x,dest_y))
     proj4string(pt)=proj4string(NOAM)
+    }
 
     # We are simulating birds that were captured at a study site in Mexico (-99.11, 19.15).
     # We didn't want to force birds there from the start, but if this study site falls
     # within the search area, we want birds to head in that direction.
-
-    if(!is.na(over(pt,sps,fn=NULL)[1]))
+    if(dest_x==999 & dest_y==999){
+      cell_num=which.min(abs(curr_env_subtract)) # had my_rast here, need curr_env_subtract
+      if (length(which.min(abs(curr_env_subtract)))==0){ #Ignore--edge case error handling
+        print("Edge Case 1")
+        track[step:days,1]=NA
+        track[step:days,2]=NA
+        break
+      }
+      cell_num=sample(cell_num,1) # There may be ties so we need to sample 1
+      best_coordinates=xyFromCell(curr_env_subtract,cell_num)
+    }
+    
+    else if(!is.na(over(pt,sps,fn=NULL)[1]))
     {best_coordinates=c(dest_x,dest_y)
     in_box=TRUE}
-    else if(in_box==TRUE){
+  
+    else if(in_box==TRUE & dest_x!=999 & dest_y!=999){
       best_coordinates=c(dest_x,dest_y)
     }
     else{
@@ -133,8 +156,7 @@ energySIM_helper <- function (sp, env_orig,env_subtract, days, sigma, dest_x, de
     target_x=best_coordinates[1]
     target_y=best_coordinates[2]
     i=1
-    while(is.na(extract(curr_env_subtract, matrix(c(lon_candidate,lat_candidate),1,2)))|
-          is.na(over(pt,NOAM,fn=NULL)$OBJECTID)) {
+    while(is.na(extract(curr_env_subtract, matrix(c(lon_candidate,lat_candidate),1,2)))) {
       lon_candidate <- track[step-1,1]+ (sigma * rnorm(1)) + (mot_x_new * (target_x - track[step-1,1]))
       lat_candidate <- track[step-1,2]+ (sigma * rnorm(1)) + (mot_y_new * (target_y - track[step-1,2]))
       pt=SpatialPoints(cbind(lon_candidate,lat_candidate))
@@ -271,11 +293,13 @@ energySIM_helper <- function (sp, env_orig,env_subtract, days, sigma, dest_x, de
 
 
     in_interval=FALSE
+    if(mortality==TRUE){
     if(energy==0 & step<days){
       print('Agent died')
       track[(step+1):days,1]=NA #Bird died, rest of points are N/A
       track[(step+1):days,2]=NA
       break
+    }
     }
   }
   return(track)

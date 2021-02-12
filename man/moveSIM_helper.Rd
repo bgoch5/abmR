@@ -17,7 +17,8 @@ moveSIM_helper(
   search_radius,
   optimum,
   direction,
-  single_rast
+  single_rast,
+  mortality
 )
 }
 \arguments{

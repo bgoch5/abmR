@@ -21,6 +21,7 @@ energySIM(
   optimum_hi,
   init_energy,
   direction = "S",
+  mortality = TRUE,
   write_results = FALSE,
   single_rast = FALSE
 )
@@ -55,6 +56,8 @@ energySIM(
 \item{init_energy}{Numeric, initial energy in interval (0,100]}
 
 \item{direction}{Character, mig direction, one of "N","S","E","W"}
+
+\item{mortality}{Logical, should low energy levels result in death?}
 
 \item{write_results}{Logical, save results to csv?}
 

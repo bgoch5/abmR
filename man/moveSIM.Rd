@@ -18,6 +18,7 @@ moveSIM(
   my_shapefile = NOAM,
   optimum,
   direction = "S",
+  mortality = TRUE,
   write_results = FALSE,
   single_rast = FALSE
 )
@@ -48,6 +49,8 @@ moveSIM(
 \item{optimum}{Numeric, optimal environmental value}
 
 \item{direction}{Character, mig direction, one of "N","S","E","W"}
+
+\item{mortality}{Logical, should low energy levels result in death?}
 
 \item{write_results}{Logical, save results to csv?}
 

@@ -1,0 +1,24 @@
+{
+    "id": "787B7AFB",
+    "path": "~/GitHub/move-model/R/moveVIZ.R",
+    "project_path": "R/moveVIZ.R",
+    "type": "r_source",
+    "hash": "987923211",
+    "contents": "",
+    "dirty": false,
+    "created": 1612998082934.0,
+    "source_on_save": false,
+    "relative_order": 9,
+    "properties": {
+        "cursorPosition": "73,24",
+        "scrollLine": "49"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1612998182,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1612998182391,
+    "read_only": false,
+    "read_only_alternatives": []
+}

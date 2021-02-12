@@ -20,7 +20,8 @@ energySIM_helper(
   optimum_hi,
   init_energy,
   direction,
-  single_rast
+  single_rast,
+  mortality
 )
 }
 \arguments{
@@ -47,6 +48,10 @@ energySIM_helper(
 \item{optimum_hi}{come back}
 
 \item{init_energy}{come back}
+
+\item{direction}{come back}
+
+\item{mortality}{Logical, should low energy levels result in death?}
 
 \item{env}{Raster, should represent NDVI or your environmental variable of interest}
 }

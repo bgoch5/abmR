@@ -27,6 +27,7 @@
 #' @param optimum_hi Numeric, optimal environmental value (high)
 #' @param init_energy Numeric, initial energy in interval (0,100]
 #' @param direction Character, mig direction, one of "N","S","E","W"
+#' @param mortality Logical, should low energy levels result in death?
 #' @param write_results Logical, save results to csv?
 #' @param single_rast Logical, are you using a one-layer raster for all timesteps?
 #'
@@ -43,7 +44,7 @@
 
 energySIM=function(replicates=200,days=27,env_rast=ndvi_raster, search_radius=375,
                 sigma, dest_x, dest_y, mot_x, mot_y, modeled_species, my_shapefile=NOAM,
-                optimum_lo,optimum_hi,init_energy,direction="S",
+                optimum_lo,optimum_hi,init_energy,direction="S", mortality=TRUE,
                 write_results=FALSE,single_rast=FALSE)
 
 {
@@ -102,6 +103,7 @@ energySIM=function(replicates=200,days=27,env_rast=ndvi_raster, search_radius=37
                                            optimum_hi = optimum_hi,
                                            init_energy=init_energy,
                                            direction=direction,
+                                           mortality=mortality,
                                            single_rast=single_rast)
       names(Species)=c("lon","lat","energy")
       Species$day=1:nrow(Species)
@@ -141,7 +143,7 @@ energySIM=function(replicates=200,days=27,env_rast=ndvi_raster, search_radius=37
                     dest_y=dest_y,mot_x=mot_x,mot_y=mot_y,
                     modeled_species=deparse(substitute(modeled_species)),
                     optimum_lo=optimum_lo,optimum_hi=optimum_hi,
-                    direction=direction,write_results=write_results,
+                    direction=direction, mortality=mortality, write_results=write_results,
                     single_rast=single_rast,missing_pct=missing_pct,
                     mortality_pct=mortality_pct)
   return(list(results=long,run_params=params))

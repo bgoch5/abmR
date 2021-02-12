@@ -1,0 +1,24 @@
+{
+    "id": "05F4E635",
+    "path": "~/GitHub/move-model/R/energyVIZ.R",
+    "project_path": "R/energyVIZ.R",
+    "type": "r_source",
+    "hash": "617527874",
+    "contents": "",
+    "dirty": false,
+    "created": 1612997838656.0,
+    "source_on_save": false,
+    "relative_order": 8,
+    "properties": {
+        "cursorPosition": "95,0",
+        "scrollLine": "90"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1613107678,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1613107678694,
+    "read_only": false,
+    "read_only_alternatives": []
+}
