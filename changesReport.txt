@@ -1,5 +1,9 @@
 What is new?
 
+02/15/2021
+
+o Adding some changes in moveSIM_helper
+
 02/12/2021
 
 o This is a simple text file to explain main changes
