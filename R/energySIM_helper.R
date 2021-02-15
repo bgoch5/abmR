@@ -107,6 +107,7 @@ energySIM_helper <- function (sp, env_orig,env_subtract, days, sigma, dest_x, de
     ps = Polygons(list(p),1)
     sps = SpatialPolygons(list(ps),proj4string=crs(NOAM))
     my_bool=tryCatch(!is.null(intersect(curr_env_subtract,sps)), error=function(e) return(FALSE))
+    
     if(my_bool){
       curr_env_subtract=crop(curr_env_subtract,extent(sps))
       curr_env_subtract<-mask(curr_env_subtract,sps,inverse=FALSE)
@@ -167,7 +168,7 @@ energySIM_helper <- function (sp, env_orig,env_subtract, days, sigma, dest_x, de
         print("Edge Case 2")
         track[step:days,1]=NA
         track[step:days,2]=NA
-        break
+        return(track)
       }
     }
 
@@ -200,13 +201,13 @@ energySIM_helper <- function (sp, env_orig,env_subtract, days, sigma, dest_x, de
     option <- c(options[abs(na.omit(options$V2)) == min(abs(na.omit(options$V2))), 1 ],
                 options[abs(na.omit(options$V2)) == min(abs(na.omit(options$V2))), 1 ])
 
-    if (is.null(option)){ # Ignore--edge case error handling
+    if (is.null(option) | length(option)==0){ # Ignore--edge case error handling
+      print("New Edge Case")
       track[step:days,1]=NA
       track[step:days,2]=NA
       break
     }
     
-
     new_cell <- sample(option,1)
 
     if(length(option==8)){

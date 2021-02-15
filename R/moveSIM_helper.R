@@ -153,7 +153,7 @@ moveSIM_helper <- function (sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,s
         #print(track[step-1,1:2])
         track[step:days,1]=NA
         track[step:days,2]=NA
-        break
+        return(track)
       }
     }
     pt=SpatialPoints(cbind(lon_candidate,lat_candidate))
@@ -187,10 +187,11 @@ moveSIM_helper <- function (sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,s
     option <- c(options[abs(na.omit(options$V2)) == min(abs(na.omit(options$V2))), 1 ],
                 options[abs(na.omit(options$V2)) == min(abs(na.omit(options$V2))), 1 ])
 
-    if (is.null(option)){ # Ignore--edge case error handling
+    if (is.null(option) | length(option)==0){ # Ignore--edge case error handling
+      print("Edge Case 4")
       track[step:days,1]=NA
       track[step:days,2]=NA
-      break
+      return(track)
     }
     new_cell <- sample(option,1)
     new_coords <- xyFromCell(my_rast,new_cell) #put step in brackets here
