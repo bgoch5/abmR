@@ -1,4 +1,4 @@
-# This is a txt file with changes on moveSIM_helper. Changes are indicated in coments at margen
+# This is a txt file with changes on moveSIM_helper. Changes are indicated in comments at margin
 
 moveSIM_helper_JFL <- function (sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,sp_poly,
                             search_radius,optimum,direction,single_rast,mortality) {
