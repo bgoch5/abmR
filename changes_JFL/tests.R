@@ -19,7 +19,7 @@ plot(gc)
 
 testing=moveSIM(replicates=1,days=20,env_rast=gc, search_radius=300,
                 sigma=.4, dest_x=90, dest_y=0, mot_x=1, mot_y=1,modeled_species=N_pop,
-                my_shapefile=poly,optimum=50,direction="S",write_results=TRUE,single_rast=TRUE, mortality = F)
+                my_shapefile=poly,optimum=50,direction="S",write_results=F,single_rast=TRUE, mortality = F)
 
 lines(testing$results[,1:2])
 # When using radius too small (>= 50) Error in sample.int(length(x), size, replace, prob) :
@@ -32,7 +32,7 @@ for (i in 1:10){
 
 testing=moveSIM(replicates=1,days=10,env_rast=gc, search_radius=400,
                 sigma=.4, dest_x=90, dest_y=0, mot_x=1, mot_y=1,modeled_species=N_pop,
-                my_shapefile=poly,optimum=20,direction="S",write_results=TRUE,single_rast=F, mortality = F)
+                my_shapefile=poly,optimum=20,direction="S",write_results=F,single_rast=F, mortality = F)
 
 
 # energySIM_helper_JFL #########################################################
