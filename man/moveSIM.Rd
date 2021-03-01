@@ -17,6 +17,8 @@ moveSIM(
   modeled_species,
   my_shapefile = NOAM,
   optimum,
+  n_failures = 4,
+  fail_thresh = 0.5,
   direction = "S",
   mortality = TRUE,
   write_results = FALSE,
@@ -47,6 +49,10 @@ moveSIM(
 \item{my_shapefile}{COME BACK}
 
 \item{optimum}{Numeric, optimal environmental value}
+
+\item{n_failures}{How many failures are allowable before agent experiences death (at n_failures+1)}
+
+\item{fail_thresh}{What percentage deviation from optimum leads to death? E.g. .50 = 50%.}
 
 \item{direction}{Character, mig direction, one of "N","S","E","W"}
 

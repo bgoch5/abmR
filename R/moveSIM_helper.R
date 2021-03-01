@@ -27,17 +27,13 @@
 #' @export
 
 moveSIM_helper <- function (sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,sp_poly,
-                     search_radius,optimum,direction,single_rast,mortality) {
+                     search_radius,optimum,n_failures, fail_thresh, direction,single_rast,mortality) {
   track <- data.frame()
-  track[1,1] <- sp@x  # 1st row 1st col is input x coord
-  track[1,2] <- sp@y  # 1st row 2nd col is input y coord
+  track[1,1] <- sp@x  
+  track[1,2] <- sp@y  
 
   # We recognize that morphological characteristics of a species may affect the speed at which
-  # they move. Thus we added these parameters to species class and had them affect motivation
-  # (preliminary).
-  # Idea: Bigger birds can fly further/faster
-  #mot_x_new=mot_x+(sp@mass-7.5)*.01+(sp@wing-15.5)*.01
-  #mot_y_new=mot_y+(sp@mass-7.5)*.01+(sp@wing-15.5)*.01
+  # they move. Thus we added these parameters to species class and had them affect motivation.
 
   if(length(sp@morphpar1==1) & length(sp@morphpar2==1)){
     
@@ -59,7 +55,7 @@ moveSIM_helper <- function (sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,s
   in_box=FALSE
 
 
-  for (step in 2:days) { # These are days
+  for (step in 2:days) { 
     if(single_rast){
     my_rast=env[[1]]
     }
@@ -70,7 +66,7 @@ moveSIM_helper <- function (sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,s
     lon_candidate<--9999
     lat_candidate<--9999
 
-    # Birds search area is a semicircle of radius (bird can't move North)
+    # Birds search area is a semicircle of radius 
 
     test=circle.polygon(track[step-1,1], track[step-1,2], search_radius,
                         units = "km")
@@ -83,9 +79,12 @@ moveSIM_helper <- function (sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,s
     {test=subset(test,test[,1]>=track[step-1,1])}
     else if (direction=="W")
     {test=subset(test,test[,1]<=track[step-1,1])}
+    else if (direction=="R")
+    {test=test}
     p = Polygon(test)
     ps = Polygons(list(p),1)
-    sps = SpatialPolygons(list(ps),proj4string=crs(NOAM))
+    sps = SpatialPolygons(list(ps),
+                          proj4string=crs(sp_poly))
     my_bool=tryCatch(!is.null(intersect(my_rast,sps)), error=function(e) return(FALSE))
     #print(my_bool)
     if(my_bool){
@@ -94,8 +93,15 @@ moveSIM_helper <- function (sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,s
     }
     if(dest_x!=999 & dest_y!=999){
     pt=SpatialPoints(cbind(dest_x,dest_y))
-    proj4string(pt)=proj4string(NOAM)
+    proj4string(pt)=proj4string(sp_poly)
     }
+    
+    if(direction=="R"){
+      random=sampleRandom(my_rast,1,xy=TRUE)
+      track[step,1] <- random[1]
+      track[step,2] <- random[2]
+    }
+    else{
 
     # We are simulating birds that were captured at a study site in Mexico (-99.11, 19.15).
     # We didn't want to force birds there from the start, but if this study site falls
@@ -144,25 +150,19 @@ moveSIM_helper <- function (sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,s
       lon_candidate <- track[step-1,1]+ (sigma * rnorm(1)) + (mot_x_new * (target_x - track[step-1,1]))
       lat_candidate <- track[step-1,2]+ (sigma * rnorm(1)) + (mot_y_new * (target_y - track[step-1,2]))
       i=i+1
-      # How to select candidate destination, this is as you originally had it.
       if(i>90){ # Avoid infinite loop
         print("Edge Case 2")
-        #print("Best Coords")
-        #print(best_coordinates)
-        #print("Last coords")
-        #print(track[step-1,1:2])
         track[step:days,1]=NA
         track[step:days,2]=NA
         return(track)
       }
     }
     pt=SpatialPoints(cbind(lon_candidate,lat_candidate))
-    proj4string(pt)=proj4string(NOAM)
+    proj4string(pt)=proj4string(sp_poly)
 
-    if(is.na(over(pt,NOAM,fn=NULL)$OBJECTID)){ #Birds can't stop over ocean (they must be over
+    if(is.na(over(pt,sp_poly,fn=NULL)$OBJECTID)){ #Birds can't stop over ocean (they must be over
       # North America)
       print("EDGE Case 3")
-      #print(pt)
       track[step:days,1]=NA
       track[step:days,2]=NA
       return(track)
@@ -207,19 +207,19 @@ moveSIM_helper <- function (sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,s
     # by its landing point, is more than 50% off from its optimal, that counts as a "failure"
     # for that day. 5 or more consecutive failures leads to death.
 
-    else if(abs(my_rast[new_cell])>.50*optimum){
+    else if(abs(my_rast[new_cell])>fail_thresh*optimum){
       failures=failures+1
     }
     else{
       failures=0
     }
 
-    if(failures>4 & mortality==TRUE){
+    if(failures>n_failures & mortality==TRUE){
       print('Agent died')
       track[(step+1):days,1]=NA #Bird died, rest of points are N/A
       track[(step+1):days,2]=NA
       break
     }
-  }    
+  }}    
   return(track)
 }

@@ -24,6 +24,8 @@
 #' @param modeled_species Object of class "species"
 #' @param my_shapefile COME BACK
 #' @param optimum Numeric, optimal environmental value
+#' @param n_failures How many failures are allowable before agent experiences death (at n_failures+1)
+#' @param fail_thresh What percentage deviation from optimum leads to death? E.g. .50 = 50%.
 #' @param direction Character, mig direction, one of "N","S","E","W"
 #' @param mortality Logical, should low energy levels result in death?
 #' @param write_results Logical, save results to csv?
@@ -39,8 +41,9 @@
 #' @export
 
 moveSIM=function(replicates=200,days=27,env_rast=ndvi_raster, search_radius=375,
-                 sigma, dest_x, dest_y, mot_x, mot_y, modeled_species, my_shapefile=NOAM,optimum,
-                 direction="S",mortality=TRUE, write_results=FALSE,single_rast=FALSE)
+                 sigma, dest_x, dest_y, mot_x, mot_y, modeled_species, my_shapefile=NOAM,
+                 optimum,n_failures=4, fail_thresh=.5, direction="S",mortality=TRUE,
+                 write_results=FALSE,single_rast=FALSE)
 
 {
   sp=modeled_species
@@ -68,8 +71,14 @@ moveSIM=function(replicates=200,days=27,env_rast=ndvi_raster, search_radius=375,
          or morphpar2SD. Function terminated.")
     stop()}
   }
-
-  my_env=env_rast-optimum
+  
+  if(direction != "R"){
+    my_env=env_rast-optimum
+  }
+  else{
+    my_env=env_rast
+    print("Direction=R specified--Raster will be ignored")
+  }
 
   long=data.frame(lon=numeric(),lat=numeric(),day=numeric(),
                   agent_id=character())
@@ -79,7 +88,8 @@ moveSIM=function(replicates=200,days=27,env_rast=ndvi_raster, search_radius=375,
     Species=moveSIM_helper(sp=modeled_species,env=my_env,days=days,sigma=sigma,
                     dest_x=dest_x,dest_y=dest_y,mot_x=mot_x,mot_y=mot_y,
                     sp_poly=sp_poly,search_radius=search_radius,optimum=optimum,
-                    direction=direction,mortality=mortality, single_rast=single_rast)
+                    n_failures=n_failures, fail_thresh=fail_thresh, direction=direction,mortality=mortality,
+                    single_rast=single_rast)
     names(Species)=c("lon","lat")
     Species$day=1:nrow(Species)
     Species$agent_id=paste("Agent",as.character(i),sep="_")

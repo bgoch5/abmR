@@ -16,6 +16,8 @@ moveSIM_helper(
   sp_poly,
   search_radius,
   optimum,
+  n_failures,
+  fail_thresh,
   direction,
   single_rast,
   mortality

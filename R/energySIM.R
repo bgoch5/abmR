@@ -84,7 +84,14 @@ energySIM=function(replicates=200,days=27,env_rast=ndvi_raster, search_radius=37
     stop()}
   }
   optimum=(optimum_hi+optimum_lo)/2
+  
+  if(direction != "R"){
   my_env=env_rast-optimum
+  }
+  else{
+    my_env=env_rast
+    print("Direction=R specified--Raster will be ignored")
+  }
   long=data.frame(lon=numeric(),lat=numeric(),energy=numeric(),
                   day=numeric(),agent_id=character())
   for(i in 1:replicates){

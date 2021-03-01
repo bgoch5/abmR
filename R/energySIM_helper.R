@@ -33,15 +33,13 @@ energySIM_helper <- function (sp, env_orig,env_subtract, days, sigma, dest_x, de
                      search_radius,optimum_lo,optimum_hi,init_energy,direction,single_rast,mortality)
   {
   track <- data.frame()
-  track[1,1] <- sp@x  # 1st row 1st col is input x coord
-  track[1,2] <- sp@y  # 1st row 2nd col is input y coord
+  track[1,1] <- sp@x  
+  track[1,2] <- sp@y  
   track[1,3]=init_energy
 
   in_interval=FALSE
 
   optimum=(optimum_hi+optimum_lo)/2
-
-  # this will not work on neg. numbers
 
   # We recognize that morphological characteristics of a species may affect the speed at which
   # they move. Thus we added these parameters to species class and had them affect motivation
@@ -82,7 +80,7 @@ energySIM_helper <- function (sp, env_orig,env_subtract, days, sigma, dest_x, de
     lon_candidate<--9999
     lat_candidate<--9999
 
-    # Birds search area is a semicircle of radius (bird can't move North)
+    # Birds search area is a semicircle of search_radius in direction specified
     if(mortality){
     search_radius_update=search_radius*(energy/100)
     }
@@ -102,28 +100,38 @@ energySIM_helper <- function (sp, env_orig,env_subtract, days, sigma, dest_x, de
     {test=subset(test,test[,1]>=track[step-1,1])}
     else if (direction=="W")
     {test=subset(test,test[,1]<=track[step-1,1])}
-
+    else if (direction=="R"){
+    test=test}
     p = Polygon(test)
     ps = Polygons(list(p),1)
-    sps = SpatialPolygons(list(ps),proj4string=crs(NOAM))
+    sps = SpatialPolygons(list(ps),proj4string=crs(sp_poly))
     my_bool=tryCatch(!is.null(intersect(curr_env_subtract,sps)), error=function(e) return(FALSE))
-    
+
     if(my_bool){
       curr_env_subtract=crop(curr_env_subtract,extent(sps))
       curr_env_subtract<-mask(curr_env_subtract,sps,inverse=FALSE)
       curr_env_orig=crop(curr_env_orig,extent(sps))
       curr_env_orig<-mask(curr_env_orig,sps,inverse=FALSE)
     }
+    
+    if(direction=="R"){
+      random=sampleRandom(curr_env_orig,1,xy=TRUE)
+      track[step,1] <- random[1]
+      track[step,2] <- random[2]
+    }
+    
+    else{
+      
     if(dest_x!=999 & dest_y!=999){
     pt=SpatialPoints(cbind(dest_x,dest_y))
-    proj4string(pt)=proj4string(NOAM)
+    proj4string(pt)=proj4string(sp_poly)
     }
 
     # We are simulating birds that were captured at a study site in Mexico (-99.11, 19.15).
     # We didn't want to force birds there from the start, but if this study site falls
     # within the search area, we want birds to head in that direction.
     if(dest_x==999 & dest_y==999){
-      cell_num=which.min(abs(curr_env_subtract)) # had my_rast here, need curr_env_subtract
+      cell_num=which.min(abs(curr_env_subtract))
       if (length(which.min(abs(curr_env_subtract)))==0){ #Ignore--edge case error handling
         print("Edge Case 1")
         track[step:days,1]=NA
@@ -161,7 +169,7 @@ energySIM_helper <- function (sp, env_orig,env_subtract, days, sigma, dest_x, de
       lon_candidate <- track[step-1,1]+ (sigma * rnorm(1)) + (mot_x_new * (target_x - track[step-1,1]))
       lat_candidate <- track[step-1,2]+ (sigma * rnorm(1)) + (mot_y_new * (target_y - track[step-1,2]))
       pt=SpatialPoints(cbind(lon_candidate,lat_candidate))
-      proj4string(pt)=proj4string(NOAM)
+      proj4string(pt)=proj4string(sp_poly)
       i=i+1
       # How to select candidate destination, this is as you originally had it.
       if(i>35){ # Avoid infinite loop
@@ -173,9 +181,9 @@ energySIM_helper <- function (sp, env_orig,env_subtract, days, sigma, dest_x, de
     }
 
     pt=SpatialPoints(cbind(lon_candidate,lat_candidate))
-    proj4string(pt)=proj4string(NOAM)
+    proj4string(pt)=proj4string(sp_poly)
 
-    if(is.na(over(pt,NOAM,fn=NULL)$OBJECTID)){ #Birds can't stop over ocean (they must be over
+    if(is.na(over(pt,sp_poly,fn=NULL)$OBJECTID)){ #Birds can't stop over ocean (they must be over
       # North America)
       print("Edge Case 3")
       track[step:days,1]=NA
@@ -220,27 +228,12 @@ energySIM_helper <- function (sp, env_orig,env_subtract, days, sigma, dest_x, de
     track[step,1] <- new_coords[1]
     track[step,2] <- new_coords[2]
 
-
-
-    # Let's say optimum=.5
-    # And range is (.3,.7)
-    # We've got a .2
-
-    # Then we have
-    # -.3 from optimum
-    # -.5 from hi
-    # -.1 from low
-
-    # Have to use raw value for this to work, this raster I'm using is diff which won't work
     dist_from_opt=curr_env_orig[new_cell]-optimum
     dist_from_opt_hi=curr_env_orig[new_cell]-optimum_hi
     dist_from_opt_lo=curr_env_orig[new_cell]-optimum_lo
     opts=list(dist_from_opt,dist_from_opt_hi,dist_from_opt_lo)
     abs_opts=list(abs(dist_from_opt),abs(dist_from_opt_hi),abs(dist_from_opt_lo))
     my_min=which.min(abs_opts)
-    #if(length(my_min==0)){
-    #my_min=4 #Avoiding problems like below
-    #}
 
     if(my_min==1 | (my_min==2 & dist_from_opt_hi<0)|(my_min==3 & dist_from_opt_lo>0))
     {in_interval=TRUE}
@@ -254,11 +247,6 @@ energySIM_helper <- function (sp, env_orig,env_subtract, days, sigma, dest_x, de
     diff=.21*optimum #this is just a fix for now when all cells in neighborhood have
     # NA values; will have to fix later
     }
-
-    # If my_min is one then automatically +15
-    # If my_min is one or two then use opts[my_min]
-    # If my_min is two then neg difference means inside interval
-    # If my_min is three then positive difference means inside interval
 
     if(in_interval){
         energy=energy+15
@@ -302,6 +290,7 @@ energySIM_helper <- function (sp, env_orig,env_subtract, days, sigma, dest_x, de
       break
     }
     }
-  }
+    }
+    }
   return(track)
 }
