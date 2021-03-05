@@ -36,7 +36,9 @@ testing=moveSIM(replicates=1,days=10,env_rast=gc, search_radius=400,
 
 
 # energySIM_helper_JFL #########################################################
-# test
+
+
+
 enerTest <- energySIM(replicates=5,days=27,env_rast=ndvi_raster, search_radius=400,
               sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.9, mot_y=.9,
               modeled_species=ben_test_pop, my_shapefile=NOAM,
