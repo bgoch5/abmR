@@ -276,8 +276,17 @@ energySIM_helper2 <- function (sp, env_orig,env_subtract, days, sigma, dest_x, d
     else if (diff<.6*optimum){
       energy=energy+energy_adj[7]
     }
-    else{
+    else if (diff<.7*optimum){
       energy=energy+energy_adj[8]
+    }
+    else if (diff<.8*optimum){
+      energy=energy+energy_adj[9]
+    }
+    else if (diff<.9*optimum){
+      energy=energy+energy_adj[10]
+    }
+    else{
+      energy=energy+energy_adj[11]
     }
 
     if(energy>100)
