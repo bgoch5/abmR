@@ -22,7 +22,6 @@
 #' @param mot_x Numeric, movement motivation in x direction
 #' @param mot_y Numeric, movement motivation in y direction
 #' @param modeled_species Object of class "species"
-#' @param my_shapefile COME BACK
 #' @param optimum_lo Numeric, optimal environmental value (low)
 #' @param optimum_hi Numeric, optimal environmental value (high)
 #' @param init_energy Numeric, initial energy in interval (0,100]
@@ -42,8 +41,8 @@
 #' init_energy=100,direction="S",write_results=TRUE,single_rast=FALSE)
 #' @export
 
-energySIM=function(replicates=200,days=27,env_rast=ndvi_raster, search_radius=375,
-                sigma, dest_x, dest_y, mot_x, mot_y, modeled_species, my_shapefile=NOAM,
+energySIM2=function(replicates=200,days=27,env_rast=ndvi_raster, search_radius=375,
+                sigma, dest_x, dest_y, mot_x, mot_y, modeled_species,
                 optimum_lo,optimum_hi,init_energy,direction="S", mortality=TRUE,
                 energy_adj=c(15,10,5,0,-5,-10,-15,-20),write_results=FALSE,
                 single_rast=FALSE)
@@ -96,7 +95,7 @@ energySIM=function(replicates=200,days=27,env_rast=ndvi_raster, search_radius=37
   long=data.frame(lon=numeric(),lat=numeric(),energy=numeric(),
                   day=numeric(),agent_id=character())
   for(i in 1:replicates){
-      Species=energySIM_helper(sp = modeled_species,
+      Species=energySIM_helper2(sp = modeled_species,
                                            env_orig = env_rast,
                                            env_subtract=my_env,
                                            days = days,
@@ -105,7 +104,6 @@ energySIM=function(replicates=200,days=27,env_rast=ndvi_raster, search_radius=37
                                            dest_y = dest_y,
                                            mot_x = mot_x,
                                            mot_y = mot_y,
-                                           sp_poly = my_shapefile,
                                            search_radius = search_radius,
                                            optimum_lo = optimum_lo,
                                            optimum_hi = optimum_hi,
@@ -114,7 +112,7 @@ energySIM=function(replicates=200,days=27,env_rast=ndvi_raster, search_radius=37
                                            mortality=mortality,
                                            energy_adj=energy_adj,
                                            single_rast=single_rast)
-      names(Species)=c("lon","lat","energy")
+      names(Species)=c("lon","lat","energy","Ending")
       Species$day=1:nrow(Species)
       Species$agent_id=paste("Agent",as.character(i),sep="_")
 
