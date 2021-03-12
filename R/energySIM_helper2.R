@@ -37,7 +37,8 @@ energySIM_helper2 <- function (sp, env_orig,env_subtract, days, sigma, dest_x, d
   track[1,1] <- sp@x  
   track[1,2] <- sp@y  
   track[1,3] = init_energy
-  track[1,4] = NA
+  track[1:days,4]="Alive"
+  track[1:days,5]="Alive"
   
 
   in_interval=FALSE
@@ -139,11 +140,12 @@ energySIM_helper2 <- function (sp, env_orig,env_subtract, days, sigma, dest_x, d
       cell_num=which.min(abs(curr_env_subtract))
       
      if (length(which.min(abs(curr_env_subtract)))==0){ #Ignore--edge case error handling
-        print("Edge Case 1")
+       print("Can't find any non-NA cells. Searching over lake or ocean. Agent stopped.")
         track[step:days,1]=NA
         track[step:days,2]=NA
         track[step:days,4]="Stopped"
-        break
+        track[1:days,5]="Stopped"
+        return(track)
     }
       
       cell_num=sample(cell_num,1) # There may be ties so we need to sample 1
@@ -162,11 +164,12 @@ energySIM_helper2 <- function (sp, env_orig,env_subtract, days, sigma, dest_x, d
       # within search area that has minimal distance from optimal value
       cell_num=which.min(abs(curr_env_subtract)) # had my_rast here, need curr_env_subtract
       if (length(which.min(abs(curr_env_subtract)))==0){ #Ignore--edge case error handling
-        print("Edge Case 1")
+        print("Can't find any non-NA cells. Searching over lake or ocean. Agent stopped.")
         track[step:days,1]=NA
         track[step:days,2]=NA
-        track[1:days,4]="Stopped"
-        break
+        track[step:days,4]="Stopped"
+        track[1:days,5]="Stopped"
+        return(track)
       }
       cell_num=sample(cell_num,1) # There may be ties so we need to sample 1
       best_coordinates=xyFromCell(curr_env_subtract,cell_num)
@@ -181,11 +184,12 @@ energySIM_helper2 <- function (sp, env_orig,env_subtract, days, sigma, dest_x, d
       proj4string(pt)=proj4string(env_orig)
       i=i+1
       # How to select candidate destination, this is as you originally had it.
-      if(i>35){ # Avoid infinite loop
+      if(i>90){ # Avoid infinite loop
         print("Can't find any non-NA cells. Searching over lake or ocean. Agent stopped.")
         track[step:days,1]=NA
         track[step:days,2]=NA
-        track[1:days,4]="Stopped"
+        track[step:days,4]="Stopped"
+        track[1:days,5]="Stopped"
         return(track)
       }
     }
@@ -197,8 +201,9 @@ energySIM_helper2 <- function (sp, env_orig,env_subtract, days, sigma, dest_x, d
       print("Best coordinates not in search region, agent stopped")
       track[step:days,1]=NA
       track[step:days,2]=NA
-      track[1:days,4]="Stopped"
-      break
+      track[step:days,4]="Stopped"
+      track[1:days,5]="Stopped"
+      return(track)
     }
 
     # Second searching step: now that we've added a destination for this step (and added some)
@@ -303,8 +308,9 @@ energySIM_helper2 <- function (sp, env_orig,env_subtract, days, sigma, dest_x, d
       print('Agent died')
       track[(step+1):days,1]=NA #Bird died, rest of points are N/A
       track[(step+1):days,2]=NA
-      track[1:days,4]="Died"
-      break
+      track[step:days,4]="Died"
+      track[1:days,5]="Died"
+      return(track)
     }
     }
     }

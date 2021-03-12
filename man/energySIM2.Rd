@@ -21,7 +21,7 @@ energySIM2(
   init_energy,
   direction = "S",
   mortality = TRUE,
-  energy_adj = c(15, 10, 5, 0, -5, -10, -15, -20),
+  energy_adj = c(25, 20, 15, 10, 5, 0, -5, -10, -15, -20, -25),
   write_results = FALSE,
   single_rast = FALSE
 )

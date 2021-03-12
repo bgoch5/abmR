@@ -44,7 +44,7 @@
 energySIM2=function(replicates=200,days=27,env_rast=ndvi_raster, search_radius=375,
                 sigma, dest_x, dest_y, mot_x, mot_y, modeled_species,
                 optimum_lo,optimum_hi,init_energy,direction="S", mortality=TRUE,
-                energy_adj=c(15,10,5,0,-5,-10,-15,-20),write_results=FALSE,
+                energy_adj=c(25,20,15,10,5,0,-5,-10,-15,-20,-25),write_results=FALSE,
                 single_rast=FALSE)
 
 {
@@ -92,8 +92,10 @@ energySIM2=function(replicates=200,days=27,env_rast=ndvi_raster, search_radius=3
     my_env=env_rast
     print("Direction=R specified--Raster will be ignored")
   }
+  
   long=data.frame(lon=numeric(),lat=numeric(),energy=numeric(),
-                  day=numeric(),agent_id=character())
+                  curr_status=character(),plot_ignore=character())
+  
   for(i in 1:replicates){
       Species=energySIM_helper2(sp = modeled_species,
                                            env_orig = env_rast,
@@ -112,7 +114,7 @@ energySIM2=function(replicates=200,days=27,env_rast=ndvi_raster, search_radius=3
                                            mortality=mortality,
                                            energy_adj=energy_adj,
                                            single_rast=single_rast)
-      names(Species)=c("lon","lat","energy","Ending")
+      names(Species)=c("lon","lat","energy","curr_status","plot_ignore")
       Species$day=1:nrow(Species)
       Species$agent_id=paste("Agent",as.character(i),sep="_")
 
@@ -135,6 +137,11 @@ energySIM2=function(replicates=200,days=27,env_rast=ndvi_raster, search_radius=3
       long$delta_energy[i]<-long[i,3]-long[(i-1),3]
     }
   }
+  
+  col_order <- c("agent_id","day","lon","lat","curr_status","energy",
+                 "delta_energy","distance","plot_ignore")
+  long=long[,col_order]
+  
   if (write_results){
     currentDate=format(Sys.time(), "%d-%b-%Y %H.%M.%S")
     file_name <- paste("energySIM_results_",currentDate,".csv",sep="")
