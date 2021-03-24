@@ -17,4 +17,5 @@ Depends:
     rgdal,
     table1,
     googledrive,
-    swfscMisc
+    swfscMisc,
+    geosphere

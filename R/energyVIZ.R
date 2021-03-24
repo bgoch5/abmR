@@ -11,7 +11,9 @@
 #' @import rnaturalearthdata
 #' @import ggplot2
 #' @import table1
-#'
+#' @import gstat
+#' @import sf
+#' @import tmap
 #'
 #' @param data Data to be plotted, this object should be the output from
 #' energySIM().
@@ -44,9 +46,9 @@ energyVIZ=function(data,title="EnergySIM results",type="plot",
 {
 dest_x=data$run_params$dest_x
 dest_y=data$run_params$dest_y
-if(type=="plot"){
+
 world <- ne_countries(scale = "medium", returnclass = "sf")
-start.p <- cbind(data$results[1,1], data$results[1,2])
+start.p <- cbind(data$results[1,"lon"], data$results[1,"lat"])
 # Generalize this soon
 start.p.df <- as.data.frame(start.p)
 colnames(start.p.df)[1:2] = c("Lon", "Lat")
@@ -102,6 +104,8 @@ if(!is.null(ylim)){
   my_ylim=ylim
 }
 
+if(type=="plot"){
+  
 if(dest_x!=999 & dest_y!=999){
 myplot=ggplot(data = world) +
   geom_sf() +
@@ -137,7 +141,45 @@ if(label){
 return(myplot)
 }
 if(type=="gradient")
-{}
+{my.df = data$results
+  my.sf.point = my.df
+  my.sf.point <- na.omit(my.sf.point)
+  my.sf.point$energy = NULL
+  my.sf.point$day = NULL
+  my.sf.point$agent_id = NULL
+  my.sf.point$distance = NULL
+  my.df$X = NULL
+  my.df=na.omit(my.df)
+  #------------------------------------------------
+  # First Energy interpolation (Basic POINT Plot)
+  my.sf.point <- st_as_sf(x = my.df,
+                          coords = c("lon", "lat"),
+                          crs = "+proj=longlat +datum=WGS84")
+  my.sp.point <- as(my.sf.point, "Spatial")
+  ###############################################
+  # reducing the extent of that huge NOAM shp
+  # over a target area (doing this manually for now)
+  # but maybe the function will need to use the input raster?
+  #----------------------------------------------
+  world.redu <- st_crop(world, extent(c(my_xlim[1],my_xlim[2],my_ylim[1],my_ylim[2])), snap="out")
+  #=============================================
+  # plotting energy +/-
+  grd <- as.data.frame(spsample(my.sp.point, "regular", n=50000))
+  names(grd) <- c("X", "Y")
+  coordinates(grd) <- c("X", "Y")
+  gridded(grd) <- TRUE
+  fullgrid(grd) <- TRUE
+  proj4string(grd) <- proj4string(my.sp.point)
+  P.idw <- gstat::idw(delta_energy ~ 1, my.sp.point, newdata=grd, idp=2.0)
+  r <- raster(P.idw)
+  r.m <- mask(r, world.redu)
+  my_plot=tm_shape(r.m) +
+    tm_raster(n=10,palette = "RdBu", midpoint = NA,
+              title="energy") +
+    tm_shape(my.sp.point) + tm_dots(size=0.01, alpha=0.1) +
+    tm_legend(legend.outside=T)
+  return(my_plot)
+  browser()}
 if(type=="table")
 {
 t.energy.res <- data$results

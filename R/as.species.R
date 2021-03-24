@@ -61,13 +61,15 @@
 as.species =  function(x=NA, y=NA, morphpar1=NA, morphpar1mean=NA, morphpar1sd=NA,morphpar1sign=NA,
                        morphpar2=NA,morphpar2mean=NA,morphpar2sd=NA,morphpar2sign=NA)
   {
-  sp <- setClass("species", slots=c(x="numeric", y="numeric", morphpar1="numeric", morphpar1mean="numeric",
+  species <- setClass("species", slots=c(x="numeric", y="numeric", morphpar1="numeric", morphpar1mean="numeric",
                                     morphpar1sd="numeric",morphpar1sign="character",
                                     morphpar2="numeric", 
                                     morphpar2mean="numeric", 
-                                    morphpar2sd="numeric",morphpar2sign="character"))
-  res <- sp(x=x, y=y,
-            morphpar1=morphpar1, morphpar1mean=morphpar1mean, morphpar1sd=morphpar1sd,morphpar1sign=morphpar1sign,
-            morphpar2=morphpar2,morphpar2mean=morphpar2mean,morphpar2sd=morphpar2sd,morphpar2sign=morphpar2sign)
+                                    morphpar2sd="numeric",morphpar2sign="character"),
+                      where=topenv(parent.frame()))
+  res <- species(x=x, y=y,
+            morphpar1=morphpar1, morphpar1mean=morphpar1mean, morphpar1sd=morphpar1sd,
+            morphpar1sign=morphpar1sign, morphpar2=morphpar2,morphpar2mean=morphpar2mean,
+            morphpar2sd=morphpar2sd,morphpar2sign=morphpar2sign)
   return(res)
 }
