@@ -3,10 +3,6 @@
 #' Runs agent based modeling for one replicate of a single species. Used by function `generations`
 #' to run more replicates of more species.
 #'
-#' @import raster
-#' @import sp
-#' @import rgdal
-#'
 #' @param sp A species object
 #' @param env Raster, should represent NDVI or your environmental variable of interest
 #' @param days Integer, how many days (timesteps), would you like to model
@@ -15,7 +11,6 @@
 #' @param dest_y Numeric, destination y coordinate (latitude)
 #' @param mot_x Numeric, movement motivation in x direction
 #' @param mot_y Numeric, movement motivation in y direction
-#' @param sp_poly Come back to this
 #' @param current_gen Fed into function by function genSIM; if using this function
 #' alone use 1
 #' @param search_radius Radius of semicircle to South of current location to search for next timestep (in km)
@@ -24,13 +19,16 @@
 #' @examples
 #' my_results = moveSIM(sp = wiwa.pop, env = ndvi_raster, n = 27, sigma = 0.6,
 #' dest_x = -100, dest_y = 25, mot_x = 0.9, mot_y = 0.9, search_radius = 200, current_gen = 1)
+#' @keywords internal
 #' @export
 
-moveSIM_helper <- function (sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,sp_poly,
+moveSIM_helper <- function (sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,
                      search_radius,optimum,n_failures, fail_thresh, direction,single_rast,mortality) {
   track <- data.frame()
   track[1,1] <- sp@x  
   track[1,2] <- sp@y  
+  track[1:days,3]="Alive"
+  track[1:days,4]="Alive"
 
   # We recognize that morphological characteristics of a species may affect the speed at which
   # they move. Thus we added these parameters to species class and had them affect motivation.
@@ -84,7 +82,7 @@ moveSIM_helper <- function (sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,s
     p = Polygon(test)
     ps = Polygons(list(p),1)
     sps = SpatialPolygons(list(ps),
-                          proj4string=crs(sp_poly))
+                          proj4string=crs(env))
     my_bool=tryCatch(!is.null(intersect(my_rast,sps)), error=function(e) return(FALSE))
     #print(my_bool)
     if(my_bool){
@@ -93,7 +91,7 @@ moveSIM_helper <- function (sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,s
     }
     if(dest_x!=999 & dest_y!=999){
     pt=SpatialPoints(cbind(dest_x,dest_y))
-    proj4string(pt)=proj4string(sp_poly)
+    proj4string(pt)=proj4string(env)
     }
     
     if(direction=="R"){
@@ -108,11 +106,13 @@ moveSIM_helper <- function (sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,s
     # within the search area, we want birds to head in that direction.
     if(dest_x==999 & dest_y==999){
       cell_num=which.min(abs(my_rast))
-      if (length(which.min(abs(my_rast)))==0){ #Ignore--edge case error handling
-        print("Edge Case 1")
+      if (length(which.min(abs(my_rast)))==0){ 
+        print("Can't find any non-NA cells. Searching over lake or ocean. Agent stopped.")
         track[step:days,1]=NA
         track[step:days,2]=NA
-        break
+        track[step:days,3]="Stopped"
+        track[1:days,4]="Stopped"
+        return(track)
       }
       cell_num=sample(cell_num,1) # There may be ties so we need to sample 1
       
@@ -133,9 +133,11 @@ moveSIM_helper <- function (sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,s
       # within search area that has minimal distance from optimal value
       cell_num=which.min(abs(my_rast))
       if (length(which.min(abs(my_rast)))==0){ #Ignore--edge case error handling
-        print("Edge Case 1")
+        print("Can't find any non-NA cells. Searching over lake or ocean. Agent stopped.")
         track[step:days,1]=NA
         track[step:days,2]=NA
+        track[step:days,3]="Stopped"
+        track[1:days,4]="Stopped"
         break
       }
       cell_num=sample(cell_num,1) # There may be ties so we need to sample 1
@@ -151,20 +153,24 @@ moveSIM_helper <- function (sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,s
       lat_candidate <- track[step-1,2]+ (sigma * rnorm(1)) + (mot_y_new * (target_y - track[step-1,2]))
       i=i+1
       if(i>90){ # Avoid infinite loop
-        print("Edge Case 2")
+        print("Can't find any non-NA cells. Searching over lake or ocean. Agent stopped.")
         track[step:days,1]=NA
         track[step:days,2]=NA
+        track[step:days,3]="Stopped"
+        track[1:days,4]="Stopped"
         return(track)
       }
     }
     pt=SpatialPoints(cbind(lon_candidate,lat_candidate))
-    proj4string(pt)=proj4string(sp_poly)
+    proj4string(pt)=proj4string(env)
 
-    if(is.na(over(pt,sp_poly,fn=NULL)$OBJECTID)){ #Birds can't stop over ocean (they must be over
+    if(is.na(over(pt,sps,fn=NULL))){ #Birds can't stop over ocean (they must be over
       # North America)
-      print("EDGE Case 3")
+      print("Best coordinates not in search region, agent stopped")
       track[step:days,1]=NA
       track[step:days,2]=NA
+      track[step:days,3]="Stopped"
+      track[1:days,4]="Stopped"
       return(track)
       #break
     }
@@ -188,9 +194,11 @@ moveSIM_helper <- function (sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,s
                 options[abs(na.omit(options$V2)) == min(abs(na.omit(options$V2))), 1 ])
 
     if (is.null(option) | length(option)==0){ # Ignore--edge case error handling
-      print("Edge Case 4")
+      print("Can't find any non-NA cells. Searching over lake or ocean. Agent stopped.")
       track[step:days,1]=NA
       track[step:days,2]=NA
+      track[step:days,3]="Stopped"
+      track[1:days,4]="Stopped"
       return(track)
     }
     new_cell <- sample(option,1)
@@ -218,8 +226,10 @@ moveSIM_helper <- function (sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,s
       print('Agent died')
       track[(step+1):days,1]=NA #Bird died, rest of points are N/A
       track[(step+1):days,2]=NA
-      break
+      track[(step+1):days,3]="Died"
+      track[1:days,4]="Died"
+      return(track)
     }
-  }}    
+}}   
   return(track)
 }

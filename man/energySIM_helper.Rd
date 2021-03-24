@@ -14,7 +14,6 @@ energySIM_helper(
   dest_y,
   mot_x,
   mot_y,
-  sp_poly,
   search_radius,
   optimum_lo,
   optimum_hi,
@@ -40,8 +39,6 @@ energySIM_helper(
 
 \item{mot_y}{Numeric, movement motivation in y direction}
 
-\item{sp_poly}{Come back to this}
-
 \item{search_radius}{Radius of semicircle to South of current location to search for next timestep (in km)}
 
 \item{optimum_lo}{come back}
@@ -55,6 +52,8 @@ energySIM_helper(
 \item{mortality}{Logical, should low energy levels result in death?}
 
 \item{env}{Raster, should represent NDVI or your environmental variable of interest}
+
+\item{sp_poly}{Come back to this}
 }
 \value{
 A nx3 dataset containing longitude and latitude and energy
@@ -67,3 +66,4 @@ Runs agent based modeling for one replicate of a single species.
 my_results = moveSIM(sp = wiwa.pop, env = ndvi_raster, n = 27, sigma = 0.6,
 dest_x = -100, dest_y = 25, mot_x = 0.9, mot_y = 0.9, search_radius = 200, current_gen = 1)
 }
+\keyword{internal}

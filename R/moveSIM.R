@@ -7,41 +7,34 @@
 #' with `moveVIZ()`. Relies on underlying function `moveSIM_helper`, which is not to be used
 #' alone.
 #'
-#' @import raster
-#' @import sp
-#' @import rgdal
-#' @import swfscMisc
-#'
-#' @param replicates Integer, desired number of replicates per generation
-#' @param days Integer, How many days (timesteps), would you like to model?
-#' @param env_rast Rasterstack or Rasterbrick with number of layers equal to n_days
-#' @param search_radius Radius of semicircle to South of current location to search for next timestep (in km)
-#' @param sigma Numeric, randomness parameter
+#' @param replicates Integer, desired number of replicates per run. Default 200.
+#' @param days Integer, how many days (timesteps), would you like to model?
+#' @param env_rast Rasterstack or Rasterbrick with number of layers equal to days
+#' @param search_radius Radius of semicircle search regions (in km). Default 375. 
+#' @param sigma Numeric, randomness parameter, range (-Infty, Infty). Default 0.5.
 #' @param dest_x Numeric, destination x coordinate (longitude)
 #' @param dest_y Numeric, destination y coordinate (latitude)
-#' @param mot_x Numeric, movement motivation in x direction
-#' @param mot_y Numeric, movement motivation in y direction
+#' @param mot_x Numeric, movement motivation in x direction, range (0,1], default 1.
+#' @param mot_y Numeric, movement motivation in y direction,range (0,1], default 1.
 #' @param modeled_species Object of class "species"
-#' @param my_shapefile COME BACK
 #' @param optimum Numeric, optimal environmental value
 #' @param n_failures How many failures are allowable before agent experiences death (at n_failures+1)
 #' @param fail_thresh What percentage deviation from optimum leads to death? E.g. .50 = 50 percent.
-#' @param direction Character, mig direction, one of "N","S","E","W"
-#' @param mortality Logical, should low energy levels result in death?
-#' @param write_results Logical, save results to csv?
-#' @param single_rast Logical, are you using a one-layer raster for all timesteps?
+#' @param direction Character, movement direction, one of "N","S","E","W". Default "S".
+#' @param mortality Logical, should low energy levels result in death? Default T.
+#' @param write_results Logical, save results to csv? Default F.
+#' @param single_rast Logical, are you using a one-layer raster for all timesteps? Default F.
 #'
 #' @return
 #' A (days X replicates) X 5 dataframe containing data on latitude, longitude,
 #' day, agent ID, and distance traveled between each timestep (in km).
 #' @examples
 #' testing=moveSIM(replicates=1,days=27,env_rast=ndvi_raster, search_radius=375,
-#' sigma=.4, dest_x=-100, dest_y=25, mot_x=1, mot_y=1,modeled_species=N_pop,
-#' my_shapefile=NOAM,optimum=.5,direction="S",write_results=TRUE,single_rast=FALSE)
+#' sigma=.4, dest_x=-100, dest_y=25, mot_x=1, mot_y=1,modeled_species=N_pop, optimum=.5,direction="S",write_results=TRUE,single_rast=FALSE)
 #' @export
 
-moveSIM=function(replicates=200,days=27,env_rast=ndvi_raster, search_radius=375,
-                 sigma, dest_x, dest_y, mot_x, mot_y, modeled_species, my_shapefile=NOAM,
+moveSIM=function(replicates=200,days,env_rast=ndvi_raster, search_radius=375,
+                 sigma, dest_x, dest_y, mot_x, mot_y, modeled_species,
                  optimum,n_failures=4, fail_thresh=.5, direction="S",mortality=TRUE,
                  write_results=FALSE,single_rast=FALSE)
 
@@ -82,15 +75,13 @@ moveSIM=function(replicates=200,days=27,env_rast=ndvi_raster, search_radius=375,
 
   long=data.frame(lon=numeric(),lat=numeric(),day=numeric(),
                   agent_id=character())
-  sp_poly=my_shapefile
 
   for(i in 1:replicates){
     Species=moveSIM_helper(sp=modeled_species,env=my_env,days=days,sigma=sigma,
-                    dest_x=dest_x,dest_y=dest_y,mot_x=mot_x,mot_y=mot_y,
-                    sp_poly=sp_poly,search_radius=search_radius,optimum=optimum,
+                    dest_x=dest_x,dest_y=dest_y,mot_x=mot_x,mot_y=mot_y, search_radius=search_radius,optimum=optimum,
                     n_failures=n_failures, fail_thresh=fail_thresh, direction=direction,mortality=mortality,
                     single_rast=single_rast)
-    names(Species)=c("lon","lat")
+    names(Species)=c("lon","lat","curr_status","plot_ignore")
     Species$day=1:nrow(Species)
     Species$agent_id=paste("Agent",as.character(i),sep="_")
 
@@ -108,6 +99,10 @@ moveSIM=function(replicates=200,days=27,env_rast=ndvi_raster, search_radius=375,
       long$distance[i]<-distHaversine(long[(i-1),1:2], long[i,1:2])/1000
     }
   }
+  
+  col_order <- c("agent_id","day","lon","lat","curr_status","distance","plot_ignore")
+  long=long[,col_order]
+  
   if (write_results){
   currentDate=format(Sys.time(), "%d-%b-%Y %H.%M.%S")
   file_name <- paste("moveSIM_results_",currentDate,".csv",sep="")

@@ -7,48 +7,45 @@ multiple replicates.}
 \usage{
 energySIM(
   replicates = 200,
-  days = 27,
+  days,
   env_rast = ndvi_raster,
   search_radius = 375,
-  sigma,
+  sigma = 0.5,
   dest_x,
   dest_y,
   mot_x,
   mot_y,
   modeled_species,
-  my_shapefile = NOAM,
   optimum_lo,
   optimum_hi,
   init_energy,
   direction = "S",
   mortality = TRUE,
-  energy_adj = c(15, 10, 5, 0, -5, -10, -15, -20),
+  energy_adj = c(25, 20, 15, 10, 5, 0, -5, -10, -15, -20, -25),
   write_results = FALSE,
   single_rast = FALSE
 )
 }
 \arguments{
-\item{replicates}{Integer, desired number of replicates per generation}
+\item{replicates}{Integer, desired number of replicates per run}
 
-\item{days}{Integer, How many days (timesteps), would you like to model?}
+\item{days}{Integer, How many days (timesteps) would you like to model?. Default 200.}
 
-\item{env_rast}{Rasterstack or Rasterbrick with number of layers equal to n_days}
+\item{env_rast}{Rasterstack or Rasterbrick with number of layers equal to days}
 
-\item{search_radius}{Radius of semicircle to South of current location to search for next timestep (in km)}
+\item{search_radius}{Radius of semicircle search regions (in km). Default 375.}
 
-\item{sigma}{Numeric, randomness parameter}
+\item{sigma}{Numeric, randomness parameter, range (-Infty, Infty). Default 0.5.}
 
 \item{dest_x}{Numeric, destination x coordinate (longitude)}
 
 \item{dest_y}{Numeric, destination y coordinate (latitude)}
 
-\item{mot_x}{Numeric, movement motivation in x direction}
+\item{mot_x}{Numeric, movement motivation in x direction, range (0,1], default 1.}
 
-\item{mot_y}{Numeric, movement motivation in y direction}
+\item{mot_y}{Numeric, movement motivation in y direction,range (0,1], default 1.}
 
 \item{modeled_species}{Object of class "species"}
-
-\item{my_shapefile}{COME BACK}
 
 \item{optimum_lo}{Numeric, optimal environmental value (low)}
 
@@ -56,13 +53,13 @@ energySIM(
 
 \item{init_energy}{Numeric, initial energy in interval (0,100]}
 
-\item{direction}{Character, mig direction, one of "N","S","E","W"}
+\item{direction}{Character, movement direction, one of "N","S","E","W", default "S".}
 
-\item{mortality}{Logical, should low energy levels result in death?}
+\item{mortality}{Logical, should low energy levels result in death? Default T.}
 
-\item{write_results}{Logical, save results to csv?}
+\item{write_results}{Logical, save results to csv? Default F.}
 
-\item{single_rast}{Logical, are you using a one-layer raster for all timesteps?}
+\item{single_rast}{Logical, are you using a one-layer raster for all timesteps?. Default F.}
 }
 \value{
 #' A (days X replicates) X 7 dataframe containing data on latitude, longitude, energy,
@@ -71,8 +68,8 @@ energy from last timestep.
 }
 \description{
 Here, agent mortality occurs when agent reaches energy = 0 (out of 100). Agent energy
-stores are dynamic, and affect search area as a multiplier, so movement speed
-is directly affected by the quality of raster cells achieved. Results may be analyzed
+stores are dynamic, and affect search area as a multiplier, so movement
+is directly affected by the quality of raster cells achieved. Results may be visualized
 with `energyVIZ()`. Relies on underlying function `energySIM_helper`, which is
 not to be used alone.
 }

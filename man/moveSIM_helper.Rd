@@ -13,7 +13,6 @@ moveSIM_helper(
   dest_y,
   mot_x,
   mot_y,
-  sp_poly,
   search_radius,
   optimum,
   n_failures,
@@ -40,8 +39,6 @@ moveSIM_helper(
 
 \item{mot_y}{Numeric, movement motivation in y direction}
 
-\item{sp_poly}{Come back to this}
-
 \item{search_radius}{Radius of semicircle to South of current location to search for next timestep (in km)}
 
 \item{current_gen}{Fed into function by function genSIM; if using this function
@@ -58,3 +55,4 @@ to run more replicates of more species.
 my_results = moveSIM(sp = wiwa.pop, env = ndvi_raster, n = 27, sigma = 0.6,
 dest_x = -100, dest_y = 25, mot_x = 0.9, mot_y = 0.9, search_radius = 200, current_gen = 1)
 }
+\keyword{internal}

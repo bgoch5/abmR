@@ -6,7 +6,7 @@
 \usage{
 moveSIM(
   replicates = 200,
-  days = 27,
+  days,
   env_rast = ndvi_raster,
   search_radius = 375,
   sigma,
@@ -15,7 +15,6 @@ moveSIM(
   mot_x,
   mot_y,
   modeled_species,
-  my_shapefile = NOAM,
   optimum,
   n_failures = 4,
   fail_thresh = 0.5,
@@ -26,27 +25,25 @@ moveSIM(
 )
 }
 \arguments{
-\item{replicates}{Integer, desired number of replicates per generation}
+\item{replicates}{Integer, desired number of replicates per run. Default 200.}
 
-\item{days}{Integer, How many days (timesteps), would you like to model?}
+\item{days}{Integer, how many days (timesteps), would you like to model?}
 
-\item{env_rast}{Rasterstack or Rasterbrick with number of layers equal to n_days}
+\item{env_rast}{Rasterstack or Rasterbrick with number of layers equal to days}
 
-\item{search_radius}{Radius of semicircle to South of current location to search for next timestep (in km)}
+\item{search_radius}{Radius of semicircle search regions (in km). Default 375.}
 
-\item{sigma}{Numeric, randomness parameter}
+\item{sigma}{Numeric, randomness parameter, range (-Infty, Infty). Default 0.5.}
 
 \item{dest_x}{Numeric, destination x coordinate (longitude)}
 
 \item{dest_y}{Numeric, destination y coordinate (latitude)}
 
-\item{mot_x}{Numeric, movement motivation in x direction}
+\item{mot_x}{Numeric, movement motivation in x direction, range (0,1], default 1.}
 
-\item{mot_y}{Numeric, movement motivation in y direction}
+\item{mot_y}{Numeric, movement motivation in y direction,range (0,1], default 1.}
 
 \item{modeled_species}{Object of class "species"}
-
-\item{my_shapefile}{COME BACK}
 
 \item{optimum}{Numeric, optimal environmental value}
 
@@ -54,13 +51,13 @@ moveSIM(
 
 \item{fail_thresh}{What percentage deviation from optimum leads to death? E.g. .50 = 50 percent.}
 
-\item{direction}{Character, mig direction, one of "N","S","E","W"}
+\item{direction}{Character, movement direction, one of "N","S","E","W". Default "S".}
 
-\item{mortality}{Logical, should low energy levels result in death?}
+\item{mortality}{Logical, should low energy levels result in death? Default T.}
 
-\item{write_results}{Logical, save results to csv?}
+\item{write_results}{Logical, save results to csv? Default F.}
 
-\item{single_rast}{Logical, are you using a one-layer raster for all timesteps?}
+\item{single_rast}{Logical, are you using a one-layer raster for all timesteps? Default F.}
 }
 \value{
 A (days X replicates) X 5 dataframe containing data on latitude, longitude,
@@ -75,6 +72,5 @@ alone.
 }
 \examples{
 testing=moveSIM(replicates=1,days=27,env_rast=ndvi_raster, search_radius=375,
-sigma=.4, dest_x=-100, dest_y=25, mot_x=1, mot_y=1,modeled_species=N_pop,
-my_shapefile=NOAM,optimum=.5,direction="S",write_results=TRUE,single_rast=FALSE)
+sigma=.4, dest_x=-100, dest_y=25, mot_x=1, mot_y=1,modeled_species=N_pop, optimum=.5,direction="S",write_results=TRUE,single_rast=FALSE)
 }
