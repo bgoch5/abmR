@@ -10,7 +10,7 @@ A work-in-progress package for running agent based models in R.
 \author{
 Benjamin Gochanour \email{ben.gochanour@gmail.com}
 
-Javi Fernandez-Lopez \email{jflopez.bio@gmail.com}
+Javier Fernandez-Lopez \email{jflopez.bio@gmail.com}
 
 Andrea Contina \email{acontina@usgs.gov; acontina@gmail.com}
 }

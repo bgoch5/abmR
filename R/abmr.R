@@ -5,7 +5,7 @@
 #' @docType package
 #'
 #' @author Benjamin Gochanour \email{ben.gochanour@gmail.com}
-#' @author Javi Fernandez-Lopez \email{jflopez.bio@gmail.com}
+#' @author Javier Fernandez-Lopez \email{jflopez.bio@gmail.com}
 #' @author Andrea Contina \email{acontina@usgs.gov; acontina@gmail.com}
 #'
 #' @name abmr
