@@ -4,11 +4,13 @@
 \alias{moveVIZ}
 \title{Creates a plot of energySIM() results}
 \usage{
-moveVIZ(data, title = "MoveSIM results")
+moveVIZ(data, type = "plot", title = "MoveSIM results")
 }
 \arguments{
 \item{data}{Data to be plotted, this object should be the output from
 moveSIM().}
+
+\item{type}{"plot" or "summary_table", default "plot".}
 
 \item{title}{Title for the plot that is output.}
 }
@@ -17,18 +19,18 @@ A plot showing model output compared to a dashed line that represents straight l
 movement from the starting point to the final destination.
 }
 \description{
-Compares results with straight line path (null model)
+Compares results with straight line path between origin and destination.
 }
 \examples{
 
 1. Run moveSIM()
 
-my_result=moveSIM(replicates=1,days=27,env_rast=ndvi_raster, search_radius=375,
-sigma=.4, dest_x=-100, dest_y=25, mot_x=1, mot_y=1,modeled_species=N_pop,
-my_shapefile=NOAM,optimum=.5,direction="S",write_results=TRUE,single_rast=FALSE)
+EX2=moveSIM(replicates=5,days=27,env_rast=ndvi_raster, search_radius=550,
+sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.8, mot_y=.8,modeled_species=pabu.pop,optimum=.6, n_failures=5, fail_thresh=.40,
+ direction="S",write_results=TRUE,single_rast=FALSE,mortality = T)
 
 2. Run energySIM() on your result
-moveVIZ(my_result,title="Visualizing MoveSIM results",type="plot",aspect_ratio=4/3,
+moveVIZ(EX2,title="Visualizing MoveSIM results",type="plot",aspect_ratio=4/3,
 label=TRUE)
 
 }

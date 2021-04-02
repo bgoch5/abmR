@@ -2,7 +2,7 @@
 % Please edit documentation in R/energySIM.R
 \name{energySIM}
 \alias{energySIM}
-\title{Runs more advanced Brownian/Ornstein–Uhlenbeck agent-based model for
+\title{Runs more advanced Brownian / Ornstein Uhlenbeck agent-based model for
 multiple replicates.}
 \usage{
 energySIM(
@@ -27,11 +27,11 @@ energySIM(
 )
 }
 \arguments{
-\item{replicates}{Integer, desired number of replicates per run}
+\item{replicates}{Integer, desired number of replicates per run, default 200.}
 
-\item{days}{Integer, How many days (timesteps) would you like to model?. Default 200.}
+\item{days}{Integer, How many days (timesteps) would you like to model? Range (1,nlayers(env_rast))}
 
-\item{env_rast}{Rasterstack or Rasterbrick with number of layers equal to days}
+\item{env_rast}{Rasterstack or Rasterbrick with number of layers >= days}
 
 \item{search_radius}{Radius of semicircle search regions (in km). Default 375.}
 
@@ -43,7 +43,7 @@ energySIM(
 
 \item{mot_x}{Numeric, movement motivation in x direction, range (0,1], default 1.}
 
-\item{mot_y}{Numeric, movement motivation in y direction,range (0,1], default 1.}
+\item{mot_y}{Numeric, movement motivation in y direction, range (0,1], default 1.}
 
 \item{modeled_species}{Object of class "species"}
 
@@ -74,8 +74,15 @@ with `energyVIZ()`. Relies on underlying function `energySIM_helper`, which is
 not to be used alone.
 }
 \examples{
-testing=energySIM(replicates=1,days=27,env_rast=ndvi_raster, search_radius=375,
-sigma=.4, dest_x=-100, dest_y=25, mot_x=1, mot_y=1,
-modeled_species=N_pop, my_shapefile=NOAM, optimum_lo=.4,optimum_hi=.6,
-init_energy=100,direction="S",write_results=TRUE,single_rast=FALSE)
+# Define species object
+pabu.pop = as.species(x=-98.7, y=34.7,
+morphpar1=15, morphpar1mean=16, morphpar1sd=2,morphpar1sign="Pos",
+morphpar2=19,morphpar2mean=18,morphpar2sd=1,morphpar2sign="Pos")
+
+# Run function
+EX1=energySIM(replicates=5,days=27,env_rast=ndvi_raster, search_radius=400,
+sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.9, mot_y=.9,
+modeled_species=pabu.pop,
+optimum_lo=.6,optimum_hi=.8,init_energy=100,
+direction="S",write_results=FALSE,single_rast=FALSE,mortality = TRUE)
 }

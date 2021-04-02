@@ -1,7 +1,7 @@
 
 #' Creates a plot of energySIM() results
 #'
-#' Compares results with straight line path (null model)
+#' Compares results with straight line path between origin and destination.
 #'
 #' @import raster
 #' @import sp
@@ -18,7 +18,7 @@
 #' @param data Data to be plotted, this object should be the output from
 #' energySIM().
 #' @param title Title for the plot that is output.
-#' @param type String from "plot", "gradient", or "table"?
+#' @param type String from "plot", "gradient", "summary_table", or "strat_table"?
 #' @param aspect_ratio Aspect ratio, defaults to 4/3
 #' @param label Logical, label the origin and specified final destination?
 #' @param xlim Optionally specify desired x limits as a numeric vector: c(low,hi)
@@ -30,13 +30,14 @@
 #' @examples
 #' 1. Run energySIM()
 #' 
-#' my_result=energySIM(replicates=2,days=27,env_rast=ndvi_raster, search_radius=375,
-#' sigma=.4, dest_x=-100, dest_y=20, mot_x=1, mot_y=1, 
-#' modeled_species=my_species, my_shapefile=NOAM, optimum_lo=.4,optimum_hi=.6,init_energy=100,
-#' direction="S",write_results=TRUE,single_rast=FALSE)
+#' EX1=energySIM(replicates=5,days=27,env_rast=ndvi_raster, search_radius=400,
+#' sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.9, mot_y=.9,
+#' modeled_species=pabu.pop,
+#' optimum_lo=.6,optimum_hi=.8,init_energy=100,
+#' direction="S",write_results=FALSE,single_rast=FALSE,mortality = TRUE)
 #' 
 #' 2. Run energyVIZ() on your result
-#' energyVIZ(my_result,title="Visualizing EnergySIM results",type="plot", aspect_ratio=5/3,
+#' energyVIZ(EX1,title="Visualizing EnergySIM results",type="plot", aspect_ratio=5/3,
 #' label=TRUE)
 #' @export
 
@@ -143,7 +144,8 @@ return(myplot)
 if(type=="gradient")
 {my.df = data$results
   my.sf.point = my.df
-  my.sf.point <- na.omit(my.sf.point)
+  my_vector=!is.na(my.df$x)
+  my.sf.point <- my.sf.point[my_vector,]
   my.sf.point$energy = NULL
   my.sf.point$day = NULL
   my.sf.point$agent_id = NULL
@@ -179,8 +181,12 @@ if(type=="gradient")
     tm_shape(my.sp.point) + tm_dots(size=0.01, alpha=0.1) +
     tm_legend(legend.outside=T)
   return(my_plot)
-  browser()}
-if(type=="table")
+  }
+if(type=="summary_table"){
+  test=tbl_summary(EX1$results[,-c(1,2,9)])
+  return(test)
+}
+if(type=="strat_table")
 {
 t.energy.res <- data$results
 table1(~energy + day + distance | delta_energy, data = t.energy.res)}

@@ -1,11 +1,14 @@
 #'
-#' Imports data that is used in examples in vignette and documentation. 
+#' Downloads data that is used in examples in vignette and documentation. 
 #' 
-#' Warning, this function will download to your hard drive
-#' (to a location specified by your current working directory) and read into R the below
-#' files, totaling approximately 420 MB. Please do not attempt to use if you have insufficient hard drive space
-#' or Random Access Memory (RAM). Objects to be downloaded/read in are listed under
-#' "details".
+#' Warning: this function will download to your hard drive
+#' (to a location specified by your current working directory) the below
+#' files, totaling approximately 620 MB. Please do not attempt to use if you have insufficient hard drive space
+#' or Random Access Memory (RAM). Objects to be downloaded are listed under
+#' "details". The first time you use this function, you will be directed to your browser
+#' and required to sign in to your Google account to connect to the Tidyverse API. If you use the
+#' function a second time, you may simply follow the prompts and enter a number
+#' corresponding to the previous accounts listed.
 #'
 #' @import googledrive
 #' @import purrr
@@ -13,12 +16,13 @@
 #' @import raster
 #' @details
 #'  \itemize{
-#'  \item{NDVI_2013:}{  A raster stack containing daily NDVI data for North America,
+#'  \item{NDVI_2013_NA:}{  A raster stack containing daily NDVI data for North America,
 #' on a .05 x .05 degree grid. Data runs from 8/26/2013-9/21/2013.}
-#'  \item{NDVI_2013_composite:}{  Single layer raster formed by taking mean of NDVI_2013}
+#'  \item{NDVI_2013_NA_composite:}{  Single layer raster formed by taking mean of NDVI_2013_NA}
 #'  \item{NDVI_2013_Europe:}{  A raster stack containing daily NDVI data for Europe,
 #' on a .05 x .05 degree grid. Data runs from 8/26/2013-9/21/2013.}
 #'  \item{NDVI_2013_Europe_composite:}{  Single layer raster formed by taking mean of NDVI_2013_Europe}
+#'  }
 #' @source
 #' Vermote, Eric; NOAA CDR Program. (2019): NOAA Climate Data Record (CDR)
 #'of AVHRR Normalized Difference Vegetation Index (NDVI), Version 5.
@@ -36,11 +40,11 @@ get_ex_data=function(){
   walk(my_files$id, ~ drive_download(as_id(.x),overwrite=TRUE))
   
   # Read in Europe Raster (composite is average of all days for plotting)
-  ndvi_raster_Europe=stack(paste0(my_wd,"/NDVI_2013_Europe.gri"))
-  ndvi_raster_Europe_composite=stack(paste0(my_wd,"/NDVI_2013_Europe_composite.gri"))
+  #ndvi_2013_Europe=stack(paste0(my_wd,"/NDVI_2013_Europe.gri"))
+  #ndvi_2013_Europe_composite=stack(paste0(my_wd,"/NDVI_2013_Europe_composite.gri"))
   
   # Read in NA Raster
-  ndvi_raster_NA=stack(paste0(my_wd,"/NDVI_2013.gri"))
-  ndvi_raster_composite=stack(paste0(my_wd,"/NDVI_2013_composite.gri"))
+  #ndvi_2013_NA=stack(paste0(my_wd,"/NDVI_2013_NA.gri"))
+  #ndvi_2013_NA_composite=stack(paste0(my_wd,"/NDVI_2013_NA_composite.gri"))
   
 }

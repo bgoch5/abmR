@@ -20,7 +20,7 @@ energySIM().}
 
 \item{title}{Title for the plot that is output.}
 
-\item{type}{String from "plot", "gradient", or "table"?}
+\item{type}{String from "plot", "gradient", "summary_table", or "strat_table"?}
 
 \item{aspect_ratio}{Aspect ratio, defaults to 4/3}
 
@@ -35,17 +35,18 @@ A plot showing model output compared to a dashed line that represents straight l
 movement from the starting point to the final destination.
 }
 \description{
-Compares results with straight line path (null model)
+Compares results with straight line path between origin and destination.
 }
 \examples{
 1. Run energySIM()
 
-my_result=energySIM(replicates=2,days=27,env_rast=ndvi_raster, search_radius=375,
-sigma=.4, dest_x=-100, dest_y=20, mot_x=1, mot_y=1, 
-modeled_species=my_species, my_shapefile=NOAM, optimum_lo=.4,optimum_hi=.6,init_energy=100,
-direction="S",write_results=TRUE,single_rast=FALSE)
+EX1=energySIM(replicates=5,days=27,env_rast=ndvi_raster, search_radius=400,
+sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.9, mot_y=.9,
+modeled_species=pabu.pop,
+optimum_lo=.6,optimum_hi=.8,init_energy=100,
+direction="S",write_results=FALSE,single_rast=FALSE,mortality = TRUE)
 
 2. Run energyVIZ() on your result
-energyVIZ(my_result,title="Visualizing EnergySIM results",type="plot", aspect_ratio=5/3,
+energyVIZ(EX1,title="Visualizing EnergySIM results",type="plot", aspect_ratio=5/3,
 label=TRUE)
 }

@@ -68,14 +68,13 @@ energySIM_helper <- function (sp, env_orig,env_subtract, days, sigma, dest_x, de
   
 
   for (step in 2:days) {
-
     if(single_rast){
     curr_env_subtract=env_subtract[[1]]
-    curr_env_orig=env_orig[[1]]
+    curr_env_orig=env_orig[[1]]  
     }
     else{
-    curr_env_subtract=env_subtract[[step]]
-    curr_env_orig=env_orig[[step]]
+    curr_env_subtract=env_subtract[[step-1]]
+    curr_env_orig=env_orig[[step-1]]
     }
 
     lon_candidate<--9999

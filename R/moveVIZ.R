@@ -1,7 +1,7 @@
 
 #' Creates a plot of energySIM() results
 #'
-#' Compares results with straight line path (null model)
+#' Compares results with straight line path between origin and destination.
 #'
 #' @import raster
 #' @import sp
@@ -14,6 +14,7 @@
 #'
 #' @param data Data to be plotted, this object should be the output from
 #' moveSIM().
+#' @param type "plot" or "summary_table", default "plot".
 #' @param title Title for the plot that is output.
 #'
 #' @return
@@ -23,22 +24,23 @@
 #' 
 #' 1. Run moveSIM()
 #' 
-#' my_result=moveSIM(replicates=1,days=27,env_rast=ndvi_raster, search_radius=375,
-#' sigma=.4, dest_x=-100, dest_y=25, mot_x=1, mot_y=1,modeled_species=N_pop,
-#' my_shapefile=NOAM,optimum=.5,direction="S",write_results=TRUE,single_rast=FALSE)
+#' EX2=moveSIM(replicates=5,days=27,env_rast=ndvi_raster, search_radius=550,
+#' sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.8, mot_y=.8,modeled_species=pabu.pop,optimum=.6, n_failures=5, fail_thresh=.40,
+#'  direction="S",write_results=TRUE,single_rast=FALSE,mortality = T)
 #' 
 #' 2. Run energySIM() on your result
-#' moveVIZ(my_result,title="Visualizing MoveSIM results",type="plot",aspect_ratio=4/3,
+#' moveVIZ(EX2,title="Visualizing MoveSIM results",type="plot",aspect_ratio=4/3,
 #' label=TRUE)
 #'
 #' @export
 
-moveVIZ=function(data,title="MoveSIM results")
+moveVIZ=function(data, type="plot", title="MoveSIM results")
 {
+  if(type=="plot"){
     dest_x=data$run_params$dest_x
     dest_y=data$run_params$dest_y
     world <- ne_countries(scale = "medium", returnclass = "sf")
-    start.p <- cbind(data$results[1,1], data$results[1,2])
+    start.p <- cbind(data$results[1,"lon"], data$results[1,"lat"])
     # Generalize this soon
     start.p.df <- as.data.frame(start.p)
     colnames(start.p.df)[1:2] = c("Lon", "Lat")
@@ -74,4 +76,10 @@ moveVIZ=function(data,title="MoveSIM results")
         ggtitle(title)  
     }
     return(myplot)
+  }
+  else if(type=="summary_table")
+  {
+  test=tbl_summary(data$results[,-c(1,2,7)])
+  return(test)
+  }
 }

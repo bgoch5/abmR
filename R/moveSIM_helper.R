@@ -51,21 +51,19 @@ moveSIM_helper <- function (sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,
   }
   failures=0
   in_box=FALSE
-
-
-  for (step in 2:days) { 
+  
+  for (step in 2:days) {
     if(single_rast){
     my_rast=env[[1]]
     }
     else{
-    my_rast=env[[step]]
+    my_rast=env[[(step-1)]]
     }
 
     lon_candidate<--9999
     lat_candidate<--9999
 
     # Birds search area is a semicircle of radius 
-
     test=circle.polygon(track[step-1,1], track[step-1,2], search_radius,
                         units = "km")
     test=data.frame(test)
@@ -230,6 +228,7 @@ moveSIM_helper <- function (sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,
       track[1:days,4]="Died"
       return(track)
     }
-}}   
+    }
+    }   
   return(track)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/moveSIM.R
 \name{moveSIM}
 \alias{moveSIM}
-\title{Runs basic Brownian/Ornstein–Uhlenbeck agent-based model for multiple replicates.}
+\title{Runs basic Brownianb / Ornstein Uhlenbeck agent-based model for multiple replicates.}
 \usage{
 moveSIM(
   replicates = 200,
@@ -27,9 +27,9 @@ moveSIM(
 \arguments{
 \item{replicates}{Integer, desired number of replicates per run. Default 200.}
 
-\item{days}{Integer, how many days (timesteps), would you like to model?}
+\item{days}{Integer, How many days (timesteps) would you like to model? Range (1,nlayers(env_rast))}
 
-\item{env_rast}{Rasterstack or Rasterbrick with number of layers equal to days}
+\item{env_rast}{Rasterstack or Rasterbrick with number of layers >= days}
 
 \item{search_radius}{Radius of semicircle search regions (in km). Default 375.}
 
@@ -41,15 +41,17 @@ moveSIM(
 
 \item{mot_x}{Numeric, movement motivation in x direction, range (0,1], default 1.}
 
-\item{mot_y}{Numeric, movement motivation in y direction,range (0,1], default 1.}
+\item{mot_y}{Numeric, movement motivation in y direction, range (0,1], default 1.}
 
 \item{modeled_species}{Object of class "species"}
 
 \item{optimum}{Numeric, optimal environmental value}
 
-\item{n_failures}{How many failures are allowable before agent experiences death (at n_failures+1)}
+\item{n_failures}{How many failures are allowable before agent experiences death (at n_failures+1). What constitutes
+a failure is determined by fail_thresh, range (1,days]. Default 4.}
 
-\item{fail_thresh}{What percentage deviation from optimum leads to death? E.g. .50 = 50 percent.}
+\item{fail_thresh}{What percentage deviation from optimum leads to death? E.g. default of 
+.50 means 50 percent or greater deviation from optimum on a particular step constitutes failure.}
 
 \item{direction}{Character, movement direction, one of "N","S","E","W". Default "S".}
 
@@ -70,7 +72,19 @@ speed isn't directly affected by quality of raster cells achieved. Results may b
 with `moveVIZ()`. Relies on underlying function `moveSIM_helper`, which is not to be used
 alone.
 }
+\details{
+Arguments mortality, n_failures, and fail_thresh interact with each other. If 
+mortality = F, values for n_failures and fail_thresh are ignored. If mortality=T, fail_thresh
+determines what consitutes a failure, and n_failures indicates how many failures are allowed before
+death. Note: If n_failures=days, this is equivalent to mortality=F.
+}
 \examples{
-testing=moveSIM(replicates=1,days=27,env_rast=ndvi_raster, search_radius=375,
-sigma=.4, dest_x=-100, dest_y=25, mot_x=1, mot_y=1,modeled_species=N_pop, optimum=.5,direction="S",write_results=TRUE,single_rast=FALSE)
+# Define species object
+pabu.pop = as.species(x=-98.7, y=34.7,
+morphpar1=15, morphpar1mean=16, morphpar1sd=2,morphpar1sign="Pos",
+morphpar2=19,morphpar2mean=18,morphpar2sd=1,morphpar2sign="Pos")
+Run function
+EX2=moveSIM(replicates=5,days=27,env_rast=ndvi_raster, search_radius=550,
+ sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.8, mot_y=.8,modeled_species=pabu.pop,optimum=.6, n_failures=5, fail_thresh=.40,
+ direction="S",write_results=TRUE,single_rast=FALSE,mortality = T)
 }
