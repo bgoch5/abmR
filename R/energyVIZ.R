@@ -118,7 +118,7 @@ myplot=ggplot(data = world) +
             color = "red", size = 0.6, alpha = 0.4, lineend = "round") +
   geom_path(data = ideal.df,
             aes(x=Lon, y=Lat),
-            color = "black", size = 1.2, alpha = 1, linetype = "dashed") + theme(aspect.ratio=aspect_ratio)
+            color = "black", size = 1.2, alpha = 1, linetype = "dashed") + theme(aspect.ratio=aspect_ratio) + 
   ggtitle(title)
 }
 else{
@@ -129,8 +129,8 @@ else{
              expand = FALSE) +
     geom_path(data = t.energy.res,
               aes(x=lon, y=lat),
-              color = "red", size = 0.6, alpha = 0.4, lineend = "round") + theme(aspect.ratio=aspect_ratio)
-  + ggtitle(title) 
+              color = "red", size = 0.6, alpha = 0.4, lineend = "round") + theme(aspect.ratio=aspect_ratio) +
+    ggtitle(title) 
   label=FALSE
 }
 if(label){
