@@ -250,8 +250,9 @@ energySIM_helper <- function (sp, env_orig,env_subtract, days, sigma, dest_x, de
     diff=abs(dist_from_opt_lo)
     }
     else{
-    diff=.21*optimum #this is just a fix for now when all cells in neighborhood have
-    # NA values; will have to fix later
+    #diff=.21*optimum #this is just a fix for now when all cells in neighborhood have
+    diff=.49*optimum
+    # If all NA give it an average effect (don't gain or lose energy)
     }
 
 

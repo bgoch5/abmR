@@ -34,7 +34,7 @@
 #'
 #' @export
 
-moveVIZ=function(data, type="plot", title="MoveSIM results")
+moveVIZ=function(data, type="plot", title="moveSIM results")
 {
   if(type=="plot"){
     dest_x=data$run_params$dest_x

@@ -33,17 +33,30 @@
 #' @param single_rast Logical, are you using a one-layer raster for all timesteps? Default F.
 #'
 #' @return
-#' A (days X replicates) X 5 dataframe containing data on latitude, longitude,
-#' day, agent ID, and distance traveled between each timestep (in km).
+#' Under "results", a (days+1 X replicates) X 7 dataframe containing data on agent_id, day, longitude, latitude,
+#' current agent status (Alive, Stopped, or Died), distance traveled from last timestep (in km), and plot_ignore, which can be ignored by the user.
+#' Using tidy_results() hides this column and provides overall nicer display of results.
+#' 
+#' Under "run_params", a record of function parameters used as well as missing_pct
+#' and mortality_pct. missing_pct corresponds to the percent of rows in the results dataframe
+#' missing information on lon/lat, which occurs when the agent has "died" or "stopped". mortality_pct
+#' refers to the percentage of agents in the run that died.
+#' 
 #' @examples
 #' # Define species object
 #' pabu.pop = as.species(x=-98.7, y=34.7,
 #' morphpar1=15, morphpar1mean=16, morphpar1sd=2,morphpar1sign="Pos",
 #' morphpar2=19,morphpar2mean=18,morphpar2sd=1,morphpar2sign="Pos")
-#' Run function
+#' 
+#' # Run function
 #' EX2=moveSIM(replicates=5,days=27,env_rast=ndvi_raster, search_radius=550,
-#'  sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.8, mot_y=.8,modeled_species=pabu.pop,optimum=.6, n_failures=5, fail_thresh=.40,
-#'  direction="S",write_results=TRUE,single_rast=FALSE,mortality = T)
+#' sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.8, mot_y=.8,modeled_species=pabu.pop,optimum=.6, n_failures=5, fail_thresh=.40,
+#' direction="S",write_results=TRUE,single_rast=FALSE,mortality = T)
+#'  
+#' # View Results in Clean Format
+#' tidy_results(EX2,type="results")
+#' tidy_results(EX2,type="run_params")
+#' 
 #' @export
 
 moveSIM=function(replicates=200,days,env_rast=ndvi_raster, search_radius=375,

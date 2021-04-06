@@ -22,14 +22,23 @@
 #' @param init_energy Numeric, initial energy in interval (0,100]
 #' @param direction Character, movement direction, one of "N","S","E","W", default "S".
 #' @param mortality Logical, should low energy levels result in death? Default T.
+#' @param energy_adj Numeric, Vector of length 11 representing desired energy gain/penalty corresponding to achieved env values
+#' in optimum range (1st element), and within 10, 20,  ..., 80, 90, and 90+ percent (11th element) of the average of optimum hi and optimum lo.
+#' Recommend using default which is decreasing and symmetric about zero but can modify if desired. 
 #' @param write_results Logical, save results to csv? Default F.
 #' @param single_rast Logical, are you using a one-layer raster for all timesteps?. Default F.
 #'
 #' @return
-#' #' A (days X replicates) X 7 dataframe containing data on latitude, longitude, energy,
-#' day, agent ID, distance traveled between each timestep (in km), and change in
-#' energy from last timestep.
-#' @examples
+#' Under "results", a (days+1 X replicates) X 9 dataframe containing data on agent_id, day, longitude, latitude,
+#' current agent status (Alive, Stopped, or Died), energy, change in energy from last time_step, 
+#' distance traveled from last timestep (in km), and plot_ignore, which can be ignored by the user.
+#' Using tidy_results() hides this column and provides overall nicer display of results.
+#' 
+#' Under "run_params", a record of function parameters used as well as missing_pct
+#' and mortality_pct. missing_pct corresponds to the percent of rows in the results dataframe
+#' missing information on lon/lat, which occurs when the agent has "died" or "stopped". mortality_pct
+#' refers to the percentage of agents in the run that died.
+#' 
 #' # Define species object
 #' pabu.pop = as.species(x=-98.7, y=34.7,
 #' morphpar1=15, morphpar1mean=16, morphpar1sd=2,morphpar1sign="Pos",
@@ -41,6 +50,11 @@
 #' modeled_species=pabu.pop,
 #' optimum_lo=.6,optimum_hi=.8,init_energy=100,
 #' direction="S",write_results=FALSE,single_rast=FALSE,mortality = TRUE)
+#' 
+#' # View Results in Clean Format
+#' tidy_results(EX1,type="results")
+#' tidy_results(EX1,type="run_params")
+#' 
 #' @export
 
 energySIM=function(replicates=200,days,env_rast=ndvi_raster, search_radius=375,
@@ -60,6 +74,12 @@ energySIM=function(replicates=200,days,env_rast=ndvi_raster, search_radius=375,
   if(init_energy<0 | init_energy>100)
   {print("Error: Initial Energy should be such that 0<init_energy<=100")
     stop()}
+  
+  if(length(energy_adj)!=11){
+  cat("Error: Supplied energy_adj vector not of required length 11. Please check your work
+        and consult documentation for more info on energy_adj")
+  stop()
+  }
 
   if(nlayers(env_rast)==1 & single_rast==FALSE)
   {cat("Error: Single layer environmental raster with single_rast=FALSE specified.

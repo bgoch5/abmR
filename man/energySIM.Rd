@@ -57,23 +57,25 @@ energySIM(
 
 \item{mortality}{Logical, should low energy levels result in death? Default T.}
 
+\item{energy_adj}{Numeric, Vector of length 11 representing desired energy gain/penalty corresponding to achieved env values
+in optimum range (1st element), and within 10, 20,  ..., 80, 90, and 90+ percent (11th element) of the average of optimum hi and optimum lo.
+Recommend using default which is decreasing and symmetric about zero but can modify if desired.}
+
 \item{write_results}{Logical, save results to csv? Default F.}
 
 \item{single_rast}{Logical, are you using a one-layer raster for all timesteps?. Default F.}
 }
 \value{
-#' A (days X replicates) X 7 dataframe containing data on latitude, longitude, energy,
-day, agent ID, distance traveled between each timestep (in km), and change in
-energy from last timestep.
-}
-\description{
-Here, agent mortality occurs when agent reaches energy = 0 (out of 100). Agent energy
-stores are dynamic, and affect search area as a multiplier, so movement
-is directly affected by the quality of raster cells achieved. Results may be visualized
-with `energyVIZ()`. Relies on underlying function `energySIM_helper`, which is
-not to be used alone.
-}
-\examples{
+Under "results", a (days+1 X replicates) X 9 dataframe containing data on agent_id, day, longitude, latitude,
+current agent status (Alive, Stopped, or Died), energy, change in energy from last time_step, 
+distance traveled from last timestep (in km), and plot_ignore, which can be ignored by the user.
+Using tidy_results() hides this column and provides overall nicer display of results.
+
+Under "run_params", a record of function parameters used as well as missing_pct
+and mortality_pct. missing_pct corresponds to the percent of rows in the results dataframe
+missing information on lon/lat, which occurs when the agent has "died" or "stopped". mortality_pct
+refers to the percentage of agents in the run that died.
+
 # Define species object
 pabu.pop = as.species(x=-98.7, y=34.7,
 morphpar1=15, morphpar1mean=16, morphpar1sd=2,morphpar1sign="Pos",
@@ -85,4 +87,15 @@ sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.9, mot_y=.9,
 modeled_species=pabu.pop,
 optimum_lo=.6,optimum_hi=.8,init_energy=100,
 direction="S",write_results=FALSE,single_rast=FALSE,mortality = TRUE)
+
+# View Results in Clean Format
+tidy_results(EX1,type="results")
+tidy_results(EX1,type="run_params")
+}
+\description{
+Here, agent mortality occurs when agent reaches energy = 0 (out of 100). Agent energy
+stores are dynamic, and affect search area as a multiplier, so movement
+is directly affected by the quality of raster cells achieved. Results may be visualized
+with `energyVIZ()`. Relies on underlying function `energySIM_helper`, which is
+not to be used alone.
 }

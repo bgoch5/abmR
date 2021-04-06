@@ -41,7 +41,7 @@
 #' label=TRUE)
 #' @export
 
-energyVIZ=function(data,title="EnergySIM results",type="plot",
+energyVIZ=function(data,title="energySIM results",type="plot",
                    aspect_ratio=4/3, label=FALSE,
                    xlim=NULL,ylim=NULL)
 {
@@ -130,7 +130,7 @@ else{
     geom_path(data = t.energy.res,
               aes(x=lon, y=lat),
               color = "red", size = 0.6, alpha = 0.4, lineend = "round") + theme(aspect.ratio=aspect_ratio)
-  ggtitle(title) 
+  + ggtitle(title) 
   label=FALSE
 }
 if(label){
@@ -183,7 +183,7 @@ if(type=="gradient")
   return(my_plot)
   }
 if(type=="summary_table"){
-  test=tbl_summary(EX1$results[,-c(1,2,9)])
+  test=tbl_summary(data$results[,-c(1,2,9)])
   return(test)
 }
 if(type=="strat_table")
