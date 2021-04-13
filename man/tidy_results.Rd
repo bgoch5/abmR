@@ -4,7 +4,7 @@
 \alias{tidy_results}
 \title{Prints results from moveSIM() or energySIM() in an easier-to-read table.}
 \usage{
-tidy_results(data, type = "results")
+tidy_results(data, type = "results", nrows = NULL)
 }
 \arguments{
 \item{data}{The output from moveSIM or energySIM -- a list of two dataframes.}

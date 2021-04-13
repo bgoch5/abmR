@@ -2,9 +2,16 @@
 % Please edit documentation in R/moveVIZ.R
 \name{moveVIZ}
 \alias{moveVIZ}
-\title{Creates a plot of energySIM() results}
+\title{Creates a plot/table of moveSIM() results}
 \usage{
-moveVIZ(data, type = "plot", title = "moveSIM results")
+moveVIZ(
+  data,
+  type = "plot",
+  title = "moveSIM results",
+  aspect_ratio = 1,
+  xlim = NULL,
+  ylim = NULL
+)
 }
 \arguments{
 \item{data}{Data to be plotted, this object should be the output from
@@ -13,13 +20,18 @@ moveSIM().}
 \item{type}{"plot" or "summary_table", default "plot".}
 
 \item{title}{Title for the plot that is output.}
-}
-\value{
-A plot showing model output compared to a dashed line that represents straight line
-movement from the starting point to the final destination.
+
+\item{aspect_ratio}{Aspect ratio, defaults to 1.}
+
+\item{xlim}{Optionally specify desired x limits as a numeric vector: c(low,hi)}
+
+\item{ylim}{Optionally specify desired y limits as a numeric vector: c(low,hi)}
 }
 \description{
-Compares results with straight line path between origin and destination.
+When type="plot", function plots the movement tracks versus the the straight line
+track between the origin and destination (unless the destination was unspecified in the
+call to moveSIM(), then straight line track is omitted). When type="summary_table", a summary
+table is output.
 }
 \examples{
 
@@ -29,7 +41,7 @@ EX2=moveSIM(replicates=5,days=27,env_rast=ndvi_raster, search_radius=550,
 sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.8, mot_y=.8,modeled_species=pabu.pop,optimum=.6, n_failures=5, fail_thresh=.40,
  direction="S",write_results=TRUE,single_rast=FALSE,mortality = T)
 
-2. Run energySIM() on your result
+2. Run moveVIZ() on your result
 moveVIZ(EX2,title="Visualizing MoveSIM results",type="plot",aspect_ratio=4/3,
 label=TRUE)
 

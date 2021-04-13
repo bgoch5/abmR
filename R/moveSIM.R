@@ -1,22 +1,22 @@
 #'
-#' Runs basic Brownianb / Ornstein Uhlenbeck agent-based model for multiple replicates.
+#' Runs basic Brownian / Ornstein Uhlenbeck agent-based model for multiple replicates.
 #'
 #' Here, agent mortality occurs when agent fails to achieve suitable raster values
-#' at least 5 days (timesteps) in a row. Agent energy stores are not dynamic, so movement
+#' at least n_failures+1 timesteps in a row. Agent energy stores are not dynamic, so movement
 #' speed isn't directly affected by quality of raster cells achieved. Results may be analyzed
 #' with `moveVIZ()`. Relies on underlying function `moveSIM_helper`, which is not to be used
 #' alone.
 #' 
 #' Arguments mortality, n_failures, and fail_thresh interact with each other. If 
 #' mortality = F, values for n_failures and fail_thresh are ignored. If mortality=T, fail_thresh
-#' determines what consitutes a failure, and n_failures indicates how many failures are allowed before
+#' determines what constitutes a failure, and n_failures indicates how many failures are allowed before
 #' death. Note: If n_failures=days, this is equivalent to mortality=F.
 #'
-#' @param replicates Integer, desired number of replicates per run. Default 200.
-#' @param days Integer, How many days (timesteps) would you like to model? Range (1,nlayers(env_rast))
+#' @param replicates Integer, desired number of replicates per run. Default 100.
+#' @param days Integer, how many days (timesteps) would you like to model? Range (1,nlayers(env_rast))
 #' @param env_rast Rasterstack or Rasterbrick with number of layers >= days
 #' @param search_radius Radius of semicircle search regions (in km). Default 375. 
-#' @param sigma Numeric, randomness parameter, range (-Infty, Infty). Default 0.5.
+#' @param sigma Numeric, randomness parameter, range (-Inf, Inf). Default 0.1.
 #' @param dest_x Numeric, destination x coordinate (longitude)
 #' @param dest_y Numeric, destination y coordinate (latitude)
 #' @param mot_x Numeric, movement motivation in x direction, range (0,1], default 1.
@@ -27,15 +27,15 @@
 #' a failure is determined by fail_thresh, range (1,days]. Default 4. 
 #' @param fail_thresh What percentage deviation from optimum leads to death? E.g. default of 
 #' .50 means 50 percent or greater deviation from optimum on a particular step constitutes failure.
-#' @param direction Character, movement direction, one of "N","S","E","W". Default "S".
+#' @param direction Character, movement direction, one of "N","S","E","W", or "R" (Random). Default "S".
 #' @param mortality Logical, should low energy levels result in death? Default T.
 #' @param write_results Logical, save results to csv? Default F.
 #' @param single_rast Logical, are you using a one-layer raster for all timesteps? Default F.
 #'
 #' @return
-#' Under "results", a (days+1 X replicates) X 7 dataframe containing data on agent_id, day, longitude, latitude,
-#' current agent status (Alive, Stopped, or Died), distance traveled from last timestep (in km), and plot_ignore, which can be ignored by the user.
-#' Using tidy_results() hides this column and provides overall nicer display of results.
+#' Under "results", a (days+1 * replicates) row X 7 column dataframe containing data on agent_id, day, longitude, latitude,
+#' current agent status (Alive, Stopped, or Died), distance traveled from last timestep (in km), and a plot_ignore column, which can be ignored by the user.
+#' Using tidy_results() hides the plot_ignore column and provides overall nicer display of results.
 #' 
 #' Under "run_params", a record of function parameters used as well as missing_pct
 #' and mortality_pct. missing_pct corresponds to the percent of rows in the results dataframe
@@ -44,13 +44,13 @@
 #' 
 #' @examples
 #' # Define species object
-#' pabu.pop = as.species(x=-98.7, y=34.7,
+#' pop1 = as.species(x=-98.7, y=34.7,
 #' morphpar1=15, morphpar1mean=16, morphpar1sd=2,morphpar1sign="Pos",
 #' morphpar2=19,morphpar2mean=18,morphpar2sd=1,morphpar2sign="Pos")
 #' 
 #' # Run function
 #' EX2=moveSIM(replicates=5,days=27,env_rast=ndvi_raster, search_radius=550,
-#' sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.8, mot_y=.8,modeled_species=pabu.pop,optimum=.6, n_failures=5, fail_thresh=.40,
+#' sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.8, mot_y=.8,modeled_species=pop1,optimum=.6, n_failures=5, fail_thresh=.40,
 #' direction="S",write_results=TRUE,single_rast=FALSE,mortality = T)
 #'  
 #' # View Results in Clean Format
@@ -59,8 +59,8 @@
 #' 
 #' @export
 
-moveSIM=function(replicates=200,days,env_rast=ndvi_raster, search_radius=375,
-                 sigma, dest_x, dest_y, mot_x, mot_y, modeled_species,
+moveSIM=function(replicates=100,days,env_rast=ndvi_raster, search_radius=375,
+                 sigma=0.1, dest_x, dest_y, mot_x, mot_y, modeled_species,
                  optimum,n_failures=4, fail_thresh=.5, direction="S",mortality=TRUE,
                  write_results=FALSE,single_rast=FALSE)
 

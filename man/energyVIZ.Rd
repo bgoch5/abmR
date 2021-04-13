@@ -2,13 +2,13 @@
 % Please edit documentation in R/energyVIZ.R
 \name{energyVIZ}
 \alias{energyVIZ}
-\title{Creates a plot of energySIM() results}
+\title{Creates a plot/table of energySIM() results}
 \usage{
 energyVIZ(
   data,
-  title = "energySIM results",
   type = "plot",
-  aspect_ratio = 4/3,
+  title = "energySIM results",
+  aspect_ratio = 1,
   label = FALSE,
   xlim = NULL,
   ylim = NULL
@@ -18,11 +18,11 @@ energyVIZ(
 \item{data}{Data to be plotted, this object should be the output from
 energySIM().}
 
-\item{title}{Title for the plot that is output.}
-
 \item{type}{String from "plot", "gradient", "summary_table", or "strat_table"?}
 
-\item{aspect_ratio}{Aspect ratio, defaults to 4/3}
+\item{title}{Title for the plot that is output.}
+
+\item{aspect_ratio}{Aspect ratio, defaults to 1.}
 
 \item{label}{Logical, label the origin and specified final destination?}
 
@@ -30,12 +30,13 @@ energySIM().}
 
 \item{ylim}{Optionally specify desired y limits as a numeric vector: c(low,hi)}
 }
-\value{
-A plot showing model output compared to a dashed line that represents straight line
-movement from the starting point to the final destination.
-}
 \description{
-Compares results with straight line path between origin and destination.
+When type="plot", function plots the movement tracks versus the the straight line
+track between the origin and destination (unless the destination was unspecified in the
+call to energySIM(), then straight line track is omitted). When type="gradient", creates
+a gradient plot showing what regions cause agents to gain/lose energy. Two table 
+options are also available using type="summary_table" or type="strat_table" (table
+with results stratified by energy gain or loss). Please see Vignette for examples of this output.
 }
 \examples{
 1. Run energySIM()

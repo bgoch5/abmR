@@ -6,11 +6,11 @@
 multiple replicates.}
 \usage{
 energySIM(
-  replicates = 200,
+  replicates = 100,
   days,
   env_rast = ndvi_raster,
   search_radius = 375,
-  sigma = 0.5,
+  sigma = 0.1,
   dest_x,
   dest_y,
   mot_x,
@@ -18,7 +18,7 @@ energySIM(
   modeled_species,
   optimum_lo,
   optimum_hi,
-  init_energy,
+  init_energy = 100,
   direction = "S",
   mortality = TRUE,
   energy_adj = c(25, 20, 15, 10, 5, 0, -5, -10, -15, -20, -25),
@@ -27,7 +27,7 @@ energySIM(
 )
 }
 \arguments{
-\item{replicates}{Integer, desired number of replicates per run, default 200.}
+\item{replicates}{Integer, desired number of replicates per run, default 100.}
 
 \item{days}{Integer, How many days (timesteps) would you like to model? Range (1,nlayers(env_rast))}
 
@@ -35,7 +35,7 @@ energySIM(
 
 \item{search_radius}{Radius of semicircle search regions (in km). Default 375.}
 
-\item{sigma}{Numeric, randomness parameter, range (-Infty, Infty). Default 0.5.}
+\item{sigma}{Numeric, randomness parameter, range (-Inf, Inf). Default 0.1.}
 
 \item{dest_x}{Numeric, destination x coordinate (longitude)}
 
@@ -53,7 +53,7 @@ energySIM(
 
 \item{init_energy}{Numeric, initial energy in interval (0,100]}
 
-\item{direction}{Character, movement direction, one of "N","S","E","W", default "S".}
+\item{direction}{Character, movement direction, one of "N","S","E","W", or "R" (Random). Default "S".}
 
 \item{mortality}{Logical, should low energy levels result in death? Default T.}
 
@@ -66,31 +66,15 @@ Recommend using default which is decreasing and symmetric about zero but can mod
 \item{single_rast}{Logical, are you using a one-layer raster for all timesteps?. Default F.}
 }
 \value{
-Under "results", a (days+1 X replicates) X 9 dataframe containing data on agent_id, day, longitude, latitude,
+Under "results", a (days+1 X replicates) rows X 9 column dataframe containing data on agent_id, day, longitude, latitude,
 current agent status (Alive, Stopped, or Died), energy, change in energy from last time_step, 
-distance traveled from last timestep (in km), and plot_ignore, which can be ignored by the user.
-Using tidy_results() hides this column and provides overall nicer display of results.
+distance traveled from last timestep (in km), and a plot_ignore column, which can be ignored by the user.
+Using tidy_results() hides the plot ignore column and provides overall nicer display of results.
 
 Under "run_params", a record of function parameters used as well as missing_pct
 and mortality_pct. missing_pct corresponds to the percent of rows in the results dataframe
 missing information on lon/lat, which occurs when the agent has "died" or "stopped". mortality_pct
 refers to the percentage of agents in the run that died.
-
-# Define species object
-pabu.pop = as.species(x=-98.7, y=34.7,
-morphpar1=15, morphpar1mean=16, morphpar1sd=2,morphpar1sign="Pos",
-morphpar2=19,morphpar2mean=18,morphpar2sd=1,morphpar2sign="Pos")
-
-# Run function
-EX1=energySIM(replicates=5,days=27,env_rast=ndvi_raster, search_radius=400,
-sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.9, mot_y=.9,
-modeled_species=pabu.pop,
-optimum_lo=.6,optimum_hi=.8,init_energy=100,
-direction="S",write_results=FALSE,single_rast=FALSE,mortality = TRUE)
-
-# View Results in Clean Format
-tidy_results(EX1,type="results")
-tidy_results(EX1,type="run_params")
 }
 \description{
 Here, agent mortality occurs when agent reaches energy = 0 (out of 100). Agent energy
@@ -98,4 +82,22 @@ stores are dynamic, and affect search area as a multiplier, so movement
 is directly affected by the quality of raster cells achieved. Results may be visualized
 with `energyVIZ()`. Relies on underlying function `energySIM_helper`, which is
 not to be used alone.
+}
+\examples{
+# Define species object
+pop1 = as.species(x=-98.7, y=34.7,
+morphpar1=15, morphpar1mean=16, morphpar1sd=2,morphpar1sign="Pos",
+morphpar2=19,morphpar2mean=18,morphpar2sd=1,morphpar2sign="Pos")
+
+# Run function
+EX1=energySIM(replicates=5,days=27,env_rast=ndvi_raster, search_radius=400,
+sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.9, mot_y=.9,
+modeled_species=pop1,
+optimum_lo=.6,optimum_hi=.8,init_energy=100,
+direction="S",write_results=FALSE,single_rast=FALSE,mortality = TRUE)
+
+# View Results in Clean Format
+tidy_results(EX1,type="results")
+tidy_results(EX1,type="run_params")
+
 }

@@ -1,7 +1,12 @@
 
-#' Creates a plot of energySIM() results
+#' Creates a plot/table of energySIM() results
 #'
-#' Compares results with straight line path between origin and destination.
+#' When type="plot", function plots the movement tracks versus the the straight line
+#' track between the origin and destination (unless the destination was unspecified in the
+#' call to energySIM(), then straight line track is omitted). When type="gradient", creates
+#' a gradient plot showing what regions cause agents to gain/lose energy. Two table 
+#' options are also available using type="summary_table" or type="strat_table" (table
+#' with results stratified by energy gain or loss). Please see Vignette for examples of this output.
 #'
 #' @import raster
 #' @import sp
@@ -17,16 +22,13 @@
 #'
 #' @param data Data to be plotted, this object should be the output from
 #' energySIM().
-#' @param title Title for the plot that is output.
 #' @param type String from "plot", "gradient", "summary_table", or "strat_table"?
-#' @param aspect_ratio Aspect ratio, defaults to 4/3
+#' @param title Title for the plot that is output.
+#' @param aspect_ratio Aspect ratio, defaults to 1. 
 #' @param label Logical, label the origin and specified final destination?
 #' @param xlim Optionally specify desired x limits as a numeric vector: c(low,hi)
 #' @param ylim Optionally specify desired y limits as a numeric vector: c(low,hi)
 #'
-#' @return
-#' A plot showing model output compared to a dashed line that represents straight line
-#' movement from the starting point to the final destination.
 #' @examples
 #' 1. Run energySIM()
 #' 
@@ -41,8 +43,8 @@
 #' label=TRUE)
 #' @export
 
-energyVIZ=function(data,title="energySIM results",type="plot",
-                   aspect_ratio=4/3, label=FALSE,
+energyVIZ=function(data, type="plot", title="energySIM results",
+                   aspect_ratio=1, label=FALSE,
                    xlim=NULL,ylim=NULL)
 {
 dest_x=data$run_params$dest_x
@@ -114,7 +116,7 @@ myplot=ggplot(data = world) +
            ylim = my_ylim, 
            expand = FALSE) +
   geom_path(data = t.energy.res,
-            aes(x=lon, y=lat),
+            aes(x=lon, y=lat,group=agent_id),
             color = "red", size = 0.6, alpha = 0.4, lineend = "round") +
   geom_path(data = ideal.df,
             aes(x=Lon, y=Lat),
@@ -128,7 +130,7 @@ else{
              ylim = my_ylim, 
              expand = FALSE) +
     geom_path(data = t.energy.res,
-              aes(x=lon, y=lat),
+              aes(x=lon, y=lat,group=agent_id),
               color = "red", size = 0.6, alpha = 0.4, lineend = "round") + theme(aspect.ratio=aspect_ratio) +
     ggtitle(title) 
   label=FALSE

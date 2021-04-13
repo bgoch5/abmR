@@ -13,7 +13,7 @@
 #'  }
 #' @export
 
-tidy_results=function(data,type="results"){
+tidy_results=function(data,type="results", nrows=NULL){
   if(type=="run_params")
   {
   datapar <- data$run_params
@@ -35,6 +35,9 @@ tidy_results=function(data,type="results"){
   {
   data.res<- data$results
   data.res=data.res[,-length(data.res)]
+  if(!is.null(nrows)){
+  data.res=head(data.res,nrows)
+  }
   my_output=kable(data.res, digits = 3, format = "html", row.names = TRUE) %>%
     kable_styling(bootstrap_options = c("bordered", "hover", "striped", "condensed"),
                   full_width = F,
