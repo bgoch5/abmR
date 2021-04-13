@@ -54,9 +54,9 @@ moveVIZ=function(data, type="plot", title="moveSIM results", aspect_ratio=1, xli
     colnames(end.p.df)[1:2] = c("Lon", "Lat")
     end.p.df <- cbind(end.p.df, run)
     ideal.df <- rbind(start.p.df, end.p.df)
-    t.energy.res <- data$results
-    my_xlim = c((min(t.energy.res$lon,na.rm=T)-6), (max(t.energy.res$lon,na.rm=T)+6))
-    my_ylim = c((min(t.energy.res$lat,na.rm=T)-6), (max(t.energy.res$lat,na.rm=T)+6))
+    t.move.res <- data$results
+    my_xlim = c((min(t.move.res$lon,na.rm=T)-6), (max(t.move.res$lon,na.rm=T)+6))
+    my_ylim = c((min(t.move.res$lat,na.rm=T)-6), (max(t.move.res$lat,na.rm=T)+6))
     
     if(!is.null(xlim)){
       my_xlim=xlim
@@ -70,7 +70,7 @@ moveVIZ=function(data, type="plot", title="moveSIM results", aspect_ratio=1, xli
     myplot=ggplot(data = world) +
       geom_sf() +
       coord_sf(xlim = my_xlim, ylim = my_ylim, expand = FALSE) +
-      geom_path(data = t.energy.res,
+      geom_path(data = t.move.res,
                 aes(x=lon, y=lat,group=agent_id),
                 color = "blue", size = 0.6, alpha = 0.4, lineend = "round") +
       geom_path(data = ideal.df,
@@ -82,7 +82,7 @@ moveVIZ=function(data, type="plot", title="moveSIM results", aspect_ratio=1, xli
       myplot=ggplot(data = world) +
         geom_sf() +
         coord_sf(xlim = my_xlim, ylim = my_ylim, expand = FALSE) +
-        geom_path(data = t.energy.res,
+        geom_path(data = t.move.res,
                   aes(x=lon, y=lat,group=agent_id),
                   color = "blue", size = 0.6, alpha = 0.4, lineend = "round") + + theme(aspect.ratio=aspect_ratio) + 
         ggtitle(title)  

@@ -1,18 +1,20 @@
 ---
 title: 'abmR: An R Package for Agent-based Model Analysis of Large-scale Movements
   Across Taxa'
-author: "Benjamin Gochanour, Javi Fernandez Lopez, Andrea Contina"
-date: "`r Sys.Date()`"
+author: "Benjamin Gochanour, Javier Fernandez Lopez, Andrea Contina"
+date: '`r Sys.Date()`'
 output:
-    md_document:
-      variant: markdown_github
- # html_document:
-    #toc: yes
-    #toc_float: yes
-  #  theme: journal
-  #  keep_rd: yes
-  #pdf_document:
-   # toc: yes
+  html_document:
+    toc: yes
+    toc_float: yes
+    theme: journal
+    number_sections: true
+  md_document:
+    variant: markdown_github
+    theme: journal
+    keep_rd: yes
+  pdf_document:
+    toc: yes
 warnings: no
 ---
 
@@ -23,12 +25,11 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r}
-library(lemon) 
-library(knitr)
+```{r, cache=TRUE}
+library(abmr) 
 ```
 
-# I. Getting Started
+# Getting Started
 
 ## Installation
 
@@ -39,130 +40,228 @@ and load the library:
 library(abmr,quietly=TRUE,warn.conflicts=FALSE)
 ```
 While this package is still in development, it will be updated frequently, so please
-be sure to re-install frequently.
-
-For `abmR` to work, you will need updated versions of the packages `geosphere`, `ggplot2`, `raster`, `rgdal`, `rnaturalearth`, `rnaturalearthdata`, `sp`, `swfscMisc`, and `table1`.
+be sure to re-install frequently. Installing `abmr` will also automaticaly install its dependencies, if you don't already have them installed. These include `raster`, `sp`, `rgdal`, `table1`, `googledrive`, `swfscMisc`, `geosphere`, `kableExtra`, and `gtsummary`, and `ggplot`.
 
 ## Requirements for Environmental Data Rasters and Species objects
 
 The modeling functions discussed below require several input objects to work, which
 we will discuss here.
 
-a) A shapefile that represents the boundaries for your movements.
+### Environmental raster stack
 
-Here, we use North America, but whatever region you are interested in modeling
-movement over.
+Example data that will be used in this Vignette and other package documentation can
+be downloaded using `get_ex_data()`. This function will download to your hard drive
+(to a location specified by your current working directory) the below
+NDVI raster files, totaling approximately 620 MB. The first time you use this function, you will be directed to your browser and required to sign in to your Google account to connect to the Tidyverse API. If you use the function a second time, you may simply follow the prompts and enter a number corresponding to the previous accounts listed.
+
 ```{r}
-library(rgdal) #For reading in shapefile
-setwd("C:\\Users\\BGOCHANOUR\\Documents\\GitHub\\move-model")
-NOAM=readOGR(layer="NOAM",dsn=".")
-plot(NOAM,xlim=c(-130,-60),ylim=c(18,75))
+# get_ex_data() Commented out because can't run in non-interactive RMD session
 ```
 
-b) A environmental raster stack
-
-We are currently working on how to attach an example raster to the package, but you can read yours in like this. Here, we use NDVI, but
-you may use a raster stack for any environmental variable of interest. Here, we plot
-the first four layers of our stack.
+Once you have the data downloaded, you must read it into R using commands like the following.
+You may instead use your own environmental raster data - NDVI or otherwise - and read it into
+R in a similar way.
 
 ```{r}
-library(raster)
-ndvi_raster=stack("C:\\Users\\BGOCHANOUR\\Documents\\GitHub\\move-model\\NDVI_2013.gri")
-plot(ndvi_raster[[1:4]])
+ndvi_raster_NA=stack("C:\\Users\\BGOCHANOUR\\Documents\\GitHub\\move-model\\NDVI_2013_NA.gri")
+ndvi_raster_NA_composite=stack("C:\\Users\\BGOCHANOUR\\Documents\\GitHub\\move-model\\NDVI_2013_NA_composite.gri")
+ndvi_raster_EU=stack("C:\\Users\\BGOCHANOUR\\Documents\\GitHub\\move-model\\NDVI_2013_Europe.gri")
+ndvi_raster_EU_composite=stack("C:\\Users\\BGOCHANOUR\\Documents\\GitHub\\move-model\\NDVI_2013_Europe_composite.gri")
 ```
 
-c) A species object to describe the species that you will model.
+We can now quickly examine our raster data to see if it read in correctly.
 
-This object contains information on origin longitude (x) and latitude (y) as well
-as two morphological parameters, `p1` and `p2`. Use ?species for more details.
+First, we plot the Rasters for North America. The first raster is a 27-layer stack (of which we will plot the first four layers), and the second is a composite raster formed by taking the mean of all layers.
+
 ```{r}
-# Define the species class
-species <- setClass("species", slots=c(x="numeric", y="numeric",
-p1="numeric", p1mean="numeric", p1sd="numeric",p1sign="character",
-p2="numeric", p2mean="numeric", p2sd="numeric",p2sign="character"))
+plot(ndvi_raster_NA[[1:4]]) # First four layers of 27 layer RasterStack
+plot(ndvi_raster_NA_composite) # This is average of above 27 layer raster
+```
 
-# Define your species object. Imagine p1 is wing chord and p2 is mass.
-# We are simulating larger than average birds which increases movement speed.
-# For more details, use ?species
+Next, plot the European data.
 
-my_species=species(x=-90,y=45,p1=15,p1mean=10,p1sd=2,p1sign="Pos",
-                   p2=10,p2mean=8,p2sd=1,p2sign="Pos")
+```{r}
+plot(ndvi_raster_EU[[1:4]]) # First four layers of 27 layer RasterStack
+plot(ndvi_raster_EU_composite)
+```
+
+### Species object
+
+This object will be constructed with the function `as.species`, and contains information on origin longitude (x) and latitude (y) as well as two morphological parameters, `p1` and `p2`. Use `?as.species` for more details.
+
+Here, we will construct two example species, one for North America and one for Europe.
+
+```{r}
+NA.pop = as.species(x=-98.7, y=34.7, morphpar1=15, morphpar1mean=16,
+                      morphpar1sd=2,morphpar1sign="Pos",
+                      morphpar2=19,morphpar2mean=18,morphpar2sd=1,morphpar2sign="Pos")
+
+EU.pop = as.species(x=10, y=50, morphpar1=24, morphpar1mean=16,
+                        morphpar1sd=5,morphpar1sign="Pos", morphpar2=12, morphpar2mean=9,
+                        morphpar2sd=3, morphpar2sign="Neg")
 
 ```
 
 
 ```{r out.width="50%", out.height="50%"}
 # Small fig.width
-include_graphics("OCWA.jpg")
+# include_graphics("OCWA.jpg") Update pictures later
 ```
 
-# II. Running Agent-based models
+# Running Agent-based models
 
-`abmR` has two functions for modeling animal migration: `moveSIM` and `energySIM`.
-Both `moveSIM` and `energySIM` will output two things: (1) a dataframe of results and
-(2) a summary table of input parameters. For more details on how each function works,
-please see the documentation by using ?moveSIM or ?energySIM.
+`abmR` has two functions for modeling animal movement: `moveSIM` and `energySIM`.
+Both `moveSIM` and `energySIM` will output two things: (1) a dataframe of results (`$results`) and (2) a summary table of input parameters used (`$run_params`). For more details on how each function works, please see the documentation by using ?moveSIM or ?energySIM.
+
+We will run `moveSIM` and `energySIM` once for each of our species, for a total of four
+movement simulations.
 
 ## `moveSIM`
 
-```{r render=lemon_print}
-moveSIM_results=moveSIM(replicates=1,days=27,env_rast=ndvi_raster, search_radius=375,
-  sigma=.4, dest_x=-100, dest_y=25, mot_x=1, mot_y=1,modeled_species=my_species,
-  my_shapefile=NOAM,optimum=.5,direction="S",write_results=TRUE,single_rast=FALSE)
-head(moveSIM_results$results,30)
-moveSIM_results$run_params
+First, we will look at `moveSIM()` the more basic function that....
+
+```{r,results='hide'}
+set.seed(1)
+NA.move=moveSIM(replicates=25,days=27,env_rast=ndvi_raster_NA, search_radius=550,
+                sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.8,
+                mot_y=.8,modeled_species=NA.pop,optimum=.6, n_failures=3, fail_thresh=.40,
+                direction="S",write_results=TRUE,single_rast=FALSE,mortality = T)
+
+EU.move=moveSIM(replicates = 25, days=27, env_rast=ndvi_raster_EU, search_radius=550, sigma=0.1,
+               dest_x=999, dest_y=999, mot_x=0.7, mot_y=0.7,
+               modeled_species=EU.pop, optimum = 0.5, direction="S", write_results=F,
+               single_rast=F, mortality = F, n_failures = 27, fail_thresh = 0.50)
+
 ```
 
+We can simply view our results in the console by typing `NA.move` or `EU.move`. However,
+we have created the function `tidy_results()` to provide cleaner output. Simply supply your
+moveSIM() or energySIM() output and specify `type`="results" or `type`="run_params", depending on which portion of your output you'd like to display.
+
+First, we run this function on our North American `moveSIM()` output. We will print just
+the first 30 rows to save space.
+
+```{r}
+tidy_results(NA.move,type="results",nrows=30)
+tidy_results(NA.move,type="run_params")
+```
+
+Now, let's examine our European `moveSIM()` output.
+
+```{r}
+tidy_results(EU.move,type="results",nrows=30)
+tidy_results(EU.move,type="run_params")
+```
 
 ## `energySIM`
 
-```{r render=lemon_print}
-energySIM_results=energySIM(replicates=1,days=27,env_rast=ndvi_raster, search_radius=375,
-                  sigma=.4, dest_x=-100, dest_y=25, mot_x=1, mot_y=1,
-                  modeled_species=my_species, my_shapefile=NOAM,
-                  optimum_lo=.4,optimum_hi=.6,init_energy=100,
-                  direction="S",write_results=TRUE,single_rast=FALSE)
-head(energySIM_results$results,30)
-energySIM_results$run_params
+Next, we turn our attention to `energySIM()`, the more advanced function that
+does XXXX additional things...
+
+```{r,results='hide'}
+NA.energy = energySIM(replicates=25,days=27,env_rast=ndvi_raster_NA, search_radius=550,
+              sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.8, mot_y=.8,
+              modeled_species=NA.pop,
+              optimum_lo=.4,optimum_hi=.8,init_energy=100,
+              direction="S",write_results=FALSE,single_rast=FALSE,mortality = TRUE)
+# matching up params as much as possible to moveSIM() stuff above
+EU.energy = energySIM(replicates = 25, days=27, env_rast=ndvi_raster_EU, search_radius=550,
+                      sigma=0.1, dest_x=999, dest_y=999, mot_x=0.7, mot_y=0.7,
+               modeled_species=EU.pop, optimum_lo = 0.4, optimum_hi=0.6, init_energy=100,
+               direction="S", write_results=F, single_rast=F, mortality = F)
+```
+
+The `tidy_results` function will also work on `energySIM()` output.
+
+First, we run this function on our North American `energySIM()` output.
+
+```{r}
+tidy_results(NA.energy,type="results",nrows=30)
+tidy_results(NA.energy,type="run_params")
+```
+
+Now, let's examine our European `energySIM()` output.
+
+```{r}
+tidy_results(EU.energy,type="results", nrows=30)
+tidy_results(EU.energy,type="run_params")
 ```
 
 
-# III. Visualizing Results
+# Visualizing/Summarizing Results
 
 The output from `moveSIM` and `energySIM` are simple dataframes, so one may easily
-visualize their results using custom codes. However, we have provided the following functions that include a set of default plots that you may find useful.
+visualize their results using custom codes. However, we have provided `moveVIZ` and `energyVIZ`,
+respectively, to provide pre-prepared solutions for visualizing and summarizing your
+movement simulation results. These functions will be demonstrated first for our North America
+results and second for our Europe results.
 
-## `moveVIZ`
+## North American Results
 
-One may want a basic plot of each agent's movement, as compared to a straight-line
-trajectory between the start and target endpoint. This can be obtained by
+The first two types of output are available for both `moveSIM()` and `energySIM()` output via
+the functions `moveVIZ()` and `energyVIZ()`, respectively.
 
-```{r}
-moveVIZ(moveSIM_results,title="MoveSIM results")
-```
-
-## `energyVIZ`
-
-The `energyVIZ` function can produce three different types of output, so you must
-specify the `type` parameter. For a similar basic plot to the above, use 
-`type` = "plot"
+### Movement tracks
 
 ```{r}
-energyVIZ(energySIM_results,title="EnergySIM results",type="plot")
+moveVIZ(NA.move, type="plot", title="moveSIM North America results")
+energyVIZ(NA.energy, type="plot", title="EnergySIM North America results")
 ```
 
-ADD GRADIENT/CONTOUR PLOT SOON
-
-One may also want to create a table to summarize energy, day, and distance, stratified
-by energy gain/loss amount. This can be obtained by setting the `type` argument to
-"table".
+### Summary table
 
 ```{r}
-energyVIZ(energySIM_results,title="EnergySIM results",type="table")
+moveVIZ(NA.move, type="summary_table")
+energyVIZ(NA.energy, type="summary_table")
+```
+
+The next two types of output are available only for `energySIM()` output.
+
+### Stratified tables
+
+```{r}
+energyVIZ(NA.energy, type="strat_table")
+```
+
+### Gradient plots
+
+```{r}
+energyVIZ(NA.energy, type="gradient")
 ```
 
 
-# IV. Getting Help
+## European Results
+
+
+### Movement tracks
+
+```{r}
+moveVIZ(EU.move, type="plot", title="moveSIM European results")
+energyVIZ(EU.energy, type="plot", title="EnergySIM European results")
+```
+
+### Summary table
+
+```{r}
+moveVIZ(EU.move, type="summary_table")
+energyVIZ(EU.energy, type="summary_table")
+```
+
+The next two types of output are available only for `energySIM()` output.
+
+### Stratified tables
+
+```{r}
+energyVIZ(EU.energy, type="strat_table")
+```
+
+### Gradient plots
+
+```{r}
+energyVIZ(EU.energy, type="gradient")
+```
+
+# Getting Help
 
 Need help? Have suggestions to make `abmR` better? If so, please open an issue or
 pull request on Github (https://github.com/bgoch5/abmr), or drop me an email at ben.gochanour\@ou.edu.
