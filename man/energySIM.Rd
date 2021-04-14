@@ -8,22 +8,22 @@ multiple replicates.}
 energySIM(
   replicates = 100,
   days,
-  env_rast = ndvi_raster,
-  search_radius = 375,
-  sigma = 0.1,
+  modeled_species,
+  env_rast,
+  optimum_lo,
+  optimum_hi,
   dest_x,
   dest_y,
   mot_x,
   mot_y,
-  modeled_species,
-  optimum_lo,
-  optimum_hi,
-  init_energy = 100,
+  search_radius = 375,
   direction = "S",
+  sigma = 0.1,
   mortality = TRUE,
+  init_energy = 100,
   energy_adj = c(25, 20, 15, 10, 5, 0, -5, -10, -15, -20, -25),
-  write_results = FALSE,
-  single_rast = FALSE
+  single_rast = FALSE,
+  write_results = FALSE
 )
 }
 \arguments{
@@ -31,11 +31,13 @@ energySIM(
 
 \item{days}{Integer, How many days (timesteps) would you like to model? Range (1,nlayers(env_rast))}
 
+\item{modeled_species}{Object of class "species"}
+
 \item{env_rast}{Rasterstack or Rasterbrick with number of layers >= days}
 
-\item{search_radius}{Radius of semicircle search regions (in km). Default 375.}
+\item{optimum_lo}{Numeric, optimal environmental value (low)}
 
-\item{sigma}{Numeric, randomness parameter, range (-Inf, Inf). Default 0.1.}
+\item{optimum_hi}{Numeric, optimal environmental value (high)}
 
 \item{dest_x}{Numeric, destination x coordinate (longitude)}
 
@@ -45,25 +47,23 @@ energySIM(
 
 \item{mot_y}{Numeric, movement motivation in y direction, range (0,1], default 1.}
 
-\item{modeled_species}{Object of class "species"}
-
-\item{optimum_lo}{Numeric, optimal environmental value (low)}
-
-\item{optimum_hi}{Numeric, optimal environmental value (high)}
-
-\item{init_energy}{Numeric, initial energy in interval (0,100]}
+\item{search_radius}{Radius of semicircle search regions (in km). Default 375.}
 
 \item{direction}{Character, movement direction, one of "N","S","E","W", or "R" (Random). Default "S".}
 
+\item{sigma}{Numeric, randomness parameter, range (-Inf, Inf). Default 0.1.}
+
 \item{mortality}{Logical, should low energy levels result in death? Default T.}
+
+\item{init_energy}{Numeric, initial energy in interval (0,100]}
 
 \item{energy_adj}{Numeric, Vector of length 11 representing desired energy gain/penalty corresponding to achieved env values
 in optimum range (1st element), and within 10, 20,  ..., 80, 90, and 90+ percent (11th element) of the average of optimum hi and optimum lo.
 Recommend using default which is decreasing and symmetric about zero but can modify if desired.}
 
-\item{write_results}{Logical, save results to csv? Default F.}
-
 \item{single_rast}{Logical, are you using a one-layer raster for all timesteps?. Default F.}
+
+\item{write_results}{Logical, save results to csv? Default F.}
 }
 \value{
 Under "results", a (days+1 X replicates) rows X 9 column dataframe containing data on agent_id, day, longitude, latitude,

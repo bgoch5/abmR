@@ -23,10 +23,10 @@
 #' @param mot_y Numeric, movement motivation in y direction, range (0,1], default 1.
 #' @param modeled_species Object of class "species"
 #' @param optimum Numeric, optimal environmental value
-#' @param n_failures How many failures are allowable before agent experiences death (at n_failures+1). What constitutes
-#' a failure is determined by fail_thresh, range (1,days]. Default 4. 
 #' @param fail_thresh What percentage deviation from optimum leads to death? E.g. default of 
 #' .50 means 50 percent or greater deviation from optimum on a particular step constitutes failure.
+#' @param n_failures How many failures are allowable before agent experiences death (at n_failures+1). What constitutes
+#' a failure is determined by fail_thresh, range (1,days]. Default 4. 
 #' @param direction Character, movement direction, one of "N","S","E","W", or "R" (Random). Default "S".
 #' @param mortality Logical, should low energy levels result in death? Default T.
 #' @param write_results Logical, save results to csv? Default F.
@@ -44,8 +44,7 @@
 #' 
 #' @examples
 #' # Define species object
-#' pop1 = as.species(x=-98.7, y=34.7,
-#' morphpar1=15, morphpar1mean=16, morphpar1sd=2,morphpar1sign="Pos",
+#' pop1 = as.species(x=-98.7, y=34.7, morphpar1=15, morphpar1mean=16, morphpar1sd=2,morphpar1sign="Pos",
 #' morphpar2=19,morphpar2mean=18,morphpar2sd=1,morphpar2sign="Pos")
 #' 
 #' # Run function
@@ -59,10 +58,24 @@
 #' 
 #' @export
 
-moveSIM=function(replicates=100,days,env_rast=ndvi_raster, search_radius=375,
-                 sigma=0.1, dest_x, dest_y, mot_x, mot_y, modeled_species,
-                 optimum,n_failures=4, fail_thresh=.5, direction="S",mortality=TRUE,
-                 write_results=FALSE,single_rast=FALSE)
+moveSIM=function(replicates=100, 
+                 days, 
+                 modeled_species,
+                 env_rast,
+                 optimum,
+                 dest_x,
+                 dest_y,
+                 mot_x,
+                 mot_y,
+                 search_radius=375,
+                 direction="S",
+                 sigma=0.1, 
+                 mortality=TRUE,
+                 fail_thresh=.5,
+                 n_failures=4,
+                 single_rast=FALSE,
+                 write_results=FALSE
+                 )
 
 {
   days=days+1
@@ -123,7 +136,8 @@ moveSIM=function(replicates=100,days,env_rast=ndvi_raster, search_radius=375,
                     single_rast=single_rast)
     names(Species)=c("lon","lat","curr_status","plot_ignore")
     Species$day=0:(nrow(Species)-1)
-    Species$agent_id=paste("Agent",as.character(i),sep="_")
+    number = sprintf("%02d", i)
+    Species$agent_id=paste("Agent", number,sep="_")
     Species$distance=NA
     for (j in 2:nrow(Species)){
         Species$distance[j]<-distHaversine(Species[(j-1),1:2], Species[j,1:2])/1000

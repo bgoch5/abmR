@@ -84,7 +84,7 @@ moveVIZ=function(data, type="plot", title="moveSIM results", aspect_ratio=1, xli
         coord_sf(xlim = my_xlim, ylim = my_ylim, expand = FALSE) +
         geom_path(data = t.move.res,
                   aes(x=lon, y=lat,group=agent_id),
-                  color = "blue", size = 0.6, alpha = 0.4, lineend = "round") + + theme(aspect.ratio=aspect_ratio) + 
+                  color = "blue", size = 0.6, alpha = 0.4, lineend = "round") + theme(aspect.ratio=aspect_ratio) + 
         ggtitle(title)  
     }
     return(myplot)

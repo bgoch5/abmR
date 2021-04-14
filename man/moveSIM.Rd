@@ -7,21 +7,21 @@
 moveSIM(
   replicates = 100,
   days,
-  env_rast = ndvi_raster,
-  search_radius = 375,
-  sigma = 0.1,
+  modeled_species,
+  env_rast,
+  optimum,
   dest_x,
   dest_y,
   mot_x,
   mot_y,
-  modeled_species,
-  optimum,
-  n_failures = 4,
-  fail_thresh = 0.5,
+  search_radius = 375,
   direction = "S",
+  sigma = 0.1,
   mortality = TRUE,
-  write_results = FALSE,
-  single_rast = FALSE
+  fail_thresh = 0.5,
+  n_failures = 4,
+  single_rast = FALSE,
+  write_results = FALSE
 )
 }
 \arguments{
@@ -29,11 +29,11 @@ moveSIM(
 
 \item{days}{Integer, how many days (timesteps) would you like to model? Range (1,nlayers(env_rast))}
 
+\item{modeled_species}{Object of class "species"}
+
 \item{env_rast}{Rasterstack or Rasterbrick with number of layers >= days}
 
-\item{search_radius}{Radius of semicircle search regions (in km). Default 375.}
-
-\item{sigma}{Numeric, randomness parameter, range (-Inf, Inf). Default 0.1.}
+\item{optimum}{Numeric, optimal environmental value}
 
 \item{dest_x}{Numeric, destination x coordinate (longitude)}
 
@@ -43,23 +43,23 @@ moveSIM(
 
 \item{mot_y}{Numeric, movement motivation in y direction, range (0,1], default 1.}
 
-\item{modeled_species}{Object of class "species"}
+\item{search_radius}{Radius of semicircle search regions (in km). Default 375.}
 
-\item{optimum}{Numeric, optimal environmental value}
+\item{direction}{Character, movement direction, one of "N","S","E","W", or "R" (Random). Default "S".}
 
-\item{n_failures}{How many failures are allowable before agent experiences death (at n_failures+1). What constitutes
-a failure is determined by fail_thresh, range (1,days]. Default 4.}
+\item{sigma}{Numeric, randomness parameter, range (-Inf, Inf). Default 0.1.}
+
+\item{mortality}{Logical, should low energy levels result in death? Default T.}
 
 \item{fail_thresh}{What percentage deviation from optimum leads to death? E.g. default of 
 .50 means 50 percent or greater deviation from optimum on a particular step constitutes failure.}
 
-\item{direction}{Character, movement direction, one of "N","S","E","W", or "R" (Random). Default "S".}
-
-\item{mortality}{Logical, should low energy levels result in death? Default T.}
-
-\item{write_results}{Logical, save results to csv? Default F.}
+\item{n_failures}{How many failures are allowable before agent experiences death (at n_failures+1). What constitutes
+a failure is determined by fail_thresh, range (1,days]. Default 4.}
 
 \item{single_rast}{Logical, are you using a one-layer raster for all timesteps? Default F.}
+
+\item{write_results}{Logical, save results to csv? Default F.}
 }
 \value{
 Under "results", a (days+1 * replicates) row X 7 column dataframe containing data on agent_id, day, longitude, latitude,
@@ -86,8 +86,7 @@ death. Note: If n_failures=days, this is equivalent to mortality=F.
 }
 \examples{
 # Define species object
-pop1 = as.species(x=-98.7, y=34.7,
-morphpar1=15, morphpar1mean=16, morphpar1sd=2,morphpar1sign="Pos",
+pop1 = as.species(x=-98.7, y=34.7, morphpar1=15, morphpar1mean=16, morphpar1sd=2,morphpar1sign="Pos",
 morphpar2=19,morphpar2mean=18,morphpar2sd=1,morphpar2sign="Pos")
 
 # Run function

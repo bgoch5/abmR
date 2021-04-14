@@ -58,12 +58,24 @@
 #' 
 #' @export
 
-energySIM=function(replicates=100,days,env_rast=ndvi_raster, search_radius=375,
-                sigma=.1, dest_x, dest_y, mot_x, mot_y, modeled_species,
-                optimum_lo,optimum_hi,init_energy=100,direction="S", mortality=TRUE,
-                energy_adj=c(25,20,15,10,5,0,-5,-10,-15,-20,-25),write_results=FALSE,
-                single_rast=FALSE)
-
+energySIM=function(replicates=100,
+                   days,
+                   modeled_species,
+                   env_rast,
+                   optimum_lo,
+                   optimum_hi,
+                   dest_x,
+                   dest_y,
+                   mot_x,
+                   mot_y,
+                   search_radius=375,
+                   direction="S",
+                   sigma=.1,
+                   mortality=TRUE, 
+                   init_energy=100,
+                   energy_adj=c(25,20,15,10,5,0,-5,-10,-15,-20,-25),
+                   single_rast=FALSE,
+                   write_results=FALSE)
 {
   days=days+1
   sp=modeled_species
@@ -154,7 +166,8 @@ energySIM=function(replicates=100,days,env_rast=ndvi_raster, search_radius=375,
                                            single_rast=single_rast)
       names(Species)=c("lon","lat","energy","curr_status","plot_ignore")
       Species$day=0:(nrow(Species)-1)
-      Species$agent_id=paste("Agent",as.character(i),sep="_")
+      number = sprintf("%02d", i)
+      Species$agent_id=paste("Agent",number,sep="_")
       Species$distance=NA
       Species$delta_energy=NA
       for (j in 2:nrow(Species)){
