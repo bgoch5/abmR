@@ -48,6 +48,13 @@ optimum_lo=.6,optimum_hi=.8,init_energy=100,
 direction="S",write_results=FALSE,single_rast=FALSE,mortality = TRUE)
 
 2. Run energyVIZ() on your result
+
 energyVIZ(EX1,title="Visualizing EnergySIM results",type="plot", aspect_ratio=5/3,
 label=TRUE)
+
+energyVIZ(EX1,type="summary_table")
+
+energyVIZ(EX1,type="strat_table")
+
+energyVIZ(EX1,type="gradient")
 }

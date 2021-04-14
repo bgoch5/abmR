@@ -32,8 +32,10 @@
 #'  direction="S",write_results=TRUE,single_rast=FALSE,mortality = T)
 #' 
 #' 2. Run moveVIZ() on your result
-#' moveVIZ(EX2,title="Visualizing MoveSIM results",type="plot",aspect_ratio=4/3,
+#' moveVIZ(EX2,title="Visualizing MoveSIM results",type="plot",
 #' label=TRUE)
+#' 
+#' moveVIZ(EX2, type="summary_table")
 #'
 #' @export
 

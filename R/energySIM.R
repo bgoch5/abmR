@@ -1,11 +1,19 @@
 #' Runs more advanced Brownian / Ornstein Uhlenbeck agent-based model for
 #' multiple replicates.
 #'
-#' Here, agent mortality occurs when agent reaches energy = 0 (out of 100). Agent energy
+#' Here, agent mortality occurs when agent reaches energy = 0. Agent energy
 #' stores are dynamic, and affect search area as a multiplier, so movement
 #' is directly affected by the quality of raster cells achieved. Results may be visualized
 #' with `energyVIZ()`. Relies on underlying function `energySIM_helper`, which is
 #' not to be used alone.
+#' 
+#' For each timestep, agents can have status "Alive",
+#'"Stopped", or "Died". All agents start alive and may stop if, on a particular timestep,
+#' there are no non-NA raster values in the search region. This often occurs when agents
+#' are searching over an ocean or a large lake, for example. Once an agent stops, they
+#' remain stopped for the rest of the run. Similarly, once an agent dies, they retain 
+#' this status for all subsequent timesteps. All timesteps with agent status "Stopped"
+#' or "Died" will have lat/lon=NA, so as to not affect subsequent analyses.
 #'
 #' @param replicates Integer, desired number of replicates per run, default 100.
 #' @param days Integer, How many days (timesteps) would you like to model? Range (1,nlayers(env_rast)) 

@@ -4,27 +4,27 @@
 #' origin of the agents but can also optionally specify values of
 #' morphological parameters, which will be standardized using (observed-mean/sd).
 #' The standardized values will affect the movement simulations by serving as a multiplier
-#' on `mot_x` and `mot_y` in the direction specified--"Pos" or "Neg".
+#' on "mot_x" and "mot_y" in the direction specified: "Pos" or "Neg".
 #' 
 #' In example 1 below, we have a bird with origin (-100,26)
 #' with observed wing chord length of 15 mm, while the population
 #' mean for this measure is 10 mm with a SD of  2 mm (these birds are bigger than
-#' average). We declare `morphpar1sign`=`"Pos"` because we assume longer wingchord
-#' length leads to longer flight. Here, `morphpar2` represents mass, and we want to model
+#' average). We declare morphpar1sign = "Pos" because we assume longer wingchord
+#' length leads to longer flight. Here, "morphpar2" represents mass, and we want to model
 #' heavier than average birds. We assume that heavier birds will fly longer distance, so
-#' specify `morphpar2sign`=`"Pos"`. If we assumed that heavier birds will fly shorter distance,
+#' specify `morphpar2sign` = `Pos` . If we assumed that heavier birds will fly shorter distance,
 #' we would  specify `morphpar2sign`=`"Neg"` to indicate the inverse relationship.
 #' 
-#' @param x Species origin longitude value (degrees)
-#' @param y Species origin latitude value (degrees)
+#' @param x Species origin longitude value (degrees). Required.
+#' @param y Species origin latitude value (degrees). Required.
 #' @param morphpar1 Observed value for morphological parameter 1 (numeric)
 #' @param morphpar1mean Population mean for morphological parameter 1 (numeric)
 #' @param morphpar1sd Population standard deviation for morphological parameter 1 (numeric)
-#' @param morphpar1sign Do higher values of morphpar1 lead to longer or shorter distances traveled each day? Specify "Pos" if faster and "Neg" if slower.
+#' @param morphpar1sign Do higher values of morphpar1 lead to longer or shorter distances traveled each day? Specify "Pos" if longer and "Neg" if shorter.
 #' @param morphpar2 Observed value for morphological parameter 2 (numeric)
 #' @param morphpar2mean Population mean for morphological parameter 2 (numeric)
 #' @param morphpar2sd Population standard deviation for morphological parameter 2 (numeric)
-#' @param morphpar2sign Do higher values of morphpar2 lead to longer or shorter distances traveled each day? Specify "Pos" if faster and "Neg" if slower.
+#' @param morphpar2sign Do higher values of morphpar2 lead to longer or shorter distances traveled each day? Specify "Pos" if longer and "Neg" if shorter.
 #' 
 #' @examples
 #' 

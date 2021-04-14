@@ -42,7 +42,9 @@ sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.8, mot_y=.8,modeled_species=pabu.po
  direction="S",write_results=TRUE,single_rast=FALSE,mortality = T)
 
 2. Run moveVIZ() on your result
-moveVIZ(EX2,title="Visualizing MoveSIM results",type="plot",aspect_ratio=4/3,
+moveVIZ(EX2,title="Visualizing MoveSIM results",type="plot",
 label=TRUE)
+
+moveVIZ(EX2, type="summary_table")
 
 }
