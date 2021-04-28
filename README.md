@@ -16,8 +16,8 @@ To use `abmR`, you must first install it from Github using `devtools`
 and load the library:
 
 ``` r
-#devtools: install_github("bgoch5/abmr")
-library(abmr,quietly=TRUE,warn.conflicts=FALSE)
+#devtools: install_github("bgoch5/abmR")
+library(abmR,quietly=TRUE,warn.conflicts=FALSE)
 ```
 
 While this package is still in development, it will be updated
@@ -27,5 +27,8 @@ For `abmR` to work, you will need updated versions of the packages
 `geosphere`, `ggplot2`, `raster`, `rgdal`, `rnaturalearth`,
 `rnaturalearthdata`, `sp`, `swfscMisc`, and `table1`.
 
-Please visit ben.gochanour/abmr for the full vignette.
+Usage
+------------
+
+Please visit https://www.bengochanour.com/abmr for the full vignette which describes package usage in detail.
 
