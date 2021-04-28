@@ -11,7 +11,7 @@
 
 <meta name="author" content="Benjamin Gochanour, Javier Fernandez Lopez, Andrea Contina" />
 
-<meta name="date" content="2021-04-14" />
+<meta name="date" content="2021-04-28" />
 
 <title>abmR: An R Package for Agent-based Model Analysis of Large-scale Movements Across Taxa</title>
 
@@ -1706,7 +1706,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">abmR: An R Package for Agent-based Model Analysis of Large-scale Movements Across Taxa</h1>
 <h4 class="author">Benjamin Gochanour, Javier Fernandez Lopez, Andrea Contina</h4>
-<h4 class="date">2021-04-14</h4>
+<h4 class="date">2021-04-28</h4>
 
 </div>
 
@@ -1716,11 +1716,11 @@ div.tocify {
 <div id="installation" class="section level2">
 <h2><span class="header-section-number">1.1</span> Installation</h2>
 <p>To use <code>abmR</code>, you must first install it from Github using <code>devtools</code> and load the library:</p>
-<pre class="r"><code># devtools: install_github(&quot;bgoch5/abmr&quot;)
+<pre class="r"><code># devtools: install_github(&quot;bgoch5/abmR&quot;)
 # If install gives errors, try running the following:
 # Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS=&quot;true&quot;)
-library(abmr,quietly=TRUE,warn.conflicts=FALSE)</code></pre>
-<p>While this package is still in development, it will be updated frequently, so please be sure to re-install frequently. Installing <code>abmr</code> will also automaticaly install its dependencies, if you don’t already have them installed. These include <code>raster</code>, <code>sp</code>, <code>rgdal</code>, <code>table1</code>, <code>googledrive</code>, <code>swfscMisc</code>, <code>geosphere</code>, <code>kableExtra</code>, and <code>gtsummary</code>, and <code>ggplot</code>.</p>
+library(abmR,quietly=TRUE,warn.conflicts=FALSE)</code></pre>
+<p>While this package is still in development, it will be updated frequently, so please be sure to re-install frequently. Installing <code>abmR</code> will also automaticaly install its dependencies, if you don’t already have them installed. These include <code>raster</code>, <code>sp</code>, <code>rgdal</code>, <code>table1</code>, <code>googledrive</code>, <code>swfscMisc</code>, <code>geosphere</code>, <code>kableExtra</code>, and <code>gtsummary</code>, and <code>ggplot</code>.</p>
 </div>
 <div id="requirements-for-environmental-data-rasters-and-species-objects" class="section level2">
 <h2><span class="header-section-number">1.2</span> Requirements for Environmental Data Rasters and Species objects</h2>
@@ -1730,7 +1730,7 @@ library(abmr,quietly=TRUE,warn.conflicts=FALSE)</code></pre>
 <p>Example data that will be used in this Vignette and other package documentation can be downloaded using <code>get_ex_data()</code>. This function will download to your hard drive (to a location specified by your current working directory) the below NDVI raster files, totaling approximately 620 MB. The first time you use this function, you will be directed to your browser and required to sign in to your Google account to connect to the Tidyverse API. If you use the function a second time, you may simply follow the prompts and enter a number corresponding to the previous accounts listed.</p>
 <pre class="r"><code># get_ex_data()</code></pre>
 <p>Once you have the data downloaded, you must read it into R using commands like the following.</p>
-<p>You may instead use your own environmental raster data - NDVI or otherwise - and read it into R in a similar way. Please refer to the file “Aggregating Environmental Rasters.R” on the <code>abmr</code> Github page for an example on how you might create a final rasterstack from a group of NOAA NDVI .nc files.</p>
+<p>You may instead use your own environmental raster data - NDVI or otherwise - and read it into R in a similar way. Please refer to the file “Aggregating Environmental Rasters.R” on the <code>abmR</code> Github page for an example on how you might create a final rasterstack from a group of NOAA NDVI .nc files.</p>
 <pre class="r"><code>ndvi_raster_EU=stack(&quot;C:/Users/BGOCHANOUR/Documents/GitHub/move-model/Data/2013 NDVI/NDVI_2013_Europe&quot;)
 ndvi_raster_EU_composite=raster(&quot;C:/Users/BGOCHANOUR/Documents/GitHub/move-model/Data/2013 NDVI/NDVI_2013_Europe_composite&quot;)</code></pre>
 <p>We can now quickly examine our raster data to see if it read in correctly.</p>
@@ -1742,7 +1742,7 @@ ndvi_raster_EU_composite=raster(&quot;C:/Users/BGOCHANOUR/Documents/GitHub/move-
 </div>
 <div id="species-object" class="section level3">
 <h3><span class="header-section-number">1.2.2</span> Species object</h3>
-<p>This object will be constructed with the function <code>as.species</code>, and contains information on origin longitude (<code>x</code>) and latitude (<code>y</code>) as well as two morphological parameters, <code>morphpar1</code> and <code>morphpar2</code> for your agent. <code>x</code> and <code>y</code> are the only required parameters. However, if you choose to specify one of <code>morphpar1</code> through <code>morphpar2sd</code>, you must also specify all other parameters. See <code>?as.species</code> for more details.</p>
+<p>This object will be constructed with the function <code>as.species</code>, and contains information on origin longitude (<code>x</code>) and latitude (<code>y</code>) as well as two morphological parameters, <code>morphpar1</code> and <code>morphpar2</code> for your agent. <code>x</code> and <code>y</code> are the only required parameters. However, if you choose to specify one of <code>morphpar1</code> through <code>morphpar2sign</code>, you must also specify all other parameters. See <code>?as.species</code> for more details.</p>
 <pre class="r"><code>EU.pop = as.species(x=10,
                     y=50, 
                     morphpar1=24, 
