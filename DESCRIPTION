@@ -1,4 +1,4 @@
-Package: abmr
+Package: abmR
 Type: Package
 Title: Agent-based Models in R
 Version: 0.1.12
