@@ -3,7 +3,7 @@ abmR: An R Package for Agent-based Model Analysis of Large-scale Movements Acros
 
 #### Benjamin Gochanour, Javi Fernandez Lopez, Andrea Contina
 
-#### 2020-04-28
+#### 2021-04-28
 
 
 Getting Started
