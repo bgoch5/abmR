@@ -21,10 +21,6 @@ and load the library:
 # Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS="true")
 library(abmR,quietly=TRUE,warn.conflicts=FALSE)
 ```
-
-While this package is still in development, it will be updated
-frequently, so please be sure to re-install frequently.
-
 While this package is still in development, it will be updated frequently, so please be sure to re-install frequently. Installing  abmR will also automaticaly install its dependencies, if you don’t already have them installed. These include `raster`, `sp`,  `rgdal`, `table1`, `googledrive`, `swfscMisc`, `geosphere`, `kableExtra`, and `gtsummary`, and `ggplot`.
 
 Usage
