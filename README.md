@@ -27,5 +27,8 @@ For `abmR` to work, you will need updated versions of the packages
 `geosphere`, `ggplot2`, `raster`, `rgdal`, `rnaturalearth`,
 `rnaturalearthdata`, `sp`, `swfscMisc`, and `table1`.
 
-Please visit ben.gochanour/abmr for the full vignette.
+Usage
+------------
+
+Please visit https://www.bengochanour.com/abmr for the full vignette which describes package usage in detail.
 
