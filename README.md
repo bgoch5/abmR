@@ -17,7 +17,7 @@ and load the library:
 
 ``` r
 #devtools: install_github("bgoch5/abmR")
-library(abmr,quietly=TRUE,warn.conflicts=FALSE)
+library(abmR,quietly=TRUE,warn.conflicts=FALSE)
 ```
 
 While this package is still in development, it will be updated
