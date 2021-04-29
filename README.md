@@ -16,7 +16,7 @@ To use `abmR`, you must first install it from Github using `devtools`
 and load the library:
 
 ``` r
-devtools: install_github("bgoch5/abmR")
+devtools::install_github("bgoch5/abmR")
 # If install gives errors, try running the following:
 # Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS="true")
 library(abmR,quietly=TRUE,warn.conflicts=FALSE)
