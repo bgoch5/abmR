@@ -1,6 +1,6 @@
 #'
 #' Runs more advanced Brownian / Ornstein Uhlenbeck agent-based model for
-#' multiple replicates.
+#' multiple replicates, with disease features.
 #'
 #' Here, agent mortality occurs when agent reaches energy = 0. Agent energy
 #' stores are dynamic, and affect search area as a multiplier, so movement
@@ -38,7 +38,14 @@
 #' Recommend using default which is decreasing and symmetric about zero but can modify if desired.
 #' @param write_results Logical, save results to csv? Default F.
 #' @param single_rast Logical, are you using a one-layer raster for all timesteps?. Default F.
-#'
+#' @param disease_loc Dataframe of x,y coordinates specifying the location of disease clusters.
+#' @param disease_radius Numeric, what is the maximum distance from the source point is capable
+#' capable of causing disease?
+#' @param disease_mortality Numeric (0,1] What proportion of agents who pass directly
+#' over disease source (maximum disease load) will experience mortality? Assume mortality rate then linearly
+#' decreases to 0 at disease_radius.
+#' @param disease_energy_interact Numeric (0,100) Below what energy level should all agents
+#' exposed to disease die? 
 #' @return
 #' Under "results", a (days+1 X replicates) rows X 9 column dataframe containing data on agent_id, day, longitude, latitude,
 #' current agent status (Alive, Stopped, or Died), energy, change in energy from last time_step,
@@ -72,7 +79,7 @@
 #' tidy_results(EX1, type = "run_params")
 #' @export
 
-energySIM <- function(replicates = 100,
+diseaseSIM <- function(replicates = 100,
                       days,
                       modeled_species,
                       env_rast,
@@ -89,37 +96,41 @@ energySIM <- function(replicates = 100,
                       init_energy = 100,
                       energy_adj = c(25, 20, 15, 10, 5, 0, -5, -10, -15, -20, -25),
                       single_rast = FALSE,
-                      write_results = FALSE) {
+                      write_results = FALSE,
+                      disease_loc,
+                      disease_radius=5,
+                      disease_mortality=.5,
+                      disease_energy_interact=40) {
   days <- days + 1
   sp <- modeled_species
   if (optimum_hi < optimum_lo) {
     print("Error: opt_hi smaller than opt_lo--please check your work")
     stop()
   }
-
+  
   if (init_energy < 0 | init_energy > 100) {
     print("Error: Initial Energy should be such that 0<init_energy<=100")
     stop()
   }
-
+  
   if (length(energy_adj) != 11) {
     cat("Error: Supplied energy_adj vector not of required length 11. Please check your work
         and consult documentation for more info on energy_adj")
     stop()
   }
-
+  
   if (nlayers(env_rast) == 1 & single_rast == FALSE) {
     cat("Error: Single layer environmental raster with single_rast=FALSE specified.
          Please check your raster or change to single_rast=TRUE. Exiting
          function")
     stop()
   }
-
+  
   if (nlayers(env_rast) != 1 & single_rast == TRUE) {
     cat("Warning: Multiple layer environmental raster with single_rast=TRUE specified.
     Using only first layer of raster")
   }
-
+  
   if (length(sp@morphpar1) == 1 & length(sp@morphpar2) == 1) {
     if (sp@morphpar1 > sp@morphpar1mean + 3.5 * sp@morphpar1sd | sp@morphpar1 < sp@morphpar1mean - 3.5 * sp@morphpar1sd) {
       cat("Error: Specified value for morphpar1 is greater than 3.5 SDs away from the
@@ -127,7 +138,7 @@ energySIM <- function(replicates = 100,
          or morphpar1SD. Function terminated.")
       stop()
     }
-
+    
     if (sp@morphpar2 > sp@morphpar2mean + 3.5 * sp@morphpar2sd | sp@morphpar2 < sp@morphpar2mean - 3.5 * sp@morphpar2sd) {
       cat("Error: Specified value for morphpar2 is greater than 3.5 SDs away from the
          specified mean, which is extremely unlikely. Consider adjusting morphpar2, morphpar2mean,
@@ -135,24 +146,24 @@ energySIM <- function(replicates = 100,
       stop()
     }
   }
-
+  
   my_min <- minValue(env_rast[[1]])
   my_max <- maxValue(env_rast[[1]])
   if (!(my_min <= optimum_hi && my_max >= optimum_lo)) {
     cat("Warning: Optimum range specified does not overlap with range of env_raster values.
        Consider changing.")
   }
-
-
+  
+  
   if (modeled_species@x < xmin(env_rast) | modeled_species@x > xmax(env_rast)
-  | modeled_species@y < ymin(env_rast) | modeled_species@y > ymax(env_rast)) {
+      | modeled_species@y < ymin(env_rast) | modeled_species@y > ymax(env_rast)) {
     print("Error: Species origin point outside env raster extent")
     stop()
   }
-
-
+  
+  
   optimum <- (optimum_hi + optimum_lo) / 2
-
+  
   if (direction != "R") {
     my_env <- env_rast - optimum
   }
@@ -160,14 +171,14 @@ energySIM <- function(replicates = 100,
     my_env <- env_rast
     print("Direction=R specified--Raster will be ignored")
   }
-
+  
   long <- data.frame(
     lon = numeric(), lat = numeric(), energy = numeric(),
     curr_status = character(), plot_ignore = character()
   )
-
+  
   for (i in 1:replicates) {
-    Species <- energySIM_helper(
+    Species <- diseaseSIM_helper(
       sp = modeled_species,
       env_orig = env_rast,
       env_subtract = my_env,
@@ -184,7 +195,11 @@ energySIM <- function(replicates = 100,
       direction = direction,
       mortality = mortality,
       energy_adj = energy_adj,
-      single_rast = single_rast
+      single_rast = single_rast,
+      disease_loc=disease_loc,
+      disease_radius=disease_radius,
+      disease_mortality=disease_mortality,
+      disease_energy_interact=disease_energy_interact
     )
     names(Species) <- c("lon", "lat", "energy", "curr_status", "plot_ignore")
     Species$day <- 0:(nrow(Species) - 1)
@@ -203,23 +218,23 @@ energySIM <- function(replicates = 100,
       print(paste0("Number of agents processed: ", i))
     }
   }
-
-
+  
+  
   col_order <- c(
     "agent_id", "day", "lon", "lat", "curr_status", "energy",
     "delta_energy", "distance", "plot_ignore"
   )
   long <- long[, col_order]
-
+  
   if (write_results) {
     currentDate <- format(Sys.time(), "%d-%b-%Y %H.%M.%S")
     file_name <- paste("energySIM_results_", currentDate, ".csv", sep = "")
     write.csv(long, file_name)
   }
-
+  
   missing_pct <- sum(is.na(long$lon)) / nrow(long) * 100
   mortality_pct <- length(which(long$energy == 0)) / replicates * 100
-
+  
   params <- data.frame(
     replicates = replicates, days = (days - 1),
     env_raster = deparse(substitute(env_raster)),

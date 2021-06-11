@@ -31,12 +31,13 @@ energySIM().}
 \item{ylim}{Optionally specify desired y limits as a numeric vector: c(low,hi)}
 }
 \description{
-When type="plot", function plots the movement tracks versus the the straight line
-track between the origin and destination (unless the destination was unspecified in the
-call to energySIM(), then straight line track is omitted). When type="gradient", creates
-a gradient plot showing what regions cause agents to gain/lose energy. Two table 
-options are also available using type="summary_table" or type="strat_table" (table
-with results stratified by energy gain or loss). Please see Vignette for examples of this output.
+When type="plot", function plots the movement tracks versus the the straight
+line track between the origin and destination (unless the destination was
+unspecified in the call to energySIM(), then straight line track is omitted).
+When type="gradient", creates a gradient plot showing what regions cause
+agents to gain/lose energy. Two table  options are also available using
+type="summary_table" or type="strat_table" (table with results stratified
+by energy gain or loss). Please see Vignette for examples of this output.
 }
 \examples{
 1. Run energySIM()

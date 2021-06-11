@@ -2,7 +2,7 @@
 #' Run energy-dynamic based model for one replicate
 #'
 #' Runs agent based modeling for one replicate of a single species.
-#' @import raster sp rgdal 
+#' @import raster sp rgdal geosphere
 #' @importFrom  swfscMisc circle.polygon
 #' @param sp A species object
 #' @param env Raster, should represent NDVI or your environmental variable of interest
@@ -19,6 +19,10 @@
 #' @param init_energy come back
 #' @param direction come back
 #' @param mortality Logical, should low energy levels result in death?
+#' @param disease_loc
+#' @param disease_radius
+#' @param disease_mortality
+#' @param disease_energy_interact
 #' @return A nx3 dataset containing longitude and latitude and energy
 #' points for all n timesteps
 #' @examples
@@ -29,9 +33,9 @@
 #' @keywords internal
 #' @export
 
-energySIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, dest_y, mot_x, mot_y,
+diseaseSIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, dest_y, mot_x, mot_y,
                              search_radius, optimum_lo, optimum_hi, init_energy, direction, single_rast, mortality,
-                             energy_adj) {
+                             energy_adj,disease_loc,disease_radius,disease_mortality,disease_energy_interact) {
   track <- data.frame()
   track[1, 1] <- sp@x
   track[1, 2] <- sp@y
@@ -143,7 +147,7 @@ energySIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, de
         cell_num <- which.min(abs(curr_env_subtract))
 
         if (length(which.min(abs(curr_env_subtract))) == 0) { # Ignore--edge case error handling
-          print("Can't find any non-NA cells. Searching over lake or ocean. Agent stopped.")
+          print("Can't find any non-NA cells. Agent stopped.")
           track[step:days, 1] <- NA
           track[step:days, 2] <- NA
           track[step:days, 4] <- "Stopped"
@@ -168,7 +172,7 @@ energySIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, de
         # within search area that has minimal distance from optimal value
         cell_num <- which.min(abs(curr_env_subtract)) # had my_rast here, need curr_env_subtract
         if (length(which.min(abs(curr_env_subtract))) == 0) { # Ignore--edge case error handling
-          print("Can't find any non-NA cells. Searching over lake or ocean. Agent stopped.")
+          print("Can't find any non-NA cells. Agent stopped.")
           track[step:days, 1] <- NA
           track[step:days, 2] <- NA
           track[step:days, 4] <- "Stopped"
@@ -189,7 +193,7 @@ energySIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, de
         i <- i + 1
         # How to select candidate destination, this is as you originally had it.
         if (i > 90) { # Avoid infinite loop
-          print("Can't find any non-NA cells. Searching over lake or ocean. Agent stopped.")
+          print("Can't find any non-NA cells. Agent stopped.")
           track[step:days, 1] <- NA
           track[step:days, 2] <- NA
           track[step:days, 4] <- "Stopped"
@@ -250,7 +254,7 @@ energySIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, de
       new_coords <- xyFromCell(curr_env_subtract, new_cell) # put step in brackets here
       track[step, 1] <- new_coords[1]
       track[step, 2] <- new_coords[2]
-
+      
       dist_from_opt <- curr_env_orig[new_cell] - optimum
       dist_from_opt_hi <- curr_env_orig[new_cell] - optimum_hi
       dist_from_opt_lo <- curr_env_orig[new_cell] - optimum_lo
@@ -316,20 +320,52 @@ energySIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, de
       }
 
       track[step, 3] <- energy
-
-
+      
+      # 1. Energy Mortality
       in_interval <- FALSE
       if (mortality == TRUE) {
         if (energy == 0 & step < days) {
-          print("Agent died")
+          print("Agent died: reached 0 energy")
           track[(step + 1):days, 1] <- NA # Bird died, rest of points are N/A
           track[(step + 1):days, 2] <- NA
           track[step:days, 4] <- "Died"
           track[1:days, 5] <- "Died"
           return(track)
         }
+    
+      # Calculate distance from disease source
+      # Also assume distance randomly generated
+     
+      # distance=runif(1,0,2*disease_radius)
+      distance=min(distHaversine(disease_loc,new_coords)/1000)
+      within_distance=as.numeric(distance<disease_radius)
+      #2. Energy/Disease Interaction
+      if(within_distance==1 & energy<disease_energy_interact){
+        print("Agent died: disease exposure +low energy")
+        track[(step + 1):days, 1] <- NA # Bird died, rest of points are N/A
+        track[(step + 1):days, 2] <- NA
+        track[step:days, 4] <- "Died"
+        track[1:days, 5] <- "Died"
+        return(track)
       }
-    }
+      # 3. Disease Marginal Effect
+      if(within_distance){
+        mortality_prob=(1-(distance/disease_radius))*disease_mortality
+        mortality_indicator=rbinom(1,1,mortality_prob)
+        if (mortality_indicator==1){
+          print("Agent died: disease")
+          track[(step + 1):days, 1] <- NA # Bird died, rest of points are N/A
+          track[(step + 1):days, 2] <- NA
+          track[step:days, 4] <- "Died"
+          track[1:days, 5] <- "Died"
+          return(track)
+        }
+      }  
+   
+      }
+        
+      }
+      
   }
   return(track)
 }

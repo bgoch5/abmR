@@ -9,19 +9,19 @@ tidy_results(data, type = "results", nrows = NULL)
 \arguments{
 \item{data}{The output from moveSIM or energySIM -- a list of two dataframes.}
 
-\item{type}{"run_params" or "results", corresponding to which component of your moveSIM()
-or energySIM() output you'd like to print out. Default "results", which contains
-the movement data.}
+\item{type}{"run_params" or "results", corresponding to which component of
+your moveSIM() or energySIM() output you'd like to print out. Default
+"results", which contains the movement data.}
 }
 \description{
 Prints results from moveSIM() or energySIM() in an easier-to-read table.
 }
 \details{
-missing_pct and mortality_pct are not function parameters, but are nonetheless computed and returned here
-for your convenience
+missing_pct and mortality_pct are not function parameters,
+but are nonetheless computed and returned here for your convenience
  \itemize{
- \item{missing_pct}{: What percent of rows exhibiting a missing location value (due to agent death
- or agent stopping)}
+ \item{missing_pct}{: What percent of rows exhibiting a missing
+ location value (due to agent death or agent stopping)}
  \item{mortality_pct}{: What percent of simulated agents experienced death?}
  }
 }

@@ -39,48 +39,51 @@ as.species(
 \item{morphpar2sign}{Do higher values of morphpar2 lead to longer or shorter distances traveled each day? Specify "Pos" if longer and "Neg" if shorter.}
 }
 \description{
-Here we define the agents whose movement we will be modeling. The user must indicate the geographical
-origin of the agents but can also optionally specify values of
-morphological parameters, which will be standardized using (observed-mean/sd).
-The standardized values will affect the movement simulations by serving as a multiplier
-on "mot_x" and "mot_y" in the direction specified: "Pos" or "Neg".
+Here we define the agents whose movement we will be modeling. The user must 
+indicate the geographical origin of the agents but can also optionally
+specify values of morphological parameters, which will be standardized using
+(observed-mean/sd). The standardized values will affect the movement
+simulations by serving as a multiplier on "mot_x" and "mot_y" in the
+direction specified: "Pos" or "Neg".
 }
 \details{
 In example 1 below, we have a bird with origin (-100,26)
 with observed wing chord length of 15 mm, while the population
-mean for this measure is 10 mm with a SD of  2 mm (these birds are bigger than
-average). We declare morphpar1sign = "Pos" because we assume longer wingchord
-length leads to longer flight. Here, "morphpar2" represents mass, and we want to model
-heavier than average birds. We assume that heavier birds will fly longer distance, so
-specify `morphpar2sign` = `Pos` . If we assumed that heavier birds will fly shorter distance,
-we would  specify `morphpar2sign`=`"Neg"` to indicate the inverse relationship.
+mean for this measure is 10 mm with a SD of  2 mm (these birds are bigger
+than average). We declare morphpar1sign = "Pos" because we assume longer
+wingchord length leads to longer flight. Here, "morphpar2" represents mass,
+and we want to model heavier than average birds. We assume that heavier birds
+will fly longer distance, so specify `morphpar2sign` = `Pos` . If we assumed
+that heavier birds will fly shorter distance, we would  specify 
+`morphpar2sign`=`"Neg"` to indicate the inverse relationship.
 }
 \examples{
 
-Example 1 -- Birds
--Origin (-100,26)
--Morphpar1=Wing Chord: Observed=15 mm, Pop. Mean=10, Pop. SD=2; Pos effect
-on movement speed
--Morphpar2=Mass; Observed=15 g, Pop. Mean=6, Pop. SD=2; Pos effect on
+# Example 1 -- Birds
+# -Origin (-100,26)
+#-Morphpar1=Wing Chord: Observed=15 mm, Pop. Mean=10, Pop. SD=2; Pos effect
+#on movement speed
+#-Morphpar2=Mass; Observed=15 g, Pop. Mean=6, Pop. SD=2; Pos effect on
 movement speed
 
-my_species=as.species(x=-100,y=26,morphpar1=15,morphpar1mean=10,morphpar1sd=2,
-morphpar1sign="Pos", morphpar2=7,morphpar2mean=6,morphpar2sd=1,morphpar2sign="Pos")
+my_species=as.species(x=-100,y=26,morphpar1=15,morphpar1mean=10,
+morphpar1sd=2, morphpar1sign="Pos", morphpar2=7,morphpar2mean=6,
+morphpar2sd=1,morphpar2sign="Pos")
 
-Example 2 -- Terrestrial Mammals
--Origin (-90,40)
--Morphpar1=Leg length: Observed=1.1 m, Pop. Mean=1, Pop. SD=.2; Pos effect
-on movement speed
--Morphpar2=Mass; Observed=50 kg, Pop. Mean=55 kg, Pop. SD=10 kg; Neg effect on
-movement speed
+# Example 2 -- Terrestrial Mammals
+#-Origin (-90,40)
+#-Morphpar1=Leg length: Observed=1.1 m, Pop. Mean=1, Pop. SD=.2; Pos effect
+#on movement speed
+#-Morphpar2=Mass; Observed=50 kg, Pop. Mean=55 kg, Pop. SD=10 kg; Neg effect
+#on movement speed
 
-my_species2=as.species(x=-90,y=40,morphpar1=1.1,morphpar1mean=1,morphpar1sd=0.2,
-morphpar1sign="Pos", morphpar2=50,morphpar2mean=55,morphpar2sd=10
-,morphpar2sign="Neg")
+my_species2=as.species(x=-90,y=40,morphpar1=1.1,morphpar1mean=1,
+morphpar1sd=0.2, morphpar1sign="Pos", morphpar2=50,morphpar2mean=55,
+morphpar2sd=10 ,morphpar2sign="Neg")
 
-Example 3 -- Unspecified agents
--Origin (-90,40)
--Not interested in modeling effect of morphology
+# Example 3 -- Unspecified agents
+# -Origin (-90,40)
+# -Not interested in modeling effect of morphology
 
 my_species3=as.species(x=-90,y=40)
 
