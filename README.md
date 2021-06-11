@@ -3,7 +3,7 @@ abmR: An R Package for Agent-based Model Analysis of Large-scale Movements Acros
 
 #### Benjamin Gochanour, Javi Fernandez Lopez, Andrea Contina
 
-#### 2020-04-28
+#### 2021-04-28
 
 
 Getting Started
@@ -16,18 +16,14 @@ To use `abmR`, you must first install it from Github using `devtools`
 and load the library:
 
 ``` r
-#devtools: install_github("bgoch5/abmR")
+devtools::install_github("bgoch5/abmR")
+# If install gives errors, try running the following:
+# Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS="true")
 library(abmR,quietly=TRUE,warn.conflicts=FALSE)
 ```
+While this package is still in development, it will be updated frequently, so please be sure to re-install frequently. Installing  abmR will also automaticaly install its dependencies, if you don’t already have them installed. These include `raster`, `sp`,  `rgdal`, `table1`, `googledrive`, `swfscMisc`, `geosphere`, `kableExtra`, and `gtsummary`, and `ggplot`.
 
-While this package is still in development, it will be updated
-frequently, so please be sure to re-install frequently.
-
-For `abmR` to work, you will need updated versions of the packages
-`geosphere`, `ggplot2`, `raster`, `rgdal`, `rnaturalearth`,
-`rnaturalearthdata`, `sp`, `swfscMisc`, and `table1`.
-
-Usage
+Vignette
 ------------
 
 Please visit https://www.bengochanour.com/abmr for the full vignette which describes package usage in detail.
