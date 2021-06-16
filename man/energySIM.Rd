@@ -68,8 +68,8 @@ Recommend using default which is decreasing and symmetric about zero but can mod
 \value{
 Under "results", a (days+1 X replicates) rows X 9 column dataframe containing data on agent_id, day, longitude, latitude,
 current agent status (Alive, Stopped, or Died), energy, change in energy from last time_step,
-distance traveled from last timestep (in km), and a plot_ignore column, which can be ignored by the user.
-Using tidy_results() hides the plot ignore column and provides overall nicer display of results.
+distance traveled from last timestep (in km), and final status.
+Using tidy_results() provides a cleaner display of results.
 
 Under "run_params", a record of function parameters used as well as missing_pct
 and mortality_pct. missing_pct corresponds to the percent of rows in the results dataframe

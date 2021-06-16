@@ -43,8 +43,8 @@
 #'
 #' @return
 #' Under "results", a (days+1 * replicates) row X 7 column dataframe containing data on agent_id, day, longitude, latitude,
-#' current agent status (Alive, Stopped, or Died), distance traveled from last timestep (in km), and a plot_ignore column, which can be ignored by the user.
-#' Using tidy_results() hides the plot_ignore column and provides overall nicer display of results.
+#' current agent status (Alive, Stopped, or Died), distance traveled from last timestep (in km), and final status.
+#' Using tidy_results() provides a cleaner display of results.
 #'
 #' Under "run_params", a record of function parameters used as well as missing_pct
 #' and mortality_pct. missing_pct corresponds to the percent of rows in the results dataframe
@@ -154,7 +154,7 @@ moveSIM <- function(replicates = 100,
       n_failures = n_failures, fail_thresh = fail_thresh, direction = direction, mortality = mortality,
       single_rast = single_rast
     )
-    names(Species) <- c("lon", "lat", "curr_status", "plot_ignore")
+    names(Species) <- c("lon", "lat", "curr_status", "final_status")
     Species$day <- 0:(nrow(Species) - 1)
     number <- sprintf("%02d", i)
     Species$agent_id <- paste("Agent", number, sep = "_")
@@ -170,7 +170,7 @@ moveSIM <- function(replicates = 100,
     }
   }
 
-  col_order <- c("agent_id", "day", "lon", "lat", "curr_status", "distance", "plot_ignore")
+  col_order <- c("agent_id", "day", "lon", "lat", "curr_status", "distance", "final_status")
   long <- long[, col_order]
 
   if (write_results) {
@@ -180,7 +180,7 @@ moveSIM <- function(replicates = 100,
   }
 
   missing_pct <- sum(is.na(long$lon)) / nrow(long) * 100
-  mortality_pct <- round(sum(long[, "plot_ignore"] == "Died") / 28, 0) / replicates * 100
+  mortality_pct <- round(sum(long[, "final_status"] == "Died") / 28, 0) / replicates * 100
 
   params <- data.frame(
     replicates = replicates, days = (days - 1),

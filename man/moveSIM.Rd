@@ -64,8 +64,8 @@ a failure is determined by fail_thresh, range (1,days]. Default 4.}
 }
 \value{
 Under "results", a (days+1 * replicates) row X 7 column dataframe containing data on agent_id, day, longitude, latitude,
-current agent status (Alive, Stopped, or Died), distance traveled from last timestep (in km), and a plot_ignore column, which can be ignored by the user.
-Using tidy_results() hides the plot_ignore column and provides overall nicer display of results.
+current agent status (Alive, Stopped, or Died), distance traveled from last timestep (in km), and final status.
+Using tidy_results() provides a cleaner display of results.
 
 Under "run_params", a record of function parameters used as well as missing_pct
 and mortality_pct. missing_pct corresponds to the percent of rows in the results dataframe

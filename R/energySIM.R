@@ -42,8 +42,8 @@
 #' @return
 #' Under "results", a (days+1 X replicates) rows X 9 column dataframe containing data on agent_id, day, longitude, latitude,
 #' current agent status (Alive, Stopped, or Died), energy, change in energy from last time_step,
-#' distance traveled from last timestep (in km), and a plot_ignore column, which can be ignored by the user.
-#' Using tidy_results() hides the plot ignore column and provides overall nicer display of results.
+#' distance traveled from last timestep (in km), and final status.
+#' Using tidy_results() provides a cleaner display of results.
 #'
 #' Under "run_params", a record of function parameters used as well as missing_pct
 #' and mortality_pct. missing_pct corresponds to the percent of rows in the results dataframe
@@ -163,7 +163,7 @@ energySIM <- function(replicates = 100,
 
   long <- data.frame(
     lon = numeric(), lat = numeric(), energy = numeric(),
-    curr_status = character(), plot_ignore = character()
+    curr_status = character(), final_status = character()
   )
 
   for (i in 1:replicates) {
@@ -186,7 +186,7 @@ energySIM <- function(replicates = 100,
       energy_adj = energy_adj,
       single_rast = single_rast
     )
-    names(Species) <- c("lon", "lat", "energy", "curr_status", "plot_ignore")
+    names(Species) <- c("lon", "lat", "energy", "curr_status", "final_status")
     Species$day <- 0:(nrow(Species) - 1)
     number <- sprintf("%02d", i)
     Species$agent_id <- paste("Agent", number, sep = "_")
@@ -207,7 +207,7 @@ energySIM <- function(replicates = 100,
 
   col_order <- c(
     "agent_id", "day", "lon", "lat", "curr_status", "energy",
-    "delta_energy", "distance", "plot_ignore"
+    "delta_energy", "distance", "final_status"
   )
   long <- long[, col_order]
 

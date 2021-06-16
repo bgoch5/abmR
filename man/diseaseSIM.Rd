@@ -71,21 +71,21 @@ Recommend using default which is decreasing and symmetric about zero but can mod
 
 \item{disease_loc}{Dataframe of x,y coordinates specifying the location of disease clusters.}
 
-\item{disease_radius}{Numeric, what is the maximum distance from the source point is capable
+\item{disease_radius}{Numeric (0,Infty), what is the maximum distance from the source point is capable
 capable of causing disease?}
 
 \item{disease_mortality}{Numeric (0,1] What proportion of agents who pass directly
 over disease source (maximum disease load) will experience mortality? Assume mortality rate then linearly
 decreases to 0 at disease_radius.}
 
-\item{disease_energy_interact}{Numeric (0,100) Below what energy level should all agents
+\item{disease_energy_interact}{Numeric (0,100] Below what energy level should all agents
 exposed to disease die?}
 }
 \value{
 Under "results", a (days+1 X replicates) rows X 9 column dataframe containing data on agent_id, day, longitude, latitude,
 current agent status (Alive, Stopped, or Died), energy, change in energy from last time_step,
-distance traveled from last timestep (in km), and a plot_ignore column, which can be ignored by the user.
-Using tidy_results() hides the plot ignore column and provides overall nicer display of results.
+distance traveled from last timestep (in km), and final status.
+Using tidy_results() provides a cleaner display of results.
 
 Under "run_params", a record of function parameters used as well as missing_pct
 and mortality_pct. missing_pct corresponds to the percent of rows in the results dataframe
@@ -111,20 +111,25 @@ so as to not affect subsequent analyses.
 }
 \examples{
 # Define species object
-pop1 <- as.species(
-  x = -98.7, y = 34.7,
-  morphpar1 = 15, morphpar1mean = 16, morphpar1sd = 2, morphpar1sign = "Pos",
-  morphpar2 = 19, morphpar2mean = 18, morphpar2sd = 1, morphpar2sign = "Pos"
-)
+pop1 <- as.species(x=-100, y=55,
+morphpar1=15, morphpar1mean=16, morphpar1sd=2,morphpar1sign="Pos",
+morphpar2=19,morphpar2mean=18,morphpar2sd=1,morphpar2sign="Pos")
+
+# Define disease locations
+x=c(-99.475, -98.700, -102.725,-108.325,-98.700,-94.625,-95.175,-100.425, -103.675
+,-102.475, -100.925, -100.025, -101.425,  -99.125,  -99.275)
+y=c(32.225, 34.700, 34.575, 34.425, 34.700, 34.375, 32.525, 32.175, 31.675, 29.575, 28.225, 
+ 26.275, 26.075, 25.025, 24.825)
+ disease_points=data.frame(x=x,y=y)
 
 # Run function
-EX1 <- energySIM(
-  replicates = 5, days = 27, env_rast = ndvi_raster, search_radius = 400,
-  sigma = .1, dest_x = -108.6, dest_y = 26.2, mot_x = .9, mot_y = .9,
-  modeled_species = pop1,
-  optimum_lo = .6, optimum_hi = .8, init_energy = 100,
-  direction = "S", write_results = FALSE, single_rast = FALSE, mortality = TRUE
-)
+EX1 <- diseaseSIM(replicates=15,days=27,env_rast=ndvi_raster, 
+search_radius=400,
+sigma=.1, dest_x=999, dest_y=999, mot_x=.9, mot_y=.9,
+modeled_species=pabu.pop.new, optimum_lo=.6,optimum_hi=.8,init_energy=100, 
+direction="S",write_results=TRUE,single_rast=FALSE,mortality = TRUE,
+energy_adj=c(30,25,20,5,0,-5,-5,-10,-20,-25,-30),disease_loc=disease_points,
+disease_energy_interact = 60, disease_mortality=.5,disease_radius=300)
 
 # View Results in Clean Format
 tidy_results(EX1, type = "results")

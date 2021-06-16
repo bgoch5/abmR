@@ -1,5 +1,5 @@
 #' Prints results from moveSIM() or energySIM() in an easier-to-read table.
-#'
+#' @import kableExtra
 #' @param data The output from moveSIM or energySIM -- a list of two dataframes.
 #' @param type "run_params" or "results", corresponding to which component of
 #' your moveSIM() or energySIM() output you'd like to print out. Default
@@ -35,7 +35,6 @@ tidy_results <- function(data, type = "results", nrows = NULL) {
   }
   else if (type == "results") {
     data.res <- data$results
-    data.res <- data.res[, -length(data.res)]
     if (!is.null(nrows)) {
       data.res <- head(data.res, nrows)
     }

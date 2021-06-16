@@ -143,7 +143,7 @@ energySIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, de
         cell_num <- which.min(abs(curr_env_subtract))
 
         if (length(which.min(abs(curr_env_subtract))) == 0) { # Ignore--edge case error handling
-          print("Can't find any non-NA cells. Searching over lake or ocean. Agent stopped.")
+          print("Can't find any non-NA cells. Agent stopped.")
           track[step:days, 1] <- NA
           track[step:days, 2] <- NA
           track[step:days, 4] <- "Stopped"
@@ -168,7 +168,7 @@ energySIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, de
         # within search area that has minimal distance from optimal value
         cell_num <- which.min(abs(curr_env_subtract)) # had my_rast here, need curr_env_subtract
         if (length(which.min(abs(curr_env_subtract))) == 0) { # Ignore--edge case error handling
-          print("Can't find any non-NA cells. Searching over lake or ocean. Agent stopped.")
+          print("Can't find any non-NA cells. Agent stopped.")
           track[step:days, 1] <- NA
           track[step:days, 2] <- NA
           track[step:days, 4] <- "Stopped"
@@ -189,7 +189,7 @@ energySIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, de
         i <- i + 1
         # How to select candidate destination, this is as you originally had it.
         if (i > 90) { # Avoid infinite loop
-          print("Can't find any non-NA cells. Searching over lake or ocean. Agent stopped.")
+          print("Can't find any non-NA cells. Agent stopped.")
           track[step:days, 1] <- NA
           track[step:days, 2] <- NA
           track[step:days, 4] <- "Stopped"

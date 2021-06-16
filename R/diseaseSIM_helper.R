@@ -328,8 +328,8 @@ diseaseSIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, d
           print("Agent died: reached 0 energy")
           track[(step + 1):days, 1] <- NA # Bird died, rest of points are N/A
           track[(step + 1):days, 2] <- NA
-          track[step:days, 4] <- "Died"
-          track[1:days, 5] <- "Died"
+          track[step:days, 4] <- "Died (Low Energy)"
+          track[1:days, 5] <- "Died (Low Energy)"
           return(track)
         }
     
@@ -344,8 +344,8 @@ diseaseSIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, d
         print("Agent died: disease exposure +low energy")
         track[(step + 1):days, 1] <- NA # Bird died, rest of points are N/A
         track[(step + 1):days, 2] <- NA
-        track[step:days, 4] <- "Died"
-        track[1:days, 5] <- "Died"
+        track[step:days, 4] <- "Died (Disease+ Low Energy)"
+        track[1:days, 5] <- "Died (Disease+ Low Energy)"
         return(track)
       }
       # 3. Disease Marginal Effect
@@ -356,8 +356,8 @@ diseaseSIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, d
           print("Agent died: disease")
           track[(step + 1):days, 1] <- NA # Bird died, rest of points are N/A
           track[(step + 1):days, 2] <- NA
-          track[step:days, 4] <- "Died"
-          track[1:days, 5] <- "Died"
+          track[step:days, 4] <- "Died (Disease)"
+          track[1:days, 5] <- "Died (Disease)"
           return(track)
         }
       }  

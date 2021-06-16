@@ -117,7 +117,7 @@ moveSIM_helper <- function(sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,
       if (dest_x == 999 & dest_y == 999) {
         cell_num <- which.min(abs(my_rast))
         if (length(which.min(abs(my_rast))) == 0) {
-          print("Can't find any non-NA cells. Searching over lake or ocean. Agent stopped.")
+          print("Can't find any non-NA cells. Agent stopped.")
           track[step:days, 1] <- NA
           track[step:days, 2] <- NA
           track[step:days, 3] <- "Stopped"
@@ -143,7 +143,7 @@ moveSIM_helper <- function(sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,
         # within search area that has minimal distance from optimal value
         cell_num <- which.min(abs(my_rast))
         if (length(which.min(abs(my_rast))) == 0) { # Ignore--edge case error handling
-          print("Can't find any non-NA cells. Searching over lake or ocean. Agent stopped.")
+          print("Can't find any non-NA cells. Agent stopped.")
           track[step:days, 1] <- NA
           track[step:days, 2] <- NA
           track[step:days, 3] <- "Stopped"
@@ -163,7 +163,7 @@ moveSIM_helper <- function(sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,
         lat_candidate <- track[step - 1, 2] + (sigma * rnorm(1)) + (mot_y_new * (target_y - track[step - 1, 2]))
         i <- i + 1
         if (i > 90) { # Avoid infinite loop
-          print("Can't find any non-NA cells. Searching over lake or ocean. Agent stopped.")
+          print("Can't find any non-NA cells. Agent stopped.")
           track[step:days, 1] <- NA
           track[step:days, 2] <- NA
           track[step:days, 3] <- "Stopped"
@@ -209,7 +209,7 @@ moveSIM_helper <- function(sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,
       )
 
       if (is.null(option) | length(option) == 0) { # Ignore--edge case error handling
-        print("Can't find any non-NA cells. Searching over lake or ocean. Agent stopped.")
+        print("Can't find any non-NA cells. Agent stopped.")
         track[step:days, 1] <- NA
         track[step:days, 2] <- NA
         track[step:days, 3] <- "Stopped"
