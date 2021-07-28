@@ -19,17 +19,16 @@
 #' @param init_energy come back
 #' @param direction come back
 #' @param mortality Logical, should low energy levels result in death?
-#' @param disease_loc
-#' @param disease_radius
-#' @param disease_mortality
-#' @param disease_energy_interact
+#' @param disease_loc Dataframe of x,y coordinates specifying the location of disease clusters.
+#' @param disease_radius Numeric (0,Infty), what is the maximum distance from the source point is capable
+#' capable of causing disease?
+#' @param disease_mortality Numeric (0,1] What proportion of agents who pass directly
+#' over disease source (maximum disease load) will experience mortality? Assume mortality rate then linearly
+#' decreases to 0 at disease_radius.
+#' @param disease_energy_interact Numeric (0,100] Below what energy level should all agents
+#' exposed to disease die? 
 #' @return A nx3 dataset containing longitude and latitude and energy
 #' points for all n timesteps
-#' @examples
-#' my_results <- moveSIM(
-#'   sp = wiwa.pop, env = ndvi_raster, n = 27, sigma = 0.6,
-#'   dest_x = -100, dest_y = 25, mot_x = 0.9, mot_y = 0.9, search_radius = 200, current_gen = 1
-#' )
 #' @keywords internal
 #' @export
 
@@ -64,15 +63,9 @@ diseaseSIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, d
     mot_x_new <- mot_x
     mot_y_new <- mot_y
   }
-  if (mot_x_new < 0) {
-    mot_x_new <- .001
-    mot_y_new <- .001
-  }
 
   in_box <- FALSE
-
   energy <- init_energy
-
 
   for (step in 2:days) {
     if (single_rast) {
@@ -89,7 +82,7 @@ diseaseSIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, d
 
     # Birds search area is a semicircle of search_radius in direction specified
     if (mortality) {
-      search_radius_update <- search_radius * (energy / 100)
+      search_radius_update <- search_radius * (energy / init_energy)
     }
 
     else {
@@ -188,8 +181,8 @@ diseaseSIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, d
       while (is.na(extract(curr_env_subtract, matrix(c(lon_candidate, lat_candidate), 1, 2)))) {
         lon_candidate <- track[step - 1, 1] + (sigma * rnorm(1)) + (mot_x_new * (target_x - track[step - 1, 1]))
         lat_candidate <- track[step - 1, 2] + (sigma * rnorm(1)) + (mot_y_new * (target_y - track[step - 1, 2]))
-        pt <- SpatialPoints(cbind(lon_candidate, lat_candidate))
-        proj4string(pt) <- proj4string(env_orig)
+        #pt <- SpatialPoints(cbind(lon_candidate, lat_candidate))
+        #proj4string(pt) <- proj4string(env_orig)
         i <- i + 1
         # How to select candidate destination, this is as you originally had it.
         if (i > 90) { # Avoid infinite loop
@@ -201,7 +194,6 @@ diseaseSIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, d
           return(track)
         }
       }
-
       pt <- SpatialPoints(cbind(lon_candidate, lat_candidate))
       proj4string(pt) <- proj4string(env_orig)
       if (is.na(over(pt, sps, fn = NULL))) { # Birds can't stop over ocean (they must be over

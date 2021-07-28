@@ -102,14 +102,14 @@ pop1 <- as.species(
 )
 
 # Run function
-EX2 <- moveSIM(
-  replicates = 5, days = 27, env_rast = ndvi_raster, search_radius = 550,
-  sigma = .1, dest_x = -108.6, dest_y = 26.2, mot_x = .8, mot_y = .8,
-  modeled_species = pop1, optimum = .6, n_failures = 5, fail_thresh = .40,
-  direction = "S", write_results = TRUE, single_rast = FALSE, mortality = T
-)
+# EX2 <- moveSIM(
+ # replicates = 5, days = 27, env_rast = ndvi_raster, search_radius = 550,
+ # sigma = .1, dest_x = -108.6, dest_y = 26.2, mot_x = .8, mot_y = .8,
+ # modeled_species = pop1, optimum = .6, n_failures = 5, fail_thresh = .40,
+ # direction = "S", write_results = TRUE, single_rast = FALSE, mortality = T
+# )
 
 # View Results in Clean Format
-tidy_results(EX2, type = "results")
-tidy_results(EX2, type = "run_params")
+# tidy_results(EX2, type = "results")
+# tidy_results(EX2, type = "run_params")
 }

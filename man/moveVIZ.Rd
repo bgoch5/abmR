@@ -37,15 +37,15 @@ When type="summary_table", a summary table is output.
 
 # 1. Run moveSIM()
 
-EX2=moveSIM(replicates=5,days=27,env_rast=ndvi_raster, search_radius=550,
-sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.8, mot_y=.8,
-modeled_species=pabu.pop,optimum=.6, n_failures=5, fail_thresh=.40,
-direction="S",write_results=TRUE,single_rast=FALSE,mortality = T)
+#EX2=moveSIM(replicates=5,days=27,env_rast=ndvi_raster, search_radius=550,
+#sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.8, mot_y=.8,
+#modeled_species=pabu.pop,optimum=.6, n_failures=5, fail_thresh=.40,
+#direction="S",write_results=TRUE,single_rast=FALSE,mortality = T)
 
-2. Run moveVIZ() on your result
-moveVIZ(EX2,title="Visualizing MoveSIM results",type="plot",
-label=TRUE)
+# 2. Run moveVIZ() on your result
+#moveVIZ(EX2,title="Visualizing MoveSIM results",type="plot",
+#label=TRUE)
 
-moveVIZ(EX2, type="summary_table")
+#moveVIZ(EX2, type="summary_table")
 
 }

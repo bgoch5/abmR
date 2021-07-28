@@ -55,6 +55,18 @@ diseaseSIM_helper(
 
 \item{mortality}{Logical, should low energy levels result in death?}
 
+\item{disease_loc}{Dataframe of x,y coordinates specifying the location of disease clusters.}
+
+\item{disease_radius}{Numeric (0,Infty), what is the maximum distance from the source point is capable
+capable of causing disease?}
+
+\item{disease_mortality}{Numeric (0,1] What proportion of agents who pass directly
+over disease source (maximum disease load) will experience mortality? Assume mortality rate then linearly
+decreases to 0 at disease_radius.}
+
+\item{disease_energy_interact}{Numeric (0,100] Below what energy level should all agents
+exposed to disease die?}
+
 \item{env}{Raster, should represent NDVI or your environmental variable of interest}
 
 \item{sp_poly}{Come back to this}
@@ -65,11 +77,5 @@ points for all n timesteps
 }
 \description{
 Runs agent based modeling for one replicate of a single species.
-}
-\examples{
-my_results <- moveSIM(
-  sp = wiwa.pop, env = ndvi_raster, n = 27, sigma = 0.6,
-  dest_x = -100, dest_y = 25, mot_x = 0.9, mot_y = 0.9, search_radius = 200, current_gen = 1
-)
 }
 \keyword{internal}

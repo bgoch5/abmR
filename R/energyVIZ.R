@@ -9,8 +9,8 @@
 #' type="summary_table" or type="strat_table" (table with results stratified
 #' by energy gain or loss). Please see Vignette for examples of this output.
 #'
-#' @import raster sp rgdal rnaturalearth rnaturalearthdata ggplot2 table1 gtsummary gstat sf tmap
-#'
+#' @import raster sp rgdal rnaturalearth rnaturalearthdata ggplot2 table1 gstat sf tmap
+#' @importFrom gtsummary tbl_summary
 #' @param data Data to be plotted, this object should be the output from
 #' energySIM().
 #' @param type String from "plot", "gradient", "summary_table", or "strat_table"?
@@ -19,27 +19,25 @@
 #' @param label Logical, label the origin and specified final destination?
 #' @param xlim Optionally specify desired x limits as a numeric vector: c(low,hi)
 #' @param ylim Optionally specify desired y limits as a numeric vector: c(low,hi)
-#'
 #' @examples
-#' 1. Run energySIM()
+#' # 1. Run energySIM()
 #' 
-#' EX1=energySIM(replicates=5,days=27,env_rast=ndvi_raster, search_radius=400,
-#' sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.9, mot_y=.9,
-#' modeled_species=pabu.pop,
-#' optimum_lo=.6,optimum_hi=.8,init_energy=100,
-#' direction="S",write_results=FALSE,single_rast=FALSE,mortality = TRUE)
+#' #EX1=energySIM(replicates=5,days=27,env_rast=ndvi_raster, search_radius=400,
+#' #sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.9, mot_y=.9,
+#' #modeled_species=pabu.pop,
+#' #optimum_lo=.6,optimum_hi=.8,init_energy=100,
+#' #direction="S",write_results=FALSE,single_rast=FALSE,mortality = TRUE)
 #' 
-#' 2. Run energyVIZ() on your result
+#' # 2. Run energyVIZ() on your result
 #' 
-#' energyVIZ(EX1,title="Visualizing EnergySIM results",type="plot", aspect_ratio=5/3,
-#' label=TRUE)
+#' #energyVIZ(EX1,title="Visualizing EnergySIM results",type="plot", aspect_ratio=5/3,
+#' #label=TRUE)
 #' 
-#' energyVIZ(EX1,type="summary_table")
+#' #energyVIZ(EX1,type="summary_table")
 #' 
-#' energyVIZ(EX1,type="strat_table")
+#' #energyVIZ(EX1,type="strat_table")
 #' 
-#' energyVIZ(EX1,type="gradient")
-
+#' #energyVIZ(EX1,type="gradient")
 #' @export
 
 energyVIZ=function(data, type="plot", title="energySIM results",
@@ -50,7 +48,7 @@ dest_x=data$run_params$dest_x
 dest_y=data$run_params$dest_y
 
 world <- ne_countries(scale = "medium", returnclass = "sf")
-start.p <- cbind(data$results[1,"lon"], data$results[1,"lat"])
+start.p <- cbind(data$results[1,3], data$results[1,4])
 # Generalize this soon
 start.p.df <- as.data.frame(start.p)
 colnames(start.p.df)[1:2] = c("Lon", "Lat")
@@ -115,10 +113,10 @@ myplot=ggplot(data = world) +
            ylim = my_ylim, 
            expand = FALSE) +
   geom_path(data = t.energy.res,
-            aes(x=lon, y=lat,group=agent_id),
+            aes(x=t.energy.res$lon, y=t.energy.res$lat,group=t.energy.res$agent_id),
             color = "red", size = 0.6, alpha = 0.4, lineend = "round") +
   geom_path(data = ideal.df,
-            aes(x=Lon, y=Lat),
+            aes(x=ideal.df$Lon, y=ideal.df$Lat),
             color = "black", size = 1.2, alpha = 1, linetype = "dashed") + theme(aspect.ratio=aspect_ratio) + 
   ggtitle(title)
 }
@@ -129,7 +127,7 @@ else{
              ylim = my_ylim, 
              expand = FALSE) +
     geom_path(data = t.energy.res,
-              aes(x=lon, y=lat,group=agent_id),
+              aes(x=t.energy.res$lon, y=t.energy.res$lat,group=t.energy.res$agent_id),
               color = "red", size = 0.6, alpha = 0.4, lineend = "round") + theme(aspect.ratio=aspect_ratio) +
     ggtitle(title) 
   label=FALSE
@@ -138,7 +136,7 @@ if(label){
   ideal.df[,"type"]=NA
   ideal.df[1,4]="Origin"
   ideal.df[2,4]="Ideal Final"
-  myplot=myplot+geom_point(data=ideal.df,aes(x=Lon,y=Lat,color=type))
+  myplot=myplot+geom_point(data=ideal.df,aes(x=ideal.df$Lon,y=ideal.df$Lat,color=type))
 }
 return(myplot)
 }

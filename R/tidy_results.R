@@ -4,6 +4,7 @@
 #' @param type "run_params" or "results", corresponding to which component of
 #' your moveSIM() or energySIM() output you'd like to print out. Default
 #' "results", which contains the movement data.
+#' @param nrows The number of rows to print.
 #' @details missing_pct and mortality_pct are not function parameters,
 #' but are nonetheless computed and returned here for your convenience
 #'  \itemize{

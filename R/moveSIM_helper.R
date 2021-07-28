@@ -16,13 +16,8 @@
 #' @param current_gen Fed into function by function genSIM; if using this function
 #' alone use 1
 #' @param search_radius Radius of semicircle to South of current location to search for next timestep (in km)
-#' @param mortality
+#' @param mortality Logical, should low energy levels result in death? Default T.
 #' @return A nx2 dataset containing longitude and latitude points for all n timesteps
-#' @examples
-#' my_results <- moveSIM(
-#'   sp = wiwa.pop, env = ndvi_raster, n = 27, sigma = 0.6,
-#'   dest_x = -100, dest_y = 25, mot_x = 0.9, mot_y = 0.9, search_radius = 200, current_gen = 1
-#' )
 #' @keywords internal
 #' @export
 
@@ -48,10 +43,7 @@ moveSIM_helper <- function(sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,
     mot_x_new <- mot_x
     mot_y_new <- mot_y
   }
-  if (mot_x_new < 0) {
-    mot_x_new <- .001
-    mot_y_new <- .001
-  }
+
   failures <- 0
   in_box <- FALSE
 
@@ -151,7 +143,6 @@ moveSIM_helper <- function(sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,
           break
         }
         cell_num <- sample(cell_num, 1) # There may be ties so we need to sample 1
-
         best_coordinates <- xyFromCell(my_rast, cell_num)
       }
 

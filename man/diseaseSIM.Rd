@@ -123,15 +123,15 @@ y=c(32.225, 34.700, 34.575, 34.425, 34.700, 34.375, 32.525, 32.175, 31.675, 29.5
  disease_points=data.frame(x=x,y=y)
 
 # Run function
-EX1 <- diseaseSIM(replicates=15,days=27,env_rast=ndvi_raster, 
-search_radius=400,
-sigma=.1, dest_x=999, dest_y=999, mot_x=.9, mot_y=.9,
-modeled_species=pabu.pop.new, optimum_lo=.6,optimum_hi=.8,init_energy=100, 
-direction="S",write_results=TRUE,single_rast=FALSE,mortality = TRUE,
-energy_adj=c(30,25,20,5,0,-5,-5,-10,-20,-25,-30),disease_loc=disease_points,
-disease_energy_interact = 60, disease_mortality=.5,disease_radius=300)
+# EX1 <- diseaseSIM(replicates=15,days=27,env_rast=ndvi_raster, 
+# search_radius=400,
+# sigma=.1, dest_x=999, dest_y=999, mot_x=.9, mot_y=.9,
+# modeled_species=pop1, optimum_lo=.6,optimum_hi=.8,init_energy=100, 
+# direction="S",write_results=TRUE,single_rast=FALSE,mortality = TRUE,
+# energy_adj=c(30,25,20,5,0,-5,-5,-10,-20,-25,-30),disease_loc=disease_points,
+# disease_energy_interact = 60, disease_mortality=.5,disease_radius=300)
 
 # View Results in Clean Format
-tidy_results(EX1, type = "results")
-tidy_results(EX1, type = "run_params")
+# tidy_results(EX1, type = "results")
+# tidy_results(EX1, type = "run_params")
 }

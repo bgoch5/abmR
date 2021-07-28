@@ -1,15 +1,13 @@
 Package: abmR
 Type: Package
-Title: Agent-based Models in R
+Title: Agent-Based Models in R
 Version: 0.1.13
 Author: Benjamin Gochanour, Javier Fernandez Lopez, Andrea Contina
 Maintainer: Benjamin Gochanour <ben.gochanour@gmail.com>
 Description: A work-in-progress package for running agent-based models in R.
 License: GPL(>=3)
 Suggests: jpeg, knitr
-VignetteBuilder: knitr
 Encoding: UTF-8
-LazyData: true
 RoxygenNote: 7.1.1
 Depends: 
     R (>= 2.10)
@@ -29,4 +27,7 @@ Imports:
     rnaturalearthdata,
     sf,
     tmap,
-    raster
+    raster,
+    utils,
+    stats,
+    methods

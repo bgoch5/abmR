@@ -21,6 +21,9 @@
 #' death. Note: If n_failures=days, this is equivalent to mortality=F.
 #'
 #' @import raster sp rgdal
+#' @importFrom methods as  setClass
+#' @importFrom stats na.omit rbinom rnorm
+#' @importFrom utils write.csv
 #' @param replicates Integer, desired number of replicates per run. Default 100.
 #' @param days Integer, how many days (timesteps) would you like to model? Range (1,nlayers(env_rast))
 #' @param env_rast Rasterstack or Rasterbrick with number of layers >= days
@@ -60,16 +63,16 @@
 #' )
 #'
 #' # Run function
-#' EX2 <- moveSIM(
-#'   replicates = 5, days = 27, env_rast = ndvi_raster, search_radius = 550,
-#'   sigma = .1, dest_x = -108.6, dest_y = 26.2, mot_x = .8, mot_y = .8,
-#'   modeled_species = pop1, optimum = .6, n_failures = 5, fail_thresh = .40,
-#'   direction = "S", write_results = TRUE, single_rast = FALSE, mortality = T
-#' )
+#' # EX2 <- moveSIM(
+#'  # replicates = 5, days = 27, env_rast = ndvi_raster, search_radius = 550,
+#'  # sigma = .1, dest_x = -108.6, dest_y = 26.2, mot_x = .8, mot_y = .8,
+#'  # modeled_species = pop1, optimum = .6, n_failures = 5, fail_thresh = .40,
+#'  # direction = "S", write_results = TRUE, single_rast = FALSE, mortality = T
+#' # )
 #'
 #' # View Results in Clean Format
-#' tidy_results(EX2, type = "results")
-#' tidy_results(EX2, type = "run_params")
+#' # tidy_results(EX2, type = "results")
+#' # tidy_results(EX2, type = "run_params")
 #' @export
 
 moveSIM <- function(replicates = 100,
@@ -93,7 +96,7 @@ moveSIM <- function(replicates = 100,
   sp <- modeled_species
   if (nlayers(env_rast) == 1 & single_rast == FALSE) {
     cat("Single layer environmental raster with single_rast=FALSE specified.
-         Please check your raster or change tosingle_rast=TRUE. Exiting
+         Please check your raster or change to single_rast=TRUE. Exiting
          function")
     stop()
   }
@@ -131,6 +134,11 @@ moveSIM <- function(replicates = 100,
   if (sp@x < xmin(env_rast) | sp@x > xmax(env_rast)
   | sp@y < ymin(env_rast) | sp@y > ymax(env_rast)) {
     print("Error: Species origin point outside env raster extent")
+    stop()
+  }
+  
+  if (mot_x <0 | mot_y<0) {
+    print("Error: mot_x and mot_y must be in range (0, 1]")
     stop()
   }
 

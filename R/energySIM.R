@@ -18,6 +18,9 @@
 #' so as to not affect subsequent analyses.
 #' 
 #' @import raster sp rgdal
+#' @importFrom methods as  setClass
+#' @importFrom stats na.omit rbinom rnorm
+#' @importFrom utils write.csv
 #' @param replicates Integer, desired number of replicates per run, default 100.
 #' @param days Integer, How many days (timesteps) would you like to model? Range (1,nlayers(env_rast))
 #' @param env_rast Rasterstack or Rasterbrick with number of layers >= days
@@ -59,17 +62,17 @@
 #' )
 #'
 #' # Run function
-#' EX1 <- energySIM(
-#'   replicates = 5, days = 27, env_rast = ndvi_raster, search_radius = 400,
-#'   sigma = .1, dest_x = -108.6, dest_y = 26.2, mot_x = .9, mot_y = .9,
-#'   modeled_species = pop1,
-#'   optimum_lo = .6, optimum_hi = .8, init_energy = 100,
-#'   direction = "S", write_results = FALSE, single_rast = FALSE, mortality = TRUE
-#' )
+#' # EX1 <- energySIM(
+#'  # replicates = 5, days = 27, env_rast = ndvi_raster, search_radius = 400,
+#'  # sigma = .1, dest_x = -108.6, dest_y = 26.2, mot_x = .9, mot_y = .9,
+#'  # modeled_species = pop1,
+#'  # optimum_lo = .6, optimum_hi = .8, init_energy = 100,
+#'  # direction = "S", write_results = FALSE, single_rast = FALSE, mortality = TRUE
+#' # )
 #'
 #' # View Results in Clean Format
-#' tidy_results(EX1, type = "results")
-#' tidy_results(EX1, type = "run_params")
+#' # tidy_results(EX1, type = "results")
+#' # tidy_results(EX1, type = "run_params")
 #' @export
 
 energySIM <- function(replicates = 100,
@@ -134,6 +137,11 @@ energySIM <- function(replicates = 100,
          or morphpar2SD. Function terminated.")
       stop()
     }
+  }
+  
+  if (mot_x <0 | mot_y<0) {
+    print("Error: mot_x and mot_y must be in range (0, 1]")
+    stop()
   }
 
   my_min <- minValue(env_rast[[1]])

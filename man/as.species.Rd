@@ -64,7 +64,7 @@ that heavier birds will fly shorter distance, we would  specify
 #-Morphpar1=Wing Chord: Observed=15 mm, Pop. Mean=10, Pop. SD=2; Pos effect
 #on movement speed
 #-Morphpar2=Mass; Observed=15 g, Pop. Mean=6, Pop. SD=2; Pos effect on
-movement speed
+# movement speed
 
 my_species=as.species(x=-100,y=26,morphpar1=15,morphpar1mean=10,
 morphpar1sd=2, morphpar1sign="Pos", morphpar2=7,morphpar2mean=6,

@@ -5,8 +5,8 @@
 #' unspecified in the call to moveSIM(), then straight line track is omitted).
 #' When type="summary_table", a summary table is output.
 #'
-#' @import raster sp rgdal rnaturalearth rnaturalearthdata ggplot2 gtsummary
-#'
+#' @import raster sp rgdal rnaturalearth rnaturalearthdata ggplot2
+#' @importFrom gtsummary tbl_summary
 #' @param data Data to be plotted, this object should be the output from
 #' moveSIM().
 #' @param type "plot" or "summary_table", default "plot".
@@ -19,16 +19,16 @@
 #' 
 #' # 1. Run moveSIM()
 #' 
-#' EX2=moveSIM(replicates=5,days=27,env_rast=ndvi_raster, search_radius=550,
-#' sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.8, mot_y=.8,
-#' modeled_species=pabu.pop,optimum=.6, n_failures=5, fail_thresh=.40,
-#' direction="S",write_results=TRUE,single_rast=FALSE,mortality = T)
+#' #EX2=moveSIM(replicates=5,days=27,env_rast=ndvi_raster, search_radius=550,
+#' #sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.8, mot_y=.8,
+#' #modeled_species=pabu.pop,optimum=.6, n_failures=5, fail_thresh=.40,
+#' #direction="S",write_results=TRUE,single_rast=FALSE,mortality = T)
 #' 
-#' 2. Run moveVIZ() on your result
-#' moveVIZ(EX2,title="Visualizing MoveSIM results",type="plot",
-#' label=TRUE)
+#' # 2. Run moveVIZ() on your result
+#' #moveVIZ(EX2,title="Visualizing MoveSIM results",type="plot",
+#' #label=TRUE)
 #' 
-#' moveVIZ(EX2, type="summary_table")
+#' #moveVIZ(EX2, type="summary_table")
 #'
 #' @export
 
@@ -38,7 +38,7 @@ moveVIZ=function(data, type="plot", title="moveSIM results", aspect_ratio=1, xli
     dest_x=data$run_params$dest_x
     dest_y=data$run_params$dest_y
     world <- ne_countries(scale = "medium", returnclass = "sf")
-    start.p <- cbind(data$results[1,"lon"], data$results[1,"lat"])
+    start.p <- cbind(data$results[1,3], data$results[1,4])
     # Generalize this soon
     start.p.df <- as.data.frame(start.p)
     colnames(start.p.df)[1:2] = c("Lon", "Lat")
@@ -66,10 +66,10 @@ moveVIZ=function(data, type="plot", title="moveSIM results", aspect_ratio=1, xli
       geom_sf() +
       coord_sf(xlim = my_xlim, ylim = my_ylim, expand = FALSE) +
       geom_path(data = t.move.res,
-                aes(x=lon, y=lat,group=agent_id),
+                aes(x=t.move.res$lon, y=t.move.res$lat,group=t.move.res$agent_id),
                 color = "blue", size = 0.6, alpha = 0.4, lineend = "round") +
       geom_path(data = ideal.df,
-                aes(x=Lon, y=Lat),
+                aes(x=ideal.df$Lon, y=ideal.df$Lat),
                 color = "black", size = 1.2, alpha = 1, linetype = 2) + theme(aspect.ratio=aspect_ratio) + 
       ggtitle(title)
     }
@@ -78,7 +78,7 @@ moveVIZ=function(data, type="plot", title="moveSIM results", aspect_ratio=1, xli
         geom_sf() +
         coord_sf(xlim = my_xlim, ylim = my_ylim, expand = FALSE) +
         geom_path(data = t.move.res,
-                  aes(x=lon, y=lat,group=agent_id),
+                  aes(x=t.move.res$lon, y=t.move.res$lat,group=t.move.res$agent_id),
                   color = "blue", size = 0.6, alpha = 0.4, lineend = "round") + theme(aspect.ratio=aspect_ratio) + 
         ggtitle(title)  
     }

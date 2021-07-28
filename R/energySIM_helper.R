@@ -21,11 +21,6 @@
 #' @param mortality Logical, should low energy levels result in death?
 #' @return A nx3 dataset containing longitude and latitude and energy
 #' points for all n timesteps
-#' @examples
-#' my_results <- moveSIM(
-#'   sp = wiwa.pop, env = ndvi_raster, n = 27, sigma = 0.6,
-#'   dest_x = -100, dest_y = 25, mot_x = 0.9, mot_y = 0.9, search_radius = 200, current_gen = 1
-#' )
 #' @keywords internal
 #' @export
 
@@ -60,10 +55,6 @@ energySIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, de
     mot_x_new <- mot_x
     mot_y_new <- mot_y
   }
-  if (mot_x_new < 0) {
-    mot_x_new <- .001
-    mot_y_new <- .001
-  }
 
   in_box <- FALSE
 
@@ -85,7 +76,7 @@ energySIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, de
 
     # Birds search area is a semicircle of search_radius in direction specified
     if (mortality) {
-      search_radius_update <- search_radius * (energy / 100)
+      search_radius_update <- search_radius * (energy / init_energy)
     }
 
     else {
@@ -184,8 +175,8 @@ energySIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, de
       while (is.na(extract(curr_env_subtract, matrix(c(lon_candidate, lat_candidate), 1, 2)))) {
         lon_candidate <- track[step - 1, 1] + (sigma * rnorm(1)) + (mot_x_new * (target_x - track[step - 1, 1]))
         lat_candidate <- track[step - 1, 2] + (sigma * rnorm(1)) + (mot_y_new * (target_y - track[step - 1, 2]))
-        pt <- SpatialPoints(cbind(lon_candidate, lat_candidate))
-        proj4string(pt) <- proj4string(env_orig)
+        #pt <- SpatialPoints(cbind(lon_candidate, lat_candidate))
+        #proj4string(pt) <- proj4string(env_orig)
         i <- i + 1
         # How to select candidate destination, this is as you originally had it.
         if (i > 90) { # Avoid infinite loop

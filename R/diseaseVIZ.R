@@ -9,8 +9,8 @@
 #' type="summary_table" or type="strat_table" (table with results stratified
 #' by energy gain or loss). Please see Vignette for examples of this output.
 #'
-#' @import raster sp rgdal rnaturalearth rnaturalearthdata ggplot2 table1 gtsummary gstat sf tmap
-#'
+#' @import raster sp rgdal rnaturalearth rnaturalearthdata ggplot2 table1 sf tmap
+#' @importFrom gtsummary tbl_summary
 #' @param data Data to be plotted, this object should be the output from
 #' diseaseSIM().
 #' @param type String from "plot", "gradient", "summary_table", or "strat_table".
@@ -21,27 +21,26 @@
 #' @param ylim Optionally specify desired y limits as a numeric vector: c(low,hi)
 #'
 #' @examples
-#' 1. Run diseaseSIM()
+#' # 1. Run diseaseSIM()
 #' 
-#' EX1 <- diseaseSIM(replicates=15,days=27,env_rast=ndvi_raster, 
-#' search_radius=400,
-#' sigma=.1, dest_x=999, dest_y=999, mot_x=.9, mot_y=.9,
-#' modeled_species=pabu.pop.new, optimum_lo=.6,optimum_hi=.8,init_energy=100, 
-#' direction="S",write_results=TRUE,single_rast=FALSE,mortality = TRUE,
-#' energy_adj=c(30,25,20,5,0,-5,-5,-10,-20,-25,-30),disease_loc=disease_points,
-#' disease_energy_interact = 60, disease_mortality=.5,disease_radius=300)
+#' #EX1 <- diseaseSIM(replicates=15,days=27,env_rast=ndvi_raster, 
+#' #search_radius=400,
+#' #sigma=.1, dest_x=999, dest_y=999, mot_x=.9, mot_y=.9,
+#' #modeled_species=pabu.pop.new, optimum_lo=.6,optimum_hi=.8,init_energy=100, 
+#' #direction="S",write_results=TRUE,single_rast=FALSE,mortality = TRUE,
+#' #energy_adj=c(30,25,20,5,0,-5,-5,-10,-20,-25,-30),disease_loc=disease_points,
+#' #disease_energy_interact = 60, disease_mortality=.5,disease_radius=300)
 #' 
-#' 2. Run diseaseVIZ() on your result
+#' # 2. Run diseaseVIZ() on your result
 #' 
-#' diseaseVIZ(EX1,title="Visualizing diseaseSIM results",type="plot", aspect_ratio=5/3,
-#' label=TRUE)
+#' #diseaseVIZ(EX1,title="Visualizing diseaseSIM results",type="plot", aspect_ratio=5/3,
+#' #label=TRUE)
 #' 
-#' diseaseVIZ(EX1,type="summary_table")
+#' #diseaseVIZ(EX1,type="summary_table")
 #' 
-#' diseaseVIZ(EX1,type="strat_table")
+#' #diseaseVIZ(EX1,type="strat_table")
 #' 
-#' diseaseVIZ(EX1,type="gradient")
-
+#' #diseaseVIZ(EX1,type="gradient")
 #' @export
 
 diseaseVIZ=function(data, type="plot", title="diseaseSIM results",
@@ -52,7 +51,7 @@ diseaseVIZ=function(data, type="plot", title="diseaseSIM results",
   dest_y=data$run_params$dest_y
   
   world <- ne_countries(scale = "medium", returnclass = "sf")
-  start.p <- cbind(data$results[1,"lon"], data$results[1,"lat"])
+  start.p <- cbind(data$results[1,3], data$results[1,4])
   # Generalize this soon
   start.p.df <- as.data.frame(start.p)
   colnames(start.p.df)[1:2] = c("Lon", "Lat")
@@ -117,10 +116,11 @@ diseaseVIZ=function(data, type="plot", title="diseaseSIM results",
                  ylim = my_ylim, 
                  expand = FALSE) +
         geom_path(data = t.energy.res,
-                  aes(x=lon, y=lat,group=agent_id),
+                  aes(x=t.energy.res$lon, y=t.energy.res$lat,
+                      group=t.energy.res$agent_id),
                   color = "green", size = 0.6, alpha = 0.4, lineend = "round") +
         geom_path(data = ideal.df,
-                  aes(x=Lon, y=Lat),
+                  aes(x=ideal.df$Lon, y=ideal.df$Lat),
                   color = "black", size = 1.2, alpha = 1, linetype = "dashed") + theme(aspect.ratio=aspect_ratio) + 
         ggtitle(title)
     }
@@ -131,7 +131,7 @@ diseaseVIZ=function(data, type="plot", title="diseaseSIM results",
                  ylim = my_ylim, 
                  expand = FALSE) +
         geom_path(data = t.energy.res,
-                  aes(x=lon, y=lat,group=agent_id),
+                  aes(x=t.energy.res$lon, y=t.energy.res$lat,group=t.energy.res$agent_id),
                   color = "green", size = 0.6, alpha = 0.4, lineend = "round") + theme(aspect.ratio=aspect_ratio) +
         ggtitle(title) 
       label=FALSE
@@ -140,7 +140,7 @@ diseaseVIZ=function(data, type="plot", title="diseaseSIM results",
       ideal.df[,"type"]=NA
       ideal.df[1,4]="Origin"
       ideal.df[2,4]="Ideal Final"
-      myplot=myplot+geom_point(data=ideal.df,aes(x=Lon,y=Lat,color=type))
+      myplot=myplot+geom_point(data=ideal.df,aes(x=ideal.df$Lon,y=ideal.df$Lat,color=type))
     }
     return(myplot)
   }
