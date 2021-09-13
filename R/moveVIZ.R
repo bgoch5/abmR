@@ -23,7 +23,7 @@
 #' morphpar1=15, morphpar1mean=16, morphpar1sd=2,morphpar1sign="Pos",
 #' morphpar2=19,morphpar2mean=18,morphpar2sd=1,morphpar2sign="Pos")
 #' 
-#' EX2=moveSIM(replicates=5,days=27,env_rast=ex_raster, search_radius=550,
+#' EX2=moveSIM(replicates=2,days=27,env_rast=ex_raster, search_radius=550,
 #' sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.8, mot_y=.8,
 #' modeled_species=pop1,optimum=.6, n_failures=5, fail_thresh=.40,
 #' direction="S",write_results=FALSE,single_rast=TRUE,mortality = TRUE)

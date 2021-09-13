@@ -3,7 +3,7 @@
 #'
 #' Runs agent based modeling for one replicate of a single species. Used by function `generations`
 #' to run more replicates of more species.
-#' @import raster sp rgdal 
+#' @import raster sp rgdal
 #' @importFrom swfscMisc circle.polygon
 #' @param sp A species object
 #' @param env Raster, should represent NDVI or your environmental variable of interest

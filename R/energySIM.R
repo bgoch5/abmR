@@ -20,6 +20,7 @@
 #' @import raster sp rgdal
 #' @importFrom methods as  setClass
 #' @importFrom stats na.omit rbinom rnorm
+#' @importFrom geosphere distHaversine
 #' @importFrom utils write.csv
 #' @param replicates Integer, desired number of replicates per run, default 100.
 #' @param days Integer, How many days (timesteps) would you like to model? Range (1,nlayers(env_rast))
@@ -200,7 +201,7 @@ energySIM <- function(replicates = 100,
     Species$distance <- NA
     Species$delta_energy <- NA
     for (j in 2:nrow(Species)) {
-      Species$distance[j] <- distHaversine(Species[(j - 1), 1:2], Species[j, 1:2]) / 1000
+      Species$distance[j] <- geosphere::distHaversine(Species[(j - 1), 1:2], Species[j, 1:2]) / 1000
       Species$delta_energy[j] <- Species[j, 3] - Species[(j - 1), 3]
     }
     if (nrow(Species) == days) {

@@ -23,6 +23,7 @@
 #' @import raster sp rgdal
 #' @importFrom methods as  setClass
 #' @importFrom stats na.omit rbinom rnorm
+#' @importFrom geosphere distHaversine
 #' @importFrom utils write.csv
 #' @param replicates Integer, desired number of replicates per run. Default 100.
 #' @param days Integer, how many days (timesteps) would you like to model? Range (1,nlayers(env_rast))
