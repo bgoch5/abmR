@@ -6,7 +6,7 @@
 #'
 #' @author Benjamin Gochanour \email{ben.gochanour@gmail.com}
 #' @author Javier Fernandez-Lopez \email{jflopez.bio@gmail.com}
-#' @author Andrea Contina \email{acontina@usgs.gov; acontina@gmail.com}
+#' @author Andrea Contina \email{acontina@gmail.com}
 #'
 #' @name abmR
 NULL

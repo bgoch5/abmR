@@ -2,8 +2,7 @@
 % Please edit documentation in R/moveSIM.R
 \name{moveSIM}
 \alias{moveSIM}
-\title{Runs basic Brownian / Ornstein Uhlenbeck agent-based model for multiple
-replicates.}
+\title{Runs agent-based model (ABM) movement simulations based on environmental data}
 \usage{
 moveSIM(
   replicates = 100,

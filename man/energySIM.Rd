@@ -2,8 +2,8 @@
 % Please edit documentation in R/energySIM.R
 \name{energySIM}
 \alias{energySIM}
-\title{Runs more advanced Brownian / Ornstein Uhlenbeck agent-based model for
-multiple replicates.}
+\title{Runs agent-based model (ABM) movement and energy budget
+simulations based on environmental data}
 \usage{
 energySIM(
   replicates = 100,

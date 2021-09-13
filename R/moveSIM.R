@@ -1,5 +1,4 @@
-#' Runs basic Brownian / Ornstein Uhlenbeck agent-based model for multiple
-#' replicates.
+#' Runs agent-based model (ABM) movement simulations based on environmental data
 #'
 #' Here, agent mortality occurs when agent fails to achieve suitable raster
 #' values at least n_failures+1 timesteps in a row. Agent energy stores are not

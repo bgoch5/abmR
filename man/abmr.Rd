@@ -12,5 +12,5 @@ Benjamin Gochanour \email{ben.gochanour@gmail.com}
 
 Javier Fernandez-Lopez \email{jflopez.bio@gmail.com}
 
-Andrea Contina \email{acontina@usgs.gov; acontina@gmail.com}
+Andrea Contina \email{acontina@gmail.com}
 }

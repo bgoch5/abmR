@@ -1,6 +1,5 @@
-#'
-#' Runs more advanced Brownian / Ornstein Uhlenbeck agent-based model for
-#' multiple replicates.
+#' Runs agent-based model (ABM) movement and energy budget
+#' simulations based on environmental data
 #'
 #' Here, agent mortality occurs when agent reaches energy = 0. Agent energy
 #' stores are dynamic, and affect search area as a multiplier, so movement
