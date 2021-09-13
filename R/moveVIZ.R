@@ -17,18 +17,21 @@
 #'
 #' @examples
 #' 
-#' # 1. Run moveSIM()
+#' # 1. Define Population and Run moveSIM()
 #' 
-#' #EX2=moveSIM(replicates=5,days=27,env_rast=ndvi_raster, search_radius=550,
-#' #sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.8, mot_y=.8,
-#' #modeled_species=pabu.pop,optimum=.6, n_failures=5, fail_thresh=.40,
-#' #direction="S",write_results=TRUE,single_rast=FALSE,mortality = T)
+#' pop1 <- as.species(x=-100, y=55,
+#' morphpar1=15, morphpar1mean=16, morphpar1sd=2,morphpar1sign="Pos",
+#' morphpar2=19,morphpar2mean=18,morphpar2sd=1,morphpar2sign="Pos")
+#' 
+#' EX2=moveSIM(replicates=5,days=27,env_rast=ex_raster, search_radius=550,
+#' sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.8, mot_y=.8,
+#' modeled_species=pop1,optimum=.6, n_failures=5, fail_thresh=.40,
+#' direction="S",write_results=FALSE,single_rast=TRUE,mortality = TRUE)
 #' 
 #' # 2. Run moveVIZ() on your result
-#' #moveVIZ(EX2,title="Visualizing MoveSIM results",type="plot",
-#' #label=TRUE)
+#' moveVIZ(EX2,title="Visualizing MoveSIM results",type="plot")
 #' 
-#' #moveVIZ(EX2, type="summary_table")
+#' moveVIZ(EX2, type="summary_table")
 #'
 #' @export
 

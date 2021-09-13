@@ -39,11 +39,6 @@ energySIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, de
 
   optimum <- (optimum_hi + optimum_lo) / 2
 
-  # We recognize that morphological characteristics of a species may affect the speed at which
-  # they move. Thus we added these parameters to species class and had them affect motivation
-  # (preliminary).
-  # Idea: Bigger birds can fly further/faster
-
   if (length(sp@morphpar1 == 1) & length(sp@morphpar2 == 1)) {
     mot_x_new <- (mot_x + (sp@morphpar1 - sp@morphpar1mean) / sp@morphpar1sd * .1 * ifelse(sp@morphpar1sign == "Pos", 1, -1)
       + (sp@morphpar2 - sp@morphpar2mean) / sp@morphpar2sd * .1 * ifelse(sp@morphpar2sign == "Pos", 1, -1))
@@ -105,15 +100,11 @@ energySIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, de
     p <- Polygon(test)
     ps <- Polygons(list(p), 1)
     sps <- SpatialPolygons(list(ps), proj4string = crs(env_orig))
-    # my_bool=tryCatch(!is.null(intersect(curr_env_subtract,sps)), error=function(e) return(FALSE))
-
-    # if(my_bool){
+ 
     curr_env_subtract <- crop(curr_env_subtract, extent(sps))
     curr_env_subtract <- mask(curr_env_subtract, sps, inverse = FALSE)
     curr_env_orig <- crop(curr_env_orig, extent(sps))
     curr_env_orig <- mask(curr_env_orig, sps, inverse = FALSE)
-    # }
-
 
     if (direction == "R") {
       random <- sampleRandom(curr_env_orig, 1, xy = TRUE)
@@ -126,10 +117,7 @@ energySIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, de
         pt <- SpatialPoints(cbind(dest_x, dest_y))
         proj4string(pt) <- proj4string(env_orig)
       }
-
-      # We are simulating birds that were captured at a study site in Mexico (-99.11, 19.15).
-      # We didn't want to force birds there from the start, but if this study site falls
-      # within the search area, we want birds to head in that direction.
+      
       if (dest_x == 999 & dest_y == 999) {
         cell_num <- which.min(abs(curr_env_subtract))
 
@@ -155,10 +143,8 @@ energySIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, de
         best_coordinates <- c(dest_x, dest_y)
       }
       else {
-        # If it doesn't fall within, then just take environmental cell
-        # within search area that has minimal distance from optimal value
-        cell_num <- which.min(abs(curr_env_subtract)) # had my_rast here, need curr_env_subtract
-        if (length(which.min(abs(curr_env_subtract))) == 0) { # Ignore--edge case error handling
+        cell_num <- which.min(abs(curr_env_subtract)) 
+        if (length(which.min(abs(curr_env_subtract))) == 0) {
           print("Can't find any non-NA cells. Agent stopped.")
           track[step:days, 1] <- NA
           track[step:days, 2] <- NA
@@ -175,10 +161,7 @@ energySIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, de
       while (is.na(extract(curr_env_subtract, matrix(c(lon_candidate, lat_candidate), 1, 2)))) {
         lon_candidate <- track[step - 1, 1] + (sigma * rnorm(1)) + (mot_x_new * (target_x - track[step - 1, 1]))
         lat_candidate <- track[step - 1, 2] + (sigma * rnorm(1)) + (mot_y_new * (target_y - track[step - 1, 2]))
-        #pt <- SpatialPoints(cbind(lon_candidate, lat_candidate))
-        #proj4string(pt) <- proj4string(env_orig)
         i <- i + 1
-        # How to select candidate destination, this is as you originally had it.
         if (i > 90) { # Avoid infinite loop
           print("Can't find any non-NA cells. Agent stopped.")
           track[step:days, 1] <- NA
@@ -191,8 +174,7 @@ energySIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, de
 
       pt <- SpatialPoints(cbind(lon_candidate, lat_candidate))
       proj4string(pt) <- proj4string(env_orig)
-      if (is.na(over(pt, sps, fn = NULL))) { # Birds can't stop over ocean (they must be over
-        # North America)
+      if (is.na(over(pt, sps, fn = NULL))) { 
         print("Best coordinates not in search region, agent stopped")
         track[step:days, 1] <- NA
         track[step:days, 2] <- NA
@@ -201,14 +183,9 @@ energySIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, de
         return(track)
       }
 
-      # Second searching step: now that we've added a destination for this step (and added some)
-      # randomness, we want to simulate bird finding best location in close proximity to where it
-      # ended up (small scale searching behavior, whereas earlier is larger scale from evolutinary
-      # memory.)
-
       neig <- adjacent(curr_env_subtract,
         cellFromXY(curr_env_subtract, matrix(c(
-          lon_candidate, # put step in brackets here
+          lon_candidate,
           lat_candidate
         ), 1, 2)),
         directions = 8, pairs = FALSE
@@ -259,11 +236,9 @@ energySIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, de
         diff <- abs(dist_from_opt_lo)
       }
       else {
-        # diff=.21*optimum #this is just a fix for now when all cells in neighborhood have
         diff <- .49 * optimum
         # If all NA give it an average effect (don't gain or lose energy)
       }
-
 
       if (in_interval) {
         energy <- energy + energy_adj[1]
@@ -313,7 +288,7 @@ energySIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, de
       if (mortality == TRUE) {
         if (energy == 0 & step < days) {
           print("Agent died")
-          track[(step + 1):days, 1] <- NA # Bird died, rest of points are N/A
+          track[(step + 1):days, 1] <- NA 
           track[(step + 1):days, 2] <- NA
           track[step:days, 4] <- "Died"
           track[1:days, 5] <- "Died"

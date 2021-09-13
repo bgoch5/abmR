@@ -102,15 +102,14 @@ pop1 <- as.species(
 )
 
 # Run function
-# EX1 <- energySIM(
- # replicates = 5, days = 27, env_rast = ndvi_raster, search_radius = 400,
- # sigma = .1, dest_x = -108.6, dest_y = 26.2, mot_x = .9, mot_y = .9,
- # modeled_species = pop1,
- # optimum_lo = .6, optimum_hi = .8, init_energy = 100,
- # direction = "S", write_results = FALSE, single_rast = FALSE, mortality = TRUE
-# )
+EX1 <- energySIM(
+ replicates = 5, days = 27, env_rast = ex_raster, search_radius = 400,
+ sigma = .1, dest_x = -108.6, dest_y = 26.2, mot_x = .9, mot_y = .9,
+ modeled_species = pop1,
+ optimum_lo = .6, optimum_hi = .8, init_energy = 100,
+ direction = "S", write_results = FALSE, single_rast = TRUE, mortality = TRUE)
 
 # View Results in Clean Format
-# tidy_results(EX1, type = "results")
-# tidy_results(EX1, type = "run_params")
+tidy_results(EX1, type = "results")
+tidy_results(EX1, type = "run_params")
 }

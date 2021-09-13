@@ -40,22 +40,27 @@ type="summary_table" or type="strat_table" (table with results stratified
 by energy gain or loss). Please see Vignette for examples of this output.
 }
 \examples{
-# 1. Run energySIM()
 
-#EX1=energySIM(replicates=5,days=27,env_rast=ndvi_raster, search_radius=400,
-#sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.9, mot_y=.9,
-#modeled_species=pabu.pop,
-#optimum_lo=.6,optimum_hi=.8,init_energy=100,
-#direction="S",write_results=FALSE,single_rast=FALSE,mortality = TRUE)
+# 1. Define Population and Run energySIM()
+
+pop1 <- as.species(x=-100, y=55,
+morphpar1=15, morphpar1mean=16, morphpar1sd=2,morphpar1sign="Pos",
+morphpar2=19,morphpar2mean=18,morphpar2sd=1,morphpar2sign="Pos")
+
+EX1=energySIM(replicates=5,days=27,env_rast=ex_raster, search_radius=400,
+sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.9, mot_y=.9,
+modeled_species=pop1,
+optimum_lo=.6,optimum_hi=.8,init_energy=100,
+direction="S",write_results=FALSE,single_rast=TRUE,mortality = TRUE)
 
 # 2. Run energyVIZ() on your result
 
-#energyVIZ(EX1,title="Visualizing EnergySIM results",type="plot", aspect_ratio=5/3,
-#label=TRUE)
+energyVIZ(EX1,title="Visualizing EnergySIM results",type="plot", aspect_ratio=5/3,
+label=TRUE)
 
-#energyVIZ(EX1,type="summary_table")
+energyVIZ(EX1,type="summary_table")
 
-#energyVIZ(EX1,type="strat_table")
+energyVIZ(EX1,type="strat_table")
 
-#energyVIZ(EX1,type="gradient")
+energyVIZ(EX1,type="gradient")
 }

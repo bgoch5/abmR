@@ -1,5 +1,5 @@
 #'
-#' Downloads data that is used in examples in vignette and documentation.
+#' Downloads example NDVI data
 #'
 #' Warning: this function will download to your hard drive
 #' (to a location specified by your current working directory) the below
@@ -36,12 +36,4 @@ get_ex_data <- function() {
 
   # Download files, will save to hard drive
   walk(my_files$id, ~ drive_download(as_id(.x), overwrite = TRUE))
-
-  # Read in Europe Raster (composite is average of all days for plotting)
-  # ndvi_2013_Europe=stack(paste0(my_wd,"/NDVI_2013_Europe.gri"))
-  # ndvi_2013_Europe_composite=stack(paste0(my_wd,"/NDVI_2013_Europe_composite.gri"))
-
-  # Read in NA Raster
-  # ndvi_2013_NA=stack(paste0(my_wd,"/NDVI_2013_NA.gri"))
-  # ndvi_2013_NA_composite=stack(paste0(my_wd,"/NDVI_2013_NA_composite.gri"))
 }

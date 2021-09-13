@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_ex_data.R
 \name{get_ex_data}
 \alias{get_ex_data}
-\title{Downloads data that is used in examples in vignette and documentation.}
+\title{Downloads example NDVI data}
 \source{
 Vermote, Eric; NOAA CDR Program. (2019): NOAA Climate Data Record (CDR)
 of AVHRR Normalized Difference Vegetation Index (NDVI), Version 5.
