@@ -47,7 +47,7 @@ pop1 <- as.species(x=-98.7, y=34.7,
 morphpar1=15, morphpar1mean=16, morphpar1sd=2,morphpar1sign="Pos",
 morphpar2=19,morphpar2mean=18,morphpar2sd=1,morphpar2sign="Pos")
 
-EX1=energySIM(replicates=2,days=27,env_rast=ex_raster, search_radius=200,
+EX1=energySIM(replicates=2,days=15,env_rast=ex_raster, search_radius=200,
 sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.9, mot_y=.9,
 modeled_species=pop1,
 optimum_lo=.8,optimum_hi=.9,init_energy=100,
