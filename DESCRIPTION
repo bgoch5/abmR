@@ -1,10 +1,19 @@
 Package: abmR
 Type: Package
 Title: Agent-Based Models in R
-Version: 1.0.0
-Author: Benjamin Gochanour, Javier Fernandez Lopez, Andrea Contina
+Version: 1.0.1
+Authors@R: c(
+ person("Benjamin", "Gochanour",
+ email = "ben.gochanour@gmail.com",
+ role = c("aut","cre")),
+ person("Javier", "Fernandez-Lopez",
+ email = "jflopez.bio@gmail.com",
+ role = "aut"),
+ person("Andrea", "Contina",
+ email = "acontina@gmail.com",
+ role = "aut"))
 Maintainer: Benjamin Gochanour <ben.gochanour@gmail.com>
-Description: A package for running flexible agent based models (ABM) in R. The package contains two movement functions, each of which is based on the Ornstein-Uhlenbeck (OU) model. It also contains several visualization and data summarization functions to facililate the presentation of simulation results.
+Description: Supplies tools for running agent-based models (ABM) in R. The package contains two movement functions, each of which is based on the Ornstein-Uhlenbeck (OU) model. It also contains several visualization and data summarization functions to facilitate the presentation of simulation results.
 License: GPL(>=3)
 Suggests: jpeg, knitr
 Encoding: UTF-8
