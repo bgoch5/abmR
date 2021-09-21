@@ -12,6 +12,9 @@ https://doi.org/10.7289/V5ZG6QH9. Accessed 12/26/2020.
 \usage{
 get_ex_data()
 }
+\value{
+No return value, called to download files to hard drive.
+}
 \description{
 Warning: this function will download to your hard drive
 (to a location specified by your current working directory) the below

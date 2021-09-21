@@ -7,13 +7,16 @@
 tidy_results(data, type = "results", nrows = NULL)
 }
 \arguments{
-\item{data}{The output from moveSIM or energySIM -- a list of two dataframes.}
+\item{data}{The output from moveSIM() or energySIM() -- a list of two dataframes.}
 
 \item{type}{"run_params" or "results", corresponding to which component of
 your moveSIM() or energySIM() output you'd like to print out. Default
 "results", which contains the movement data.}
 
 \item{nrows}{The number of rows to print.}
+}
+\value{
+Prints a cleaned table of moveSIM() or energySIM() results.
 }
 \description{
 Prints results from moveSIM() or energySIM() in an easier-to-read table.

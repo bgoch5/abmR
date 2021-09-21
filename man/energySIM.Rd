@@ -80,8 +80,8 @@ refers to the percentage of agents in the run that died.
 Here, agent mortality occurs when agent reaches energy = 0. Agent energy
 stores are dynamic, and affect search area as a multiplier, so movement
 is directly affected by the quality of raster cells achieved. Results
-may be visualized with `energyVIZ()`. Relies on underlying function
-`energySIM_helper`, which is not to be used alone.
+may be visualized with energyVIZ(). Relies on underlying function
+energySIM_helper(), which is not to be used alone.
 }
 \details{
 For each timestep, agents can have status "Alive",

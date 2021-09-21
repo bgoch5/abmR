@@ -75,8 +75,8 @@ refers to the percentage of agents in the run that died.
 Here, agent mortality occurs when agent fails to achieve suitable raster
 values at least n_failures+1 timesteps in a row. Agent energy stores are not
 dynamic, so movement speed isn't directly affected by quality of raster cells
-achieved. Results may be analyzed with `moveVIZ()`. Relies on underlying
-function `moveSIM_helper`, which is not to be used alone.
+achieved. Results may be analyzed with moveVIZ(). Relies on underlying
+function moveSIM_helper(), which is not to be used alone.
 }
 \details{
 For each timestep, agents can have status "Alive",

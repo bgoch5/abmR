@@ -3,8 +3,8 @@
 #' Here, agent mortality occurs when agent fails to achieve suitable raster
 #' values at least n_failures+1 timesteps in a row. Agent energy stores are not
 #' dynamic, so movement speed isn't directly affected by quality of raster cells
-#' achieved. Results may be analyzed with `moveVIZ()`. Relies on underlying
-#' function `moveSIM_helper`, which is not to be used alone.
+#' achieved. Results may be analyzed with moveVIZ(). Relies on underlying
+#' function moveSIM_helper(), which is not to be used alone.
 #'
 #' For each timestep, agents can have status "Alive",
 #' "Stopped", or "Died". All agents start alive and may stop if, on a particular timestep,
@@ -93,51 +93,46 @@ moveSIM <- function(replicates = 100,
   days <- days + 1
   sp <- modeled_species
   if (nlayers(env_rast) == 1 & single_rast == FALSE) {
-    cat("Single layer environmental raster with single_rast=FALSE specified.
+    stop("Single layer environmental raster with single_rast=FALSE specified.
          Please check your raster or change to single_rast=TRUE. Exiting
          function")
-    stop()
   }
   if (nlayers(env_rast) != 1 & single_rast == TRUE) {
-    cat("Multiple layer environmental raster with single_rast=TRUE specified.
+    warning("Multiple layer environmental raster with single_rast=TRUE specified.
     Using only first layer of raster")
   }
 
   if (length(sp@morphpar1) == 1 & length(sp@morphpar2) == 1) {
     if (sp@morphpar1 > sp@morphpar1mean + 3.5 * sp@morphpar1sd | sp@morphpar1 < sp@morphpar1mean - 3.5 * sp@morphpar1sd) {
-      cat("Error: Specified value for morphpar1 is greater than 3.5 SDs away from the
+      stop("Specified value for morphpar1 is greater than 3.5 SDs away from the
          specified mean, which is extremely unlikely. Consider adjusting morphpar1, morphpar1mean,
-         or morphpar1SD. Function terminated.")
-      stop()
+         or morphpar1SD.")
     }
 
     if (sp@morphpar2 > sp@morphpar2mean + 3.5 * sp@morphpar2sd | sp@morphpar2 < sp@morphpar2mean - 3.5 * sp@morphpar2sd) {
-      cat("Error: Specified value for morphpar2 is greater than 3.5 SDs away from the
+      stop("Specified value for morphpar2 is greater than 3.5 SDs away from the
          specified mean, which is extremely unlikely. Consider adjusting morphpar2, morphpar2mean,
-         or morphpar2SD. Function terminated.")
-      stop()
+         or morphpar2SD.")
     }
   }
 
   my_min <- minValue(env_rast[[1]])
   my_max <- maxValue(env_rast[[1]])
   if (!(optimum > my_min | optimum < my_max)) {
-    cat("Warning: Optimum specified is not in range of env_raster values. Consider changing.")
+    warning("Optimum specified is not in range of env_raster values. Consider changing.")
   }
 
   if (n_failures < 1 | n_failures > days) {
-    cat("Warning: Value for n_failures is not in interval (1,days]. Please check your work.")
+    warning("Value for n_failures is not in interval (1,days]. Please check your work.")
   }
 
   if (sp@x < xmin(env_rast) | sp@x > xmax(env_rast)
   | sp@y < ymin(env_rast) | sp@y > ymax(env_rast)) {
-    print("Error: Species origin point outside env raster extent")
-    stop()
+    stop("Species origin point outside env raster extent")
   }
   
   if (mot_x <0 | mot_y<0) {
-    print("Error: mot_x and mot_y must be in range (0, 1]")
-    stop()
+    stop("mot_x and mot_y must be in range (0, 1]")
   }
 
   if (direction != "R") {
@@ -145,7 +140,7 @@ moveSIM <- function(replicates = 100,
   }
   else {
     my_env <- env_rast
-    print("Direction=R specified--Raster will be ignored")
+    message("Direction=R specified--Raster will be ignored")
   }
 
   long <- data.frame(
@@ -172,7 +167,7 @@ moveSIM <- function(replicates = 100,
       long <- rbind(long, Species)
     }
     if (i %% 5 == 0) {
-      print(paste0("Number of agents processed: ", i))
+      message(paste0("Number of agents processed: ", i))
     }
   }
 

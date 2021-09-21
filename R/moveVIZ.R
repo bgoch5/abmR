@@ -14,6 +14,7 @@
 #' @param aspect_ratio Aspect ratio, defaults to 1.
 #' @param xlim Optionally specify desired x limits as a numeric vector: c(low,hi)
 #' @param ylim Optionally specify desired y limits as a numeric vector: c(low,hi)
+#' @return Plot or table displaying moveSIM() results.
 #'
 #' @examples
 #' 

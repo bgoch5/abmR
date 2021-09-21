@@ -19,6 +19,7 @@
 #' @param label Logical, label the origin and specified final destination?
 #' @param xlim Optionally specify desired x limits as a numeric vector: c(low,hi)
 #' @param ylim Optionally specify desired y limits as a numeric vector: c(low,hi)
+#' @return Plot or table displaying energySIM() results.
 #' @examples
 #' 
 #' # 1. Define Population and Run energySIM()
@@ -40,9 +41,9 @@
 #' 
 #' energyVIZ(EX1,type="summary_table")
 #' 
-#' \dontrun{energyVIZ(EX1,type="strat_table")}
+#' \donttest{energyVIZ(EX1,type="strat_table")}
 #' 
-#' \dontrun{energyVIZ(EX1,type="gradient")}
+#' \donttest{energyVIZ(EX1,type="gradient")}
 #' @export
 
 energyVIZ=function(data, type="plot", title="energySIM results",

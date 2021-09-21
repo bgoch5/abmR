@@ -27,7 +27,8 @@
 #' @param morphpar2mean Population mean for morphological parameter 2 (numeric)
 #' @param morphpar2sd Population standard deviation for morphological parameter 2 (numeric)
 #' @param morphpar2sign Do higher values of morphpar2 lead to longer or shorter distances traveled each day? Specify "Pos" if longer and "Neg" if shorter.
-#' 
+#' @return
+#' Object of class "species" for input into moveSIM() or energySIM()
 #' @examples
 #' 
 #' # Example 1 -- Birds

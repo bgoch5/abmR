@@ -122,7 +122,7 @@ energySIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, de
         cell_num <- which.min(abs(curr_env_subtract))
 
         if (length(which.min(abs(curr_env_subtract))) == 0) { # Ignore--edge case error handling
-          print("Can't find any non-NA cells. Agent stopped.")
+          message("Can't find any non-NA cells. Agent stopped.")
           track[step:days, 1] <- NA
           track[step:days, 2] <- NA
           track[step:days, 4] <- "Stopped"
@@ -145,7 +145,7 @@ energySIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, de
       else {
         cell_num <- which.min(abs(curr_env_subtract)) 
         if (length(which.min(abs(curr_env_subtract))) == 0) {
-          print("Can't find any non-NA cells. Agent stopped.")
+          message("Can't find any non-NA cells. Agent stopped.")
           track[step:days, 1] <- NA
           track[step:days, 2] <- NA
           track[step:days, 4] <- "Stopped"
@@ -163,7 +163,7 @@ energySIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, de
         lat_candidate <- track[step - 1, 2] + (sigma * rnorm(1)) + (mot_y_new * (target_y - track[step - 1, 2]))
         i <- i + 1
         if (i > 90) { # Avoid infinite loop
-          print("Can't find any non-NA cells. Agent stopped.")
+          message("Can't find any non-NA cells. Agent stopped.")
           track[step:days, 1] <- NA
           track[step:days, 2] <- NA
           track[step:days, 4] <- "Stopped"
@@ -175,7 +175,7 @@ energySIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, de
       pt <- SpatialPoints(cbind(lon_candidate, lat_candidate))
       proj4string(pt) <- proj4string(env_orig)
       if (is.na(over(pt, sps, fn = NULL))) { 
-        print("Best coordinates not in search region, agent stopped")
+        message("Best coordinates not in search region, agent stopped")
         track[step:days, 1] <- NA
         track[step:days, 2] <- NA
         track[step:days, 4] <- "Stopped"
@@ -287,7 +287,7 @@ energySIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, de
       in_interval <- FALSE
       if (mortality == TRUE) {
         if (energy == 0 & step < days) {
-          print("Agent died")
+          message("Agent died")
           track[(step + 1):days, 1] <- NA 
           track[(step + 1):days, 2] <- NA
           track[step:days, 4] <- "Died"

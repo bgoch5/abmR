@@ -38,6 +38,9 @@ as.species(
 
 \item{morphpar2sign}{Do higher values of morphpar2 lead to longer or shorter distances traveled each day? Specify "Pos" if longer and "Neg" if shorter.}
 }
+\value{
+Object of class "species" for input into moveSIM() or energySIM()
+}
 \description{
 Here we define the agents whose movement we will be modeling. The user must 
 indicate the geographical origin of the agents but can also optionally

@@ -26,6 +26,7 @@
 #' of AVHRR Normalized Difference Vegetation Index (NDVI), Version 5.
 #' NOAA National Centers for Environmental Information.
 #' https://doi.org/10.7289/V5ZG6QH9. Accessed 12/26/2020.
+#' @return No return value, called to download files to hard drive.
 #' @export
 
 get_ex_data <- function() {

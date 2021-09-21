@@ -27,6 +27,9 @@ moveSIM().}
 
 \item{ylim}{Optionally specify desired y limits as a numeric vector: c(low,hi)}
 }
+\value{
+Plot or table displaying moveSIM() results.
+}
 \description{
 When type="plot", function plots the movement tracks versus the the straight
 line track between the origin and destination (unless the destination was

@@ -1,6 +1,6 @@
 #' Prints results from moveSIM() or energySIM() in an easier-to-read table.
 #' @import kableExtra
-#' @param data The output from moveSIM or energySIM -- a list of two dataframes.
+#' @param data The output from moveSIM() or energySIM() -- a list of two dataframes.
 #' @param type "run_params" or "results", corresponding to which component of
 #' your moveSIM() or energySIM() output you'd like to print out. Default
 #' "results", which contains the movement data.
@@ -12,6 +12,7 @@
 #'  location value (due to agent death or agent stopping)}
 #'  \item{mortality_pct}{: What percent of simulated agents experienced death?}
 #'  }
+#' @return Prints a cleaned table of moveSIM() or energySIM() results.
 #' @export
 
 tidy_results <- function(data, type = "results", nrows = NULL) {

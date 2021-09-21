@@ -4,8 +4,8 @@
 #' Here, agent mortality occurs when agent reaches energy = 0. Agent energy
 #' stores are dynamic, and affect search area as a multiplier, so movement
 #' is directly affected by the quality of raster cells achieved. Results
-#' may be visualized with `energyVIZ()`. Relies on underlying function
-#' `energySIM_helper`, which is not to be used alone.
+#' may be visualized with energyVIZ(). Relies on underlying function
+#' energySIM_helper(), which is not to be used alone.
 #'
 #' For each timestep, agents can have status "Alive",
 #' "Stopped", or "Died". All agents start alive and may stop if, on a particular
@@ -95,66 +95,58 @@ energySIM <- function(replicates = 100,
   days <- days + 1
   sp <- modeled_species
   if (optimum_hi < optimum_lo) {
-    print("Error: opt_hi smaller than opt_lo--please check your work")
-    stop()
+    stop("Opt_hi smaller than opt_lo--please check your work")
   }
 
   if (init_energy < 0 | init_energy > 100) {
-    print("Error: Initial Energy should be such that 0<init_energy<=100")
-    stop()
+    stop("Initial Energy should be such that 0<init_energy<=100")
   }
 
   if (length(energy_adj) != 11) {
-    cat("Error: Supplied energy_adj vector not of required length 11. Please check your work
+    stop("Supplied energy_adj vector not of required length 11. Please check your work
         and consult documentation for more info on energy_adj")
-    stop()
   }
 
   if (nlayers(env_rast) == 1 & single_rast == FALSE) {
-    cat("Error: Single layer environmental raster with single_rast=FALSE specified.
+    stop("Single layer environmental raster with single_rast=FALSE specified.
          Please check your raster or change to single_rast=TRUE. Exiting
          function")
-    stop()
   }
 
   if (nlayers(env_rast) != 1 & single_rast == TRUE) {
-    cat("Warning: Multiple layer environmental raster with single_rast=TRUE specified.
+    warning("Multiple layer environmental raster with single_rast=TRUE specified.
     Using only first layer of raster")
   }
 
   if (length(sp@morphpar1) == 1 & length(sp@morphpar2) == 1) {
     if (sp@morphpar1 > sp@morphpar1mean + 3.5 * sp@morphpar1sd | sp@morphpar1 < sp@morphpar1mean - 3.5 * sp@morphpar1sd) {
-      cat("Error: Specified value for morphpar1 is greater than 3.5 SDs away from the
+      stop("Specified value for morphpar1 is greater than 3.5 SDs away from the
          specified mean, which is extremely unlikely. Consider adjusting morphpar1, morphpar1mean,
-         or morphpar1SD. Function terminated.")
-      stop()
+         or morphpar1SD.")
     }
 
     if (sp@morphpar2 > sp@morphpar2mean + 3.5 * sp@morphpar2sd | sp@morphpar2 < sp@morphpar2mean - 3.5 * sp@morphpar2sd) {
-      cat("Error: Specified value for morphpar2 is greater than 3.5 SDs away from the
+      stop("Specified value for morphpar2 is greater than 3.5 SDs away from the
          specified mean, which is extremely unlikely. Consider adjusting morphpar2, morphpar2mean,
-         or morphpar2SD. Function terminated.")
-      stop()
+         or morphpar2SD.")
     }
   }
   
   if (mot_x <0 | mot_y<0) {
-    print("Error: mot_x and mot_y must be in range (0, 1]")
-    stop()
+    stop("mot_x and mot_y must be in range (0, 1]")
   }
 
   my_min <- minValue(env_rast[[1]])
   my_max <- maxValue(env_rast[[1]])
   if (!(my_min <= optimum_hi && my_max >= optimum_lo)) {
-    cat("Warning: Optimum range specified does not overlap with range of env_raster values.
+    warning("Optimum range specified does not overlap with range of env_raster values.
        Consider changing.")
   }
 
 
   if (modeled_species@x < xmin(env_rast) | modeled_species@x > xmax(env_rast)
   | modeled_species@y < ymin(env_rast) | modeled_species@y > ymax(env_rast)) {
-    print("Error: Species origin point outside env raster extent")
-    stop()
+    stop("Species origin point outside env raster extent")
   }
 
 
@@ -165,7 +157,7 @@ energySIM <- function(replicates = 100,
   }
   else {
     my_env <- env_rast
-    print("Direction=R specified--Raster will be ignored")
+    message("Direction=R specified--Raster will be ignored")
   }
 
   long <- data.frame(
@@ -207,7 +199,7 @@ energySIM <- function(replicates = 100,
       long <- rbind(long, Species)
     }
     if (i %% 5 == 0) {
-      print(paste0("Number of agents processed: ", i))
+      message(paste0("Number of agents processed: ", i))
     }
   }
 
