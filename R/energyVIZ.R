@@ -9,7 +9,7 @@
 #' type="summary_table" or type="strat_table" (table with results stratified
 #' by energy gain or loss). Please see Vignette for examples of this output.
 #'
-#' @import raster sp rgdal rnaturalearth rnaturalearthdata ggplot2 table1 gstat sf tmap
+#' @import raster sp rgdal rnaturalearth rnaturalearthdata ggplot2 table1 gstat sf tmap rgeos
 #' @importFrom gtsummary tbl_summary
 #' @param data Data to be plotted, this object should be the output from
 #' energySIM().
@@ -28,18 +28,18 @@
 #' morphpar1=15, morphpar1mean=16, morphpar1sd=2,morphpar1sign="Pos",
 #' morphpar2=19,morphpar2mean=18,morphpar2sd=1,morphpar2sign="Pos")
 #' 
-#' EX1=energySIM(replicates=2,days=7,env_rast=ex_raster, search_radius=200,
+#' \donttest{EX1=energySIM(replicates=10,days=7,env_rast=ex_raster, search_radius=200,
 #' sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.9, mot_y=.9,
 #' modeled_species=pop1,
 #' optimum_lo=.8,optimum_hi=.9,init_energy=100,
-#' direction="S",write_results=FALSE,single_rast=TRUE,mortality = TRUE)
+#' direction="S",write_results=FALSE,single_rast=TRUE,mortality = TRUE)}
 #' 
 #' # 2. Run energyVIZ() on your result
 #' 
-#' energyVIZ(EX1,title="Visualizing EnergySIM results",type="plot", aspect_ratio=5/3,
-#' label=TRUE)
+#' \donttest{energyVIZ(EX1,title="Visualizing EnergySIM results",type="plot", aspect_ratio=5/3,
+#' label=TRUE)}
 #' 
-#' energyVIZ(EX1,type="summary_table")
+#' \donttest{energyVIZ(EX1,type="summary_table")}
 #' 
 #' \donttest{energyVIZ(EX1,type="strat_table")}
 #' 

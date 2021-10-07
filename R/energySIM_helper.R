@@ -115,7 +115,7 @@ energySIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, de
     else {
       if (dest_x != 999 & dest_y != 999) {
         pt <- SpatialPoints(cbind(dest_x, dest_y))
-        proj4string(pt) <- proj4string(env_orig)
+        crs(pt) <- crs(sps)
       }
       
       if (dest_x == 999 & dest_y == 999) {
@@ -133,7 +133,7 @@ energySIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, de
         cell_num <- sample(cell_num, 1) # There may be ties so we need to sample 1
         best_coordinates <- xyFromCell(curr_env_subtract, cell_num)
       }
-
+      
       else if (!is.na(over(pt, sps, fn = NULL)[1])) {
         best_coordinates <- c(dest_x, dest_y)
         in_box <- TRUE
@@ -173,7 +173,7 @@ energySIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, de
       }
 
       pt <- SpatialPoints(cbind(lon_candidate, lat_candidate))
-      proj4string(pt) <- proj4string(env_orig)
+      crs(pt) <- crs(sps)
       if (is.na(over(pt, sps, fn = NULL))) { 
         message("Best coordinates not in search region, agent stopped")
         track[step:days, 1] <- NA

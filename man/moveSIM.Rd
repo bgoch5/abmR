@@ -101,7 +101,7 @@ pop1 <- as.species(
  
 # Run function
  EX2 <- moveSIM(
-  replicates = 5, days = 10, env_rast = ex_raster, search_radius = 300,
+  replicates = 3, days = 10, env_rast = ex_raster, search_radius = 300,
   sigma = .1, dest_x = -108.6, dest_y = 26.2, mot_x = .8, mot_y = .8,
   modeled_species = pop1, optimum = .6, n_failures = 5, fail_thresh = .40,
   direction = "S", write_results = FALSE, single_rast = TRUE, mortality = TRUE)
