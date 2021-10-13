@@ -1,18 +1,26 @@
-Package: abmr
+Package: abmR
 Type: Package
-Title: Agent-based Models in R
-Version: 0.1.12
-Authors: Benjamin Gochanour, Javier Fernandez Lopez, Andrea Contina
-Description: A work-in-progress package for running agent-based models in R.
-License: MIT
+Title: Agent-Based Models in R
+Version: 1.0.3
+Authors@R: c(
+ person("Benjamin", "Gochanour",
+ email = "ben.gochanour@gmail.com",
+ role = c("aut","cre")),
+ person("Javier", "Fernandez-Lopez",
+ email = "jflopez.bio@gmail.com",
+ role = "aut"),
+ person("Andrea", "Contina",
+ email = "acontina@gmail.com",
+ role = "aut"))
+Maintainer: Benjamin Gochanour <ben.gochanour@gmail.com>
+Description: Supplies tools for running agent-based models (ABM) in R, as discussed in Gochanour et al. (2021) <doi:10.1101/2021.09.15.460374> The package contains two movement functions, each of which is based on the Ornstein-Uhlenbeck (OU) model (Ornstein & Uhlenbeck, 1930) <doi:10.1103/PhysRev.36.823>. It also contains several visualization and data summarization functions to facilitate the presentation of simulation results.
+License: GPL(>=3)
 Suggests: jpeg, knitr
-VignetteBuilder: knitr
 Encoding: UTF-8
-LazyData: true
 RoxygenNote: 7.1.1
 Depends: 
-    R (>= 2.10),
-    raster,
+    R (>= 3.5)
+Imports:
     sp,
     rgdal,
     table1,
@@ -21,4 +29,16 @@ Depends:
     geosphere,
     kableExtra,
     gtsummary,
-    ggplot2
+    ggplot2,
+    gstat,
+    purrr,
+    rnaturalearth,
+    rnaturalearthdata,
+    sf,
+    tmap,
+    raster,
+    utils,
+    stats,
+    methods,
+    rgeos
+LazyData: true

@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_ex_data.R
 \name{get_ex_data}
 \alias{get_ex_data}
-\title{Downloads data that is used in examples in vignette and documentation.}
+\title{Downloads example NDVI data}
 \source{
 Vermote, Eric; NOAA CDR Program. (2019): NOAA Climate Data Record (CDR)
 of AVHRR Normalized Difference Vegetation Index (NDVI), Version 5.
@@ -12,15 +12,19 @@ https://doi.org/10.7289/V5ZG6QH9. Accessed 12/26/2020.
 \usage{
 get_ex_data()
 }
+\value{
+No return value, called to download files to hard drive.
+}
 \description{
 Warning: this function will download to your hard drive
 (to a location specified by your current working directory) the below
-files, totaling approximately 620 MB. Please do not attempt to use if you have insufficient hard drive space
+files, totaling approximately 620 MB. Please do not attempt to use if you
+have insufficient hard drive space
 or Random Access Memory (RAM). Objects to be downloaded are listed under
-"details". The first time you use this function, you will be directed to your browser
-and required to sign in to your Google account to connect to the Tidyverse API. If you use the
-function a second time, you may simply follow the prompts and enter a number
-corresponding to the previous accounts listed.
+"details". The first time you use this function, you will be directed to your
+browser and required to sign in to your Google account to connect to the 
+Tidyverse API. If you use the function a second time, you may simply follow
+the prompts and enter a number corresponding to the previous accounts listed.
 }
 \details{
 \itemize{

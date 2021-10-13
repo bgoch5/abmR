@@ -2,7 +2,7 @@
 % Please edit documentation in R/moveSIM.R
 \name{moveSIM}
 \alias{moveSIM}
-\title{Runs basic Brownian / Ornstein Uhlenbeck agent-based model for multiple replicates.}
+\title{Runs agent-based model (ABM) movement simulations based on environmental data}
 \usage{
 moveSIM(
   replicates = 100,
@@ -51,7 +51,7 @@ moveSIM(
 
 \item{mortality}{Logical, should low energy levels result in death? Default T.}
 
-\item{fail_thresh}{What percentage deviation from optimum leads to death? E.g. default of 
+\item{fail_thresh}{What percentage deviation from optimum leads to death? E.g. default of
 .50 means 50 percent or greater deviation from optimum on a particular step constitutes failure.}
 
 \item{n_failures}{How many failures are allowable before agent experiences death (at n_failures+1). What constitutes
@@ -63,8 +63,8 @@ a failure is determined by fail_thresh, range (1,days]. Default 4.}
 }
 \value{
 Under "results", a (days+1 * replicates) row X 7 column dataframe containing data on agent_id, day, longitude, latitude,
-current agent status (Alive, Stopped, or Died), distance traveled from last timestep (in km), and a plot_ignore column, which can be ignored by the user.
-Using tidy_results() hides the plot_ignore column and provides overall nicer display of results.
+current agent status (Alive, Stopped, or Died), distance traveled from last timestep (in km), and final status.
+Using tidy_results() provides a cleaner display of results.
 
 Under "run_params", a record of function parameters used as well as missing_pct
 and mortality_pct. missing_pct corresponds to the percent of rows in the results dataframe
@@ -72,38 +72,41 @@ missing information on lon/lat, which occurs when the agent has "died" or "stopp
 refers to the percentage of agents in the run that died.
 }
 \description{
-Here, agent mortality occurs when agent fails to achieve suitable raster values
-at least n_failures+1 timesteps in a row. Agent energy stores are not dynamic, so movement
-speed isn't directly affected by quality of raster cells achieved. Results may be analyzed
-with `moveVIZ()`. Relies on underlying function `moveSIM_helper`, which is not to be used
-alone.
+Here, agent mortality occurs when agent fails to achieve suitable raster
+values at least n_failures+1 timesteps in a row. Agent energy stores are not
+dynamic, so movement speed isn't directly affected by quality of raster cells
+achieved. Results may be analyzed with moveVIZ(). Relies on underlying
+function moveSIM_helper(), which is not to be used alone.
 }
 \details{
 For each timestep, agents can have status "Alive",
 "Stopped", or "Died". All agents start alive and may stop if, on a particular timestep,
 there are no non-NA raster values in the search region. This often occurs when agents
 are searching over an ocean or a large lake, for example. Once an agent stops, they
-remain stopped for the rest of the run. Similarly, once an agent dies, they retain 
+remain stopped for the rest of the run. Similarly, once an agent dies, they retain
 this status for all subsequent timesteps. All timesteps with agent status "Stopped"
 or "Died" will have lat/lon=NA, so as to not affect subsequent analyses.
 
-Arguments mortality, n_failures, and fail_thresh interact with each other. If 
+Arguments mortality, n_failures, and fail_thresh interact with each other. If
 mortality = F, values for n_failures and fail_thresh are ignored. If mortality=T, fail_thresh
 determines what constitutes a failure, and n_failures indicates how many failures are allowed before
 death. Note: If n_failures=days, this is equivalent to mortality=F.
 }
 \examples{
 # Define species object
-pop1 = as.species(x=-98.7, y=34.7, morphpar1=15, morphpar1mean=16, morphpar1sd=2,morphpar1sign="Pos",
-morphpar2=19,morphpar2mean=18,morphpar2sd=1,morphpar2sign="Pos")
-
-# Run function
-EX2=moveSIM(replicates=5,days=27,env_rast=ndvi_raster, search_radius=550,
-sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.8, mot_y=.8,modeled_species=pop1,optimum=.6, n_failures=5, fail_thresh=.40,
-direction="S",write_results=TRUE,single_rast=FALSE,mortality = T)
+pop1 <- as.species(
+  x = -98.7, y = 34.7, morphpar1 = 15, morphpar1mean = 16, morphpar1sd = 2,
+  morphpar1sign = "Pos", morphpar2 = 19, morphpar2mean = 18, morphpar2sd = 1,
+ morphpar2sign = "Pos")
  
-# View Results in Clean Format
-tidy_results(EX2,type="results")
-tidy_results(EX2,type="run_params")
+# Run function
+ EX2 <- moveSIM(
+  replicates = 3, days = 10, env_rast = ex_raster, search_radius = 300,
+  sigma = .1, dest_x = -108.6, dest_y = 26.2, mot_x = .8, mot_y = .8,
+  modeled_species = pop1, optimum = .6, n_failures = 5, fail_thresh = .40,
+  direction = "S", write_results = FALSE, single_rast = TRUE, mortality = TRUE)
 
+# View Results in Clean Format
+ tidy_results(EX2, type = "results")
+ tidy_results(EX2, type = "run_params")
 }

@@ -62,8 +62,4 @@ points for all n timesteps
 \description{
 Runs agent based modeling for one replicate of a single species.
 }
-\examples{
-my_results = moveSIM(sp = wiwa.pop, env = ndvi_raster, n = 27, sigma = 0.6,
-dest_x = -100, dest_y = 25, mot_x = 0.9, mot_y = 0.9, search_radius = 200, current_gen = 1)
-}
 \keyword{internal}

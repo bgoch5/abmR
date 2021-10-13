@@ -2,8 +2,8 @@
 % Please edit documentation in R/energySIM.R
 \name{energySIM}
 \alias{energySIM}
-\title{Runs more advanced Brownian / Ornstein Uhlenbeck agent-based model for
-multiple replicates.}
+\title{Runs agent-based model (ABM) movement and energy budget
+simulations based on environmental data}
 \usage{
 energySIM(
   replicates = 100,
@@ -67,9 +67,9 @@ Recommend using default which is decreasing and symmetric about zero but can mod
 }
 \value{
 Under "results", a (days+1 X replicates) rows X 9 column dataframe containing data on agent_id, day, longitude, latitude,
-current agent status (Alive, Stopped, or Died), energy, change in energy from last time_step, 
-distance traveled from last timestep (in km), and a plot_ignore column, which can be ignored by the user.
-Using tidy_results() hides the plot ignore column and provides overall nicer display of results.
+current agent status (Alive, Stopped, or Died), energy, change in energy from last time_step,
+distance traveled from last timestep (in km), and final status.
+Using tidy_results() provides a cleaner display of results.
 
 Under "run_params", a record of function parameters used as well as missing_pct
 and mortality_pct. missing_pct corresponds to the percent of rows in the results dataframe
@@ -79,34 +79,37 @@ refers to the percentage of agents in the run that died.
 \description{
 Here, agent mortality occurs when agent reaches energy = 0. Agent energy
 stores are dynamic, and affect search area as a multiplier, so movement
-is directly affected by the quality of raster cells achieved. Results may be visualized
-with `energyVIZ()`. Relies on underlying function `energySIM_helper`, which is
-not to be used alone.
+is directly affected by the quality of raster cells achieved. Results
+may be visualized with energyVIZ(). Relies on underlying function
+energySIM_helper(), which is not to be used alone.
 }
 \details{
 For each timestep, agents can have status "Alive",
-"Stopped", or "Died". All agents start alive and may stop if, on a particular timestep,
-there are no non-NA raster values in the search region. This often occurs when agents
-are searching over an ocean or a large lake, for example. Once an agent stops, they
-remain stopped for the rest of the run. Similarly, once an agent dies, they retain 
-this status for all subsequent timesteps. All timesteps with agent status "Stopped"
-or "Died" will have lat/lon=NA, so as to not affect subsequent analyses.
+"Stopped", or "Died". All agents start alive and may stop if, on a particular
+timestep, there are no non-NA raster values in the search region. This often
+occurs when agents are searching over an ocean or a large lake, for example.
+Once an agent stops, they remain stopped for the rest of the run. Similarly,
+once an agent dies, they retain this status for all subsequent timesteps.
+All timesteps with agent status "Stopped" or "Died" will have lat/lon=NA,
+so as to not affect subsequent analyses.
 }
 \examples{
 # Define species object
-pop1 = as.species(x=-98.7, y=34.7,
-morphpar1=15, morphpar1mean=16, morphpar1sd=2,morphpar1sign="Pos",
-morphpar2=19,morphpar2mean=18,morphpar2sd=1,morphpar2sign="Pos")
+pop1 <- as.species(
+  x = -98.7, y = 34.7,
+  morphpar1 = 15, morphpar1mean = 16, morphpar1sd = 2, morphpar1sign = "Pos",
+  morphpar2 = 19, morphpar2mean = 18, morphpar2sd = 1, morphpar2sign = "Pos"
+)
 
 # Run function
-EX1=energySIM(replicates=5,days=27,env_rast=ndvi_raster, search_radius=400,
-sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.9, mot_y=.9,
-modeled_species=pop1,
-optimum_lo=.6,optimum_hi=.8,init_energy=100,
-direction="S",write_results=FALSE,single_rast=FALSE,mortality = TRUE)
+EX1 <- energySIM(
+ replicates = 3, days = 5, env_rast = ex_raster, search_radius = 400,
+ sigma = .1, dest_x = -108.6, dest_y = 26.2, mot_x = .9, mot_y = .9,
+ modeled_species = pop1,
+ optimum_lo = .6, optimum_hi = .8, init_energy = 100,
+ direction = "S", write_results = FALSE, single_rast = TRUE, mortality = TRUE)
 
 # View Results in Clean Format
-tidy_results(EX1,type="results")
-tidy_results(EX1,type="run_params")
-
+tidy_results(EX1, type = "results")
+tidy_results(EX1, type = "run_params")
 }
