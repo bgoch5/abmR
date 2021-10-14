@@ -1,0 +1,6 @@
+# Notes about CRAN submission
+
+# 10/13/2021
+
+o Commented energyVIS gradient to avoid some problems
+o Deleted csv files
