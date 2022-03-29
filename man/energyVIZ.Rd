@@ -65,5 +65,5 @@ label=TRUE)}
 
 \donttest{energyVIZ(EX1,type="strat_table")}
 
-\donttest{energyVIZ(EX1,type="gradient")}
+\donttest{# energyVIZ(EX1,type="gradient")}
 }
