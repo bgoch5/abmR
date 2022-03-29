@@ -1,0 +1,12 @@
+# Notes about CRAN submission
+
+# 10/13/2021
+
+o Commented energyVIS gradient to avoid some problems
+o Deleted csv files
+
+# 10/14/2021
+
+o Dealing with some errors in DESCRIPTION file?
+o Saving EX1 as data in the package
+o Using EX1 RData to run examples in energyVIZ
