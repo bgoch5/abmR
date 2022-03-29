@@ -5,7 +5,9 @@
 #' specify values of morphological parameters, which will be standardized using
 #' (observed-mean/sd). The standardized values will affect the movement
 #' simulations by serving as a multiplier on "mot_x" and "mot_y" in the
-#' direction specified: "Pos" or "Neg".
+#' direction specified: "Pos" or "Neg". Warning: the morphology arguments are
+#' still under development, and the authors don't yet recommend using them for
+#' formal analyses.
 #' 
 #' In example 1 below, we have a bird with origin (-100,26)
 #' with observed wing chord length of 15 mm, while the population

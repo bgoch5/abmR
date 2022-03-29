@@ -117,6 +117,10 @@ energySIM <- function(replicates = 100,
     warning("Multiple layer environmental raster with single_rast=TRUE specified.
     Using only first layer of raster")
   }
+  
+  if (!is.na(sp@morphpar1)) {
+    warning("Morphology arguments are still under development. The authors do not recommend using these arguments for formal analyses, but instead only for exploratory work.")
+  }
 
   if (length(sp@morphpar1) == 1 & length(sp@morphpar2) == 1) {
     if (sp@morphpar1 > sp@morphpar1mean + 3.5 * sp@morphpar1sd | sp@morphpar1 < sp@morphpar1mean - 3.5 * sp@morphpar1sd) {
