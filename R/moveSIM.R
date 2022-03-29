@@ -62,7 +62,7 @@
 #'  morphpar2sign = "Pos")
 #'  
 #' # Run function
-#'  EX2 <- moveSIM(
+#'  \donttest{EX2 <- moveSIM(
 #'   replicates = 3, days = 10, env_rast = ex_raster, search_radius = 300,
 #'   sigma = .1, dest_x = -108.6, dest_y = 26.2, mot_x = .8, mot_y = .8,
 #'   modeled_species = pop1, optimum = .6, n_failures = 5, fail_thresh = .40,
@@ -70,7 +70,7 @@
 #'
 #' # View Results in Clean Format
 #'  tidy_results(EX2, type = "results")
-#'  tidy_results(EX2, type = "run_params")
+#'  tidy_results(EX2, type = "run_params")}
 #' @export
 
 moveSIM <- function(replicates = 100,
@@ -102,6 +102,10 @@ moveSIM <- function(replicates = 100,
     Using only first layer of raster")
   }
 
+  if (!is.na(sp@morphpar1)) {
+    warning("Morphology arguments are still under development. The authors do not recommend using these arguments for formal analyses, but instead only for exploratory work.")
+  }
+  
   if (length(sp@morphpar1) == 1 & length(sp@morphpar2) == 1) {
     if (sp@morphpar1 > sp@morphpar1mean + 3.5 * sp@morphpar1sd | sp@morphpar1 < sp@morphpar1mean - 3.5 * sp@morphpar1sd) {
       stop("Specified value for morphpar1 is greater than 3.5 SDs away from the
