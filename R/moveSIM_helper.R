@@ -77,9 +77,8 @@ moveSIM_helper <- function(sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,
     }
     p <- Polygon(test)
     ps <- Polygons(list(p), 1)
-    sps <- SpatialPolygons(list(ps),
-      proj4string = crs(env)
-    )
+    sps <- SpatialPolygons(list(ps),proj4string = crs(env))
+    
     my_bool <- tryCatch(!is.null(intersect(my_rast, sps)), error = function(e) {
       return(FALSE)
     })
@@ -90,7 +89,6 @@ moveSIM_helper <- function(sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,
     }
     if (dest_x != 999 & dest_y != 999) {
       pt <- SpatialPoints(cbind(dest_x, dest_y))
-      proj4string(pt) <- proj4string(env)
     }
 
     if (direction == "R") {
@@ -114,7 +112,7 @@ moveSIM_helper <- function(sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,
 
         best_coordinates <- xyFromCell(my_rast, cell_num)
       }
-
+      crs(pt) <- crs(sps)
       else if (!is.na(over(pt, sps, fn = NULL)[1])) {
         best_coordinates <- c(dest_x, dest_y)
         in_box <- TRUE
@@ -158,8 +156,7 @@ moveSIM_helper <- function(sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,
         }
       }
       pt <- SpatialPoints(cbind(lon_candidate, lat_candidate))
-      proj4string(pt) <- proj4string(env)
-
+      crs(pt) <- crs(sps)
       if (is.na(over(pt, sps, fn = NULL))) {
         message("Best coordinates not in search region, agent stopped")
         track[step:days, 1] <- NA
