@@ -57,20 +57,18 @@
 #' @examples
 #' # Define species object
 #' pop1 <- as.species(
-#'   x = -98.7, y = 34.7, morphpar1 = 15, morphpar1mean = 16, morphpar1sd = 2,
-#'   morphpar1sign = "Pos", morphpar2 = 19, morphpar2mean = 18, morphpar2sd = 1,
-#'  morphpar2sign = "Pos")
+#'   x = -98.7, y = 34.7)
 #'  
 #' # Run function
-#'  \donttest{# EX2 <- moveSIM( replicates = 3, days = 10, env_rast = ex_raster,
-#'   # search_radius = 300, sigma = .1, dest_x = -108.6, dest_y = 26.2,
-#'   # mot_x = .8, mot_y = .8, modeled_species = pop1, optimum = .6,
-#'   # n_failures = 5, fail_thresh = .40, direction = "S",
-#'   # write_results = FALSE, single_rast = TRUE, mortality = TRUE)
-#'
+#' EX2 <- moveSIM( replicates = 3, days = 10, env_rast = ex_raster,
+#' search_radius = 300, sigma = .1, dest_x = -108.6, dest_y = 26.2,
+#'  mot_x = .8, mot_y = .8, modeled_species = pop1, optimum = .6,
+#'   n_failures = 5, fail_thresh = .40, direction = "R",
+#'   write_results = FALSE, single_rast = TRUE, mortality = TRUE)
 #' # View Results in Clean Format
-#'  # tidy_results(EX2, type = "results")
-#'  # tidy_results(EX2, type = "run_params")}
+#' tidy_results(EX2, type = "results")
+#' tidy_results(EX2, type = "run_params")
+#' 
 #' @export
 
 moveSIM <- function(replicates = 100,
@@ -100,24 +98,6 @@ moveSIM <- function(replicates = 100,
   if (nlayers(env_rast) != 1 & single_rast == TRUE) {
     warning("Multiple layer environmental raster with single_rast=TRUE specified.
     Using only first layer of raster")
-  }
-
-  if (!is.na(sp@morphpar1)) {
-    warning("Morphology arguments are still under development. The authors do not recommend using these arguments for formal analyses, but instead only for exploratory work.")
-  }
-  
-  if (length(sp@morphpar1) == 1 & length(sp@morphpar2) == 1) {
-    if (sp@morphpar1 > sp@morphpar1mean + 3.5 * sp@morphpar1sd | sp@morphpar1 < sp@morphpar1mean - 3.5 * sp@morphpar1sd) {
-      stop("Specified value for morphpar1 is greater than 3.5 SDs away from the
-         specified mean, which is extremely unlikely. Consider adjusting morphpar1, morphpar1mean,
-         or morphpar1SD.")
-    }
-
-    if (sp@morphpar2 > sp@morphpar2mean + 3.5 * sp@morphpar2sd | sp@morphpar2 < sp@morphpar2mean - 3.5 * sp@morphpar2sd) {
-      stop("Specified value for morphpar2 is greater than 3.5 SDs away from the
-         specified mean, which is extremely unlikely. Consider adjusting morphpar2, morphpar2mean,
-         or morphpar2SD.")
-    }
   }
 
   my_min <- minValue(env_rast[[1]])

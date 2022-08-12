@@ -96,10 +96,7 @@ so as to not affect subsequent analyses.
 \examples{
 # Define species object
 pop1 <- as.species(
-  x = -98.7, y = 34.7,
-  morphpar1 = 15, morphpar1mean = 16, morphpar1sd = 2, morphpar1sign = "Pos",
-  morphpar2 = 19, morphpar2mean = 18, morphpar2sd = 1, morphpar2sign = "Pos"
-)
+  x = -98.7, y = 34.7)
 
 # Run function
 EX1 <- energySIM(
@@ -107,7 +104,7 @@ EX1 <- energySIM(
  sigma = .1, dest_x = -108.6, dest_y = 26.2, mot_x = .9, mot_y = .9,
  modeled_species = pop1,
  optimum_lo = .6, optimum_hi = .8, init_energy = 100,
- direction = "S", write_results = FALSE, single_rast = TRUE, mortality = TRUE)
+ direction = "R", write_results = FALSE, single_rast = TRUE, mortality = TRUE)
 
 # View Results in Clean Format
 tidy_results(EX1, type = "results")

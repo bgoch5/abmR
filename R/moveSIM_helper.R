@@ -29,17 +29,8 @@ moveSIM_helper <- function(sp, env, days, sigma, dest_x, dest_y, mot_x, mot_y,
   track[1:days, 3] <- "Alive"
   track[1:days, 4] <- "Alive"
 
-  if (length(sp@morphpar1 == 1) & length(sp@morphpar2 == 1)) {
-    mot_x_new <- (mot_x + (sp@morphpar1 - sp@morphpar1mean) / sp@morphpar1sd * .1 * ifelse(sp@morphpar1sign == "Pos", 1, -1)
-      + (sp@morphpar2 - sp@morphpar2mean) / sp@morphpar2sd * .1 * ifelse(sp@morphpar2sign == "Pos", 1, -1))
-
-    mot_y_new <- (mot_y + (sp@morphpar1 - sp@morphpar1mean) / sp@morphpar1sd * .1 * ifelse(sp@morphpar1sign == "Pos", 1, -1)
-      + (sp@morphpar2 - sp@morphpar2mean) / sp@morphpar2sd * .1 * ifelse(sp@morphpar2sign == "Pos", 1, -1))
-  }
-  else {
     mot_x_new <- mot_x
     mot_y_new <- mot_y
-  }
 
   failures <- 0
   in_box <- FALSE

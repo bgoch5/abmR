@@ -39,17 +39,8 @@ energySIM_helper <- function(sp, env_orig, env_subtract, days, sigma, dest_x, de
 
   optimum <- (optimum_hi + optimum_lo) / 2
 
-  if (length(sp@morphpar1 == 1) & length(sp@morphpar2 == 1)) {
-    mot_x_new <- (mot_x + (sp@morphpar1 - sp@morphpar1mean) / sp@morphpar1sd * .1 * ifelse(sp@morphpar1sign == "Pos", 1, -1)
-      + (sp@morphpar2 - sp@morphpar2mean) / sp@morphpar2sd * .1 * ifelse(sp@morphpar2sign == "Pos", 1, -1))
-
-    mot_y_new <- (mot_y + (sp@morphpar1 - sp@morphpar1mean) / sp@morphpar1sd * .1 * ifelse(sp@morphpar1sign == "Pos", 1, -1)
-      + (sp@morphpar2 - sp@morphpar2mean) / sp@morphpar2sd * .1 * ifelse(sp@morphpar2sign == "Pos", 1, -1))
-  }
-  else {
     mot_x_new <- mot_x
     mot_y_new <- mot_y
-  }
 
   in_box <- FALSE
 

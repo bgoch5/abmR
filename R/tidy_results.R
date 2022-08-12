@@ -5,7 +5,7 @@
 #' your moveSIM() or energySIM() output you'd like to print out. Default
 #' "results", which contains the movement data.
 #' @param nrows The number of rows to print.
-#' @details missing_pct and mortality_pct are not function parameters,
+#' @details missing_pct and mortality_pct are not function paramet?ers,
 #' but are nonetheless computed and returned here for your convenience
 #'  \itemize{
 #'  \item{missing_pct}{: What percent of rows exhibiting a missing
