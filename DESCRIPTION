@@ -1,7 +1,7 @@
 Package: abmR
 Type: Package
-Title: Agent-Based Models in R
-Version: 1.0.9
+Title: Agent-Based Models in R (Development Version)
+Version: 0.0.0
 Authors@R: c(
  person("Benjamin", "Gochanour",
  email = "ben.gochanour@gmail.com",
