@@ -100,7 +100,7 @@ pop1 <- as.species(
 
 # Run function
 EX1 <- energySIM(
- replicates = 3, days = 5, env_rast = ex_raster, search_radius = 400,
+ replicates = 2, days = 3, env_rast = ex_raster, search_radius = 400,
  sigma = .1, dest_x = -108.6, dest_y = 26.2, mot_x = .9, mot_y = .9,
  modeled_species = pop1,
  optimum_lo = .6, optimum_hi = .8, init_energy = 100,

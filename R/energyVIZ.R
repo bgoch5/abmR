@@ -9,7 +9,7 @@
 #' type="summary_table" or type="strat_table" (table with results stratified
 #' by energy gain or loss). Please see Vignette for examples of this output.
 #'
-#' @import raster sp rgdal rnaturalearth rnaturalearthdata ggplot2 table1 gstat sf tmap rgeos
+#' @import raster sp ggplot2 table1 gstat sf tmap rnaturalearth
 #' @importFrom gtsummary tbl_summary
 #' @param data Data to be plotted, this object should be the output from
 #' energySIM().
@@ -26,7 +26,7 @@
 #' 
 #' pop1 <- as.species(x=-98.7, y=34.7)
 #' 
-#' EX1=energySIM(replicates=10,days=7,env_rast=ex_raster, search_radius=200,
+#' EX1=energySIM(replicates=2,days=7,env_rast=ex_raster, search_radius=200,
 #' sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.9, mot_y=.9,
 #' modeled_species=pop1,
 #' optimum_lo=.8,optimum_hi=.9,init_energy=100,
@@ -52,7 +52,9 @@ energyVIZ=function(data, type="plot", title="energySIM results",
 dest_x=data$run_params$dest_x
 dest_y=data$run_params$dest_y
 
-world <- ne_countries(scale = "medium", returnclass = "sf")
+world <- map_data("world")
+
+#world <- ne_countries(scale = "medium", returnclass = "sf")
 start.p <- cbind(data$results[1,3], data$results[1,4])
 # Generalize this soon
 start.p.df <- as.data.frame(start.p)
@@ -112,41 +114,54 @@ if(!is.null(ylim)){
 if(type=="plot"){
   
 if(dest_x!=999 & dest_y!=999){
-myplot=ggplot(data = world) +
-  geom_sf() +
-  coord_sf(xlim =my_xlim,
-           ylim = my_ylim, 
-           expand = FALSE) +
-  geom_path(data = t.energy.res,
-            aes(x=t.energy.res$lon, y=t.energy.res$lat,group=t.energy.res$agent_id),
-            color = "red", size = 0.6, alpha = 0.4, lineend = "round") +
-  geom_path(data = ideal.df,
-            aes(x=ideal.df$Lon, y=ideal.df$Lat),
-            color = "black", size = 1.2, alpha = 1, linetype = "dashed") + theme(aspect.ratio=aspect_ratio) + 
-  ggtitle(title)
-}
-else{
-  myplot=ggplot(data = world) +
-    geom_sf() +
-   coord_sf(xlim =my_xlim,
+  # create world map using ggplot() function
+  myplot <- ggplot() + geom_map(data = world, map = world,
+                                aes_string("long", "lat",map_id = "region")) +
+    coord_sf(xlim =my_xlim,
              ylim = my_ylim, 
              expand = FALSE) +
-    geom_path(data = t.energy.res,
-              aes(x=t.energy.res$lon, y=t.energy.res$lat,group=t.energy.res$agent_id),
-              color = "red", size = 0.6, alpha = 0.4, lineend = "round") + theme(aspect.ratio=aspect_ratio) +
-    ggtitle(title) 
-  label=FALSE
+    geom_path(data = t.energy.res, mapping=aes_string(x="lon", y="lat",group="agent_id"),
+                                          color = "red", size = 0.6, alpha = 0.4, lineend = "round") +
+    geom_path(data = ideal.df,
+            aes_string(x="Lon", y="Lat"),
+            color = "black", size = 1.2, alpha = 1, linetype = "dashed") + theme(aspect.ratio=aspect_ratio) + 
+  ggtitle(title)
+
+}
+else{
+# myplot=ggplot(data = world) +
+ #  geom_sf() +
+  # coord_sf(xlim =my_xlim,
+   #          ylim = my_ylim, 
+    #         expand = FALSE) +
+  #  geom_path(data = t.energy.res,
+  #            aes(x=lon, y=lat,group=agent_id),
+  #            color = "red", size = 0.6, alpha = 0.4, lineend = "round") + theme(aspect.ratio=aspect_ratio) +
+  #  ggtitle(title) 
+  #label=FALSE
+  
+ myplot <- ggplot() + geom_map(data = world, map = world,
+                      aes_string("long", "lat",map_id = "region")) +
+    coord_sf(xlim =my_xlim,
+                      ylim = my_ylim, 
+                      expand = FALSE) +
+               geom_path(data = t.energy.res,
+                         mapping=aes_string(x="lon", y="lat",group="agent_id"),
+                         color = "red", size = 0.6, alpha = 0.4, lineend = "round") + theme(aspect.ratio=aspect_ratio) +
+               ggtitle(title) 
+ label=FALSE
 }
 if(label){
   ideal.df[,"type"]=NA
   ideal.df[1,4]="Origin"
   ideal.df[2,4]="Ideal Final"
-  myplot=myplot+geom_point(data=ideal.df,aes(x=ideal.df$Lon,y=ideal.df$Lat,color=type))
+  myplot=myplot+geom_point(data=ideal.df,aes_string(x="Lon",y="Lat",color="type"))
 }
 return(myplot)
 }
 if(type=="gradient")
-{my.df = data$results
+{world <- ne_countries(scale = "medium", returnclass = "sf")
+  my.df = data$results
   my.sf.point = my.df
   my_vector=!is.na(my.df$x)
   my.sf.point <- my.sf.point[my_vector,]
@@ -193,5 +208,6 @@ if(type=="summary_table"){
 if(type=="strat_table")
 {
 t.energy.res <- data$results
+t.energy.res <- t.energy.res[!is.na(t.energy.res$delta_energy),]
 table1(~energy + day + distance | delta_energy, data = t.energy.res)}
 }

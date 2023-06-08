@@ -5,7 +5,7 @@
 #' unspecified in the call to moveSIM(), then straight line track is omitted).
 #' When type="summary_table", a summary table is output.
 #'
-#' @import raster sp rgdal rnaturalearth rnaturalearthdata ggplot2 rgeos
+#' @import raster sp ggplot2
 #' @importFrom gtsummary tbl_summary
 #' @param data Data to be plotted, this object should be the output from
 #' moveSIM().
@@ -22,7 +22,7 @@
 #' 
 #' pop1 <- as.species(x=-100, y=55)
 #' 
-#' EX2=moveSIM(replicates=2,days=27,env_rast=ex_raster, search_radius=550,
+#' EX2=moveSIM(replicates=2,days=5,env_rast=ex_raster, search_radius=550,
 #' sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.8, mot_y=.8,
 #' modeled_species=pop1,optimum=.6, n_failures=5, fail_thresh=.40,
 #' direction="R",write_results=FALSE,single_rast=TRUE,mortality = TRUE)
@@ -39,7 +39,8 @@ moveVIZ=function(data, type="plot", title="moveSIM results", aspect_ratio=1, xli
   if(type=="plot"){
     dest_x=data$run_params$dest_x
     dest_y=data$run_params$dest_y
-    world <- ne_countries(scale = "medium", returnclass = "sf")
+    world <- map_data("world")
+    #world <- ne_countries(scale = "medium", returnclass = "sf")
     start.p <- cbind(data$results[1,3], data$results[1,4])
     # Generalize this soon
     start.p.df <- as.data.frame(start.p)
@@ -64,25 +65,28 @@ moveVIZ=function(data, type="plot", title="moveSIM results", aspect_ratio=1, xli
     }
     
     if(dest_x!=999 & dest_y!=999){
-    myplot=ggplot(data = world) +
-      geom_sf() +
-      coord_sf(xlim = my_xlim, ylim = my_ylim, expand = FALSE) +
-      geom_path(data = t.move.res,
-                aes(x=t.move.res$lon, y=t.move.res$lat,group=t.move.res$agent_id),
-                color = "blue", size = 0.6, alpha = 0.4, lineend = "round") +
+    myplot <- ggplot() + geom_map(data = world, map = world,
+                                  aes_string("long", "lat",map_id = "region")) +
+      coord_sf(xlim =my_xlim,
+               ylim = my_ylim, 
+               expand = FALSE) +
+      geom_path(data = t.move.res, mapping=aes_string(x="lon", y="lat",group="agent_id"),
+                color = "red", size = 0.6, alpha = 0.4, lineend = "round") +
       geom_path(data = ideal.df,
-                aes(x=ideal.df$Lon, y=ideal.df$Lat),
-                color = "black", size = 1.2, alpha = 1, linetype = 2) + theme(aspect.ratio=aspect_ratio) + 
+                aes_string(x="Lon", y="Lat"),
+                color = "black", size = 1.2, alpha = 1, linetype = "dashed") + theme(aspect.ratio=aspect_ratio) + 
       ggtitle(title)
     }
     else{
-      myplot=ggplot(data = world) +
-        geom_sf() +
-        coord_sf(xlim = my_xlim, ylim = my_ylim, expand = FALSE) +
-        geom_path(data = t.move.res,
-                  aes(x=t.move.res$lon, y=t.move.res$lat,group=t.move.res$agent_id),
-                  color = "blue", size = 0.6, alpha = 0.4, lineend = "round") + theme(aspect.ratio=aspect_ratio) + 
-        ggtitle(title)  
+      myplot <- ggplot() + geom_map(data = world, map = world,
+                                    aes_string("long", "lat",map_id = "region")) +
+        coord_sf(xlim =my_xlim,
+                 ylim = my_ylim, 
+                 expand = FALSE) +
+        geom_path(data = t.move.res, mapping=aes_string(x="lon", y="lat",group="agent_id"),
+                  color = "red", size = 0.6, alpha = 0.4, lineend = "round") +
+        theme(aspect.ratio=aspect_ratio) + 
+        ggtitle(title)
     }
     return(myplot)
   }

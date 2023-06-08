@@ -19,7 +19,7 @@
 #' determines what constitutes a failure, and n_failures indicates how many failures are allowed before
 #' death. Note: If n_failures=days, this is equivalent to mortality=F.
 #'
-#' @import raster sp rgdal
+#' @import raster sp
 #' @importFrom methods as  setClass
 #' @importFrom stats na.omit rbinom rnorm
 #' @importFrom geosphere distHaversine

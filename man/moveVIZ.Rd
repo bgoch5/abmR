@@ -42,7 +42,7 @@ When type="summary_table", a summary table is output.
 
 pop1 <- as.species(x=-100, y=55)
 
-EX2=moveSIM(replicates=2,days=27,env_rast=ex_raster, search_radius=550,
+EX2=moveSIM(replicates=2,days=5,env_rast=ex_raster, search_radius=550,
 sigma=.1, dest_x=-108.6, dest_y=26.2, mot_x=.8, mot_y=.8,
 modeled_species=pop1,optimum=.6, n_failures=5, fail_thresh=.40,
 direction="R",write_results=FALSE,single_rast=TRUE,mortality = TRUE)

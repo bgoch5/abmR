@@ -2,7 +2,7 @@
 #' Run energy-dynamic based model for one replicate
 #'
 #' Runs agent based modeling for one replicate of a single species.
-#' @import raster sp rgdal
+#' @import raster sp
 #' @importFrom  swfscMisc circle.polygon
 #' @param sp A species object
 #' @param env Raster, should represent NDVI or your environmental variable of interest
