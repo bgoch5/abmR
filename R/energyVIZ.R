@@ -9,7 +9,7 @@
 #' type="summary_table" or type="strat_table" (table with results stratified
 #' by energy gain or loss). Please see Vignette for examples of this output.
 #'
-#' @import raster sp ggplot2 table1 gstat sf tmap rnaturalearth
+#' @import raster sp ggplot2 table1 gstat sf tmap rnaturalearth maps
 #' @importFrom gtsummary tbl_summary
 #' @param data Data to be plotted, this object should be the output from
 #' energySIM().

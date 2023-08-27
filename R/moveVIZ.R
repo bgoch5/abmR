@@ -5,7 +5,7 @@
 #' unspecified in the call to moveSIM(), then straight line track is omitted).
 #' When type="summary_table", a summary table is output.
 #'
-#' @import raster sp ggplot2
+#' @import raster sp ggplot2 maps
 #' @importFrom gtsummary tbl_summary
 #' @param data Data to be plotted, this object should be the output from
 #' moveSIM().
